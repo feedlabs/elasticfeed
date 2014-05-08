@@ -1,0 +1,26 @@
+mod 'environment',
+  :git => 'git@github.com:feedlabs/puppet-packages.git',
+  :path => 'modules/environment'
+
+mod 'feedlabs-cfp',
+  :git => 'git@github.com:feedlabs/puppet-feedlabs.git',
+  :path => 'modules/feedlabs-cfp'
+
+mod 'feedlabs-fdn',
+  :git => 'git@github.com:feedlabs/puppet-feedlabs.git',
+  :path => 'modules/feedlabs-fdn'
+
+mod 'scenario-engine',
+  :git => 'git@github.com:feedlabs/puppet-feedlabs.git',
+  :path => 'modules/scenario-engine'
+
+mod 'nsq',
+  :git => 'git@github.com:kris-lab/puppet-nsq.git'
+
+mod 'neo4j',
+  :git => 'git@github.com:feedlabs/puppet-packages.git',
+  :path => 'modules/neo4j'
+
+mod 'mongo',
+  :git => 'git@github.com:feedlabs/puppet-packages.git',
+  :path => 'modules/mongo'
