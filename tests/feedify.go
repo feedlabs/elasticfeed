@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-
+	feedify.Run()
 }
