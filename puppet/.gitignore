@@ -1,4 +1,0 @@
-/.tmp
-/modules/*
-!/modules/.gitkeep
-/Puppetfile.lock

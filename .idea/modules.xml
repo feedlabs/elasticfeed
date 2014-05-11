@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/cfp.iml" filepath="$PROJECT_DIR$/.idea/cfp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/feedify.iml" filepath="$PROJECT_DIR$/.idea/feedify.iml" />
     </modules>
   </component>
 </project>

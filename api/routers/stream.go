@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"github.com/feedlabs/feedify/controllers"
+	"github.com/feedlabs/feedify/api/controllers"
 	"github.com/astaxie/beego"
 )
 

@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"github.com/feedlabs/feedify/models"
+	"github.com/feedlabs/feedify/api/models"
 )
 
 type StorageController struct {
