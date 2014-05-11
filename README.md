@@ -1,4 +1,2 @@
-cfp
-===
-
-Cloud Feed Platform
+feedify
+=======
