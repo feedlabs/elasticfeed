@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"cfp/src/controllers"
+	"github.com/feedlabs/cfp/controllers"
 	"github.com/astaxie/beego"
 )
 

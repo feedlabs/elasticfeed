@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cfp/src/feed"
+	"github.com/feedlabs/cfp/feed"
 )
 
 func main() {

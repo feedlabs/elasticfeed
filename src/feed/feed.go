@@ -1,7 +1,7 @@
 package feed
 
 import (
-	_ "cfp/src/routers"
+	_ "github.com/feedlabs/cfp/routers"
 	"github.com/astaxie/beego"
 )
 
