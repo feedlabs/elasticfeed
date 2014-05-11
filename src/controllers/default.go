@@ -1,16 +1,16 @@
 package controllers
 
 import (
-//	"fmt"
-//	"os"
-//	"flag"
-//	"path/filepath"
+	"fmt"
+	"os"
+	"flag"
+	"path/filepath"
 	"strings"
-	"cfp/src/lib/db"
-	"cfp/src/lib/glue"
+	"cfp/lib/db"
+	"cfp/lib/glue"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-//	"github.com/astaxie/beego/config"
+	"github.com/astaxie/beego/config"
 )
 
 type ResponseInfo struct {
