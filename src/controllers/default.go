@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"strings"
-	"github.com/feedlabs/cfp/lib/db"
-	"github.com/feedlabs/cfp/lib/glue"
+	"github.com/feedlabs/feedify/lib/db"
+	"github.com/feedlabs/feedify/lib/glue"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )

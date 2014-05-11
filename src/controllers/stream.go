@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/astaxie/beego"
-	"github.com/feedlabs/cfp/models"
+	"github.com/feedlabs/feedify/models"
 )
 
 type StreamController struct {
