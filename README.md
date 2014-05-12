@@ -1,4 +1,4 @@
 feedify
 =======
 
-![structure](https://cloud.githubusercontent.com/assets/1843523/2942109/d6d7180c-d9af-11e3-9c89-f050c7bae2cb.png)
+![structure](https://cloud.githubusercontent.com/assets/1843523/2949623/d1ea3700-da10-11e3-88eb-b563c07943ee.png)
