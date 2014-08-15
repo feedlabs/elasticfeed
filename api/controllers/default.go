@@ -15,6 +15,7 @@ var mongo *db.Mongo
 var nsq *glue.Nsq
 var neo4j *db.Neo4j
 var memcache *db.Memcache
+var cayley *db.Cayley
 
 type DefaultController struct {
 	beego.Controller
@@ -50,4 +51,7 @@ func init() {
 
 	memcache = db.NewMemcache()
 	memcache.Connect()
+
+	cayley = db.NewCayley()
+	cayley.Connect()
 }
