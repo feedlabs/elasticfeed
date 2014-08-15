@@ -39,20 +39,6 @@ func GetRequestParam(input *context.BeegoInput, param string) string {
 }
 
 func init() {
-
-//	var CFPConfig config.ConfigContainer
-//	AppPath, _ := filepath.Abs(filepath.Dir(os.Args[0]))
-//	CFPConfigPath := filepath.Join(AppPath, "conf", "cfp.conf")
-//	CFPConfig, _ = config.NewConfig("ini", CFPConfigPath)
-
-//	fmt.Printf("hello   ")
-//	fmt.Printf("====%v===", CFPConfig.String("api::port"))
-
-//	port := flag.Int("port", 8080, "http port")
-//	flag.Parse()
-
-//	fmt.Printf("====%d===", *port)
-
 	mongo = db.NewMongo()
 	mongo.Connect()
 

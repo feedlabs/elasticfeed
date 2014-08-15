@@ -2,7 +2,7 @@ package glue
 
 import (
 	"log"
-	"github.com/bitly/go-nsq"
+//	"github.com/bitly/go-nsq"
 )
 
 type Nsq struct {
@@ -18,6 +18,6 @@ func NewNsq() *Nsq {
 	return &Nsq{}
 }
 
-func NewNsqWriter() *nsq.Writer {
-	return nsq.NewWriter("test")
-}
+//func NewNsqWriter() *nsq.Writer {
+//	return nsq.NewWriter("test")
+//}
