@@ -12,10 +12,11 @@ var configPath string
 
 func InitConfig() (config.ConfigContainer) {
 	const (
-		configFilePath = "conf/app.conf"
-		usage       = "set config file path"
+		configFilePath 	= "conf/app.conf"
+		usage       	= "set config file path"
 	)
 	flag.StringVar(&configPath, "config", configFilePath, usage)
+	flag.Parse()
 
 	CFPConfig, _ := config.NewConfig("ini", configPath)
 
