@@ -9,13 +9,15 @@ import (
 )
 
 var configPath string
+var httpPort int
 
 func InitConfig() (config.ConfigContainer) {
 	const (
-		configFilePath 	= "conf/app.conf"
-		usage       	= "set config file path"
+		defaultConfigPath 	= "conf/app.conf"
+		defaultHttpPort		= 8080
 	)
-	flag.StringVar(&configPath, "config", configFilePath, usage)
+	flag.StringVar(&configPath, "config", defaultConfigPath, "set config file path")
+	flag.IntVar(&httpPort, "port", defaultHttpPort, "set http port")
 	flag.Parse()
 
 	CFPConfig, _ := config.NewConfig("ini", configPath)
@@ -25,9 +27,13 @@ func InitConfig() (config.ConfigContainer) {
 
 func main() {
 	conf := InitConfig()
-	port, _ := strconv.Atoi(conf.String("feedify::port"))
+	port, err := strconv.Atoi(conf.String("feedify::port"))
 
-	fmt.Printf("Starting app '%s' on port '%d'\n", conf.String("appname"), port)
+	if (err == nil) {
+		httpPort = port
+	}
 
-	feedify.Run(port)
+	fmt.Printf("Starting app '%s' on port '%d'\n", conf.String("appname"), httpPort)
+
+	feedify.Run(httpPort)
 }
