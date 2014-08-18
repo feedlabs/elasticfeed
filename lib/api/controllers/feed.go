@@ -19,7 +19,7 @@ func (this *FeedController) Post() {
 }
 
 func (this *FeedController) Get() {
-	feedId := this.Ctx.Input.Params[":objectId"]
+	feedId := this.Ctx.Input.Params[":id"]
 	if feedId != "" {
 		ob, err := entity.GetFeed(feedId)
 		if err != nil {

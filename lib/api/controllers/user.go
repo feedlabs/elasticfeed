@@ -19,7 +19,7 @@ func (this *UserController) Post() {
 }
 
 func (this *UserController) Get() {
-	userId := this.Ctx.Input.Params[":objectId"]
+	userId := this.Ctx.Input.Params[":id"]
 	if userId != "" {
 		ob, err := entity.GetUser(userId)
 		if err != nil {
