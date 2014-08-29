@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"github.com/feedlabs/feedify"
 	"github.com/astaxie/beego/config"
+
+	_ "github.com/feedlabs/feedify/lib/feedify/stream/adapter"
 )
 
 var configPath string
