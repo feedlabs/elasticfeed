@@ -8,7 +8,7 @@ import (
 type StreamAdapterStore interface {
 	Name() string
 	Connect()
-	Subscribe([]string)
+	Subscribe([]string, func(bool, string, string))
 	Publish(string, string)
 }
 
