@@ -53,14 +53,19 @@ func init() {
 	cayley = adapter.NewCayley()
 	cayley.Connect()
 
-	streamClient, err := stream.NewAdapterStore("redis", nil)
-	if err != nil {
-		fmt.Println("==%s", err)
-	}
 
 	channels := []string{"channelA", "channelB"}
-	streamClient.Subscribe(channels)
-	time.Sleep(3000 * time.Millisecond)
-	message := stream.NewStreamMessage("hello", "channelA", streamClient)
-	message.Send()
+	message, _ := stream.NewStreamMessage("channelA")
+
+	message.Subscribe(channels, func(timeout bool, message string, channel string) {
+		if !timeout {
+			fmt.Println("publish:", message, " channel:", channel)
+		} else {
+			fmt.Println("error: sub timedout")
+		}
+	})
+
+	time.Sleep(100 * time.Millisecond)
+
+	message.Publish("hello to channelA")
 }
