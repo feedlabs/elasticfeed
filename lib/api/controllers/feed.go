@@ -13,7 +13,8 @@ type FeedController struct {
 func (this *FeedController) Post() {
 	var ob entity.Feed
 
-	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
 
 	feedid := entity.AddFeed(ob)
 	this.Data["json"] = map[string]string{"FeedId": feedid}
