@@ -37,7 +37,7 @@ func (this *FeedController) Get() {
 }
 
 func (this *FeedController) Put() {
-	feedId := this.Ctx.Input.Params[":objectId"]
+	feedId := this.Ctx.Input.Params[":id"]
 	var ob entity.Feed
 	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
 
@@ -51,7 +51,7 @@ func (this *FeedController) Put() {
 }
 
 func (this *FeedController) Delete() {
-	feedId := this.Ctx.Input.Params[":objectId"]
+	feedId := this.Ctx.Input.Params[":id"]
 	entity.DeleteFeed(feedId)
 	this.Data["json"] = "delete success!"
 	this.ServeJson()
