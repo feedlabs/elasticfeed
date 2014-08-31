@@ -12,7 +12,10 @@ type FeedController struct {
 
 func (this *FeedController) Post() {
 	var ob entity.Feed
-	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
 	feedid := entity.AddFeed(ob)
 	this.Data["json"] = map[string]string{"FeedId": feedid}
 	this.ServeJson()
@@ -35,11 +38,11 @@ func (this *FeedController) Get() {
 }
 
 func (this *FeedController) Put() {
-	feedId := this.Ctx.Input.Params[":objectId"]
+	feedId := this.Ctx.Input.Params[":id"]
 	var ob entity.Feed
 	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
 
-	err := entity.UpdateFeed(feedId, ob.Name)
+	err := entity.UpdateFeed(feedId, ob.Data)
 	if err != nil {
 		this.Data["json"] = err
 	} else {
@@ -49,7 +52,7 @@ func (this *FeedController) Put() {
 }
 
 func (this *FeedController) Delete() {
-	feedId := this.Ctx.Input.Params[":objectId"]
+	feedId := this.Ctx.Input.Params[":id"]
 	entity.DeleteFeed(feedId)
 	this.Data["json"] = "delete success!"
 	this.ServeJson()

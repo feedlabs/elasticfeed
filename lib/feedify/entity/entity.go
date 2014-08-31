@@ -15,5 +15,5 @@ var (
 
 type Feed struct {
 	FeedId	string
-	Name	string
+	Data	string
 }

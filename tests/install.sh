@@ -16,3 +16,6 @@ fi
 
 # install dependencies
 # go get github.com/bitly/go-nsq
+
+go get github.com/fzzy/radix/redis
+go get github.com/barakmich/glog

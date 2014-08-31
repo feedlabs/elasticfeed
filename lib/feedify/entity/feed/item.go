@@ -1,4 +1,4 @@
-package item
+package feed
 
 func init() {
 

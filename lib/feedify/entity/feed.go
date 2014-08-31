@@ -1,9 +1,15 @@
 package entity
 
 import (
+	"time"
 	"errors"
 	"strconv"
-	"time"
+
+	"github.com/feedlabs/feedify/lib/feedify/stream"
+)
+
+var (
+	message *stream.StreamMessage
 )
 
 func init() {
@@ -11,11 +17,16 @@ func init() {
 	Feeds["1"] = &Feed{"1", "foo"}
 	Feeds["2"] = &Feed{"2", "bar"}
 	Feeds["3"] = &Feed{"3", "foobar"}
+
+	message, _ = stream.NewStreamMessage()
 }
 
 func AddFeed(feed Feed) (FeedId string) {
 	feed.FeedId = strconv.FormatInt(time.Now().UnixNano(), 10)
 	Feeds[feed.FeedId] = &feed
+
+	message.Publish(feed.Data)
+
 	return feed.FeedId
 }
 
@@ -30,9 +41,9 @@ func GetFeedList() map[string]*Feed {
 	return Feeds
 }
 
-func UpdateFeed(FeedId string, Name string) (err error) {
+func UpdateFeed(FeedId string, Data string) (err error) {
 	if v, ok := Feeds[FeedId]; ok {
-		v.Name = Name
+		v.Data = Data
 		return nil
 	}
 	return errors.New("FeedId Not Exist")
