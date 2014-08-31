@@ -9,7 +9,7 @@ type StreamAdapterStore interface {
 	Name() string
 	Connect()
 	Subscribe([]string, func(bool, string, string))
-	Publish(string, string)
+	Publish(string)
 }
 
 type Options map[string]interface{}

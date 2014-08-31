@@ -22,8 +22,9 @@ type StreamAdapterStore struct {
 	client *redis.RedisClient
 }
 
-func (m StreamAdapterStore) Publish(message string, channel string) {
-	m.client.Cmd("publish", channel, message)
+func (m StreamAdapterStore) Publish(message string) {
+	message_socketredis := "{\"type\":\"publish\", \"data\":" + message +"}"
+	m.client.Cmd("publish", "socket-redis-down", message_socketredis)
 }
 
 func (m StreamAdapterStore) Name() string {
