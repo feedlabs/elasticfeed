@@ -20,15 +20,6 @@ func init() {
 	Feeds["3"] = &Feed{"3", "foobar"}
 
 	message, _ = stream.NewStreamMessage()
-
-	channels := []string{"socket-redis-down"}
-	message.Subscribe(channels, func(timeout bool, message string, channel string) {
-		if !timeout {
-			fmt.Println("publish:", message, " channel:", channel)
-		} else {
-			fmt.Println("error: sub timedout")
-		}
-	})
 }
 
 func AddFeed(feed Feed) (FeedId string) {
