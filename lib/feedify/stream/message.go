@@ -2,6 +2,7 @@ package stream
 
 import (
 	"errors"
+	"github.com/feedlabs/feedify/lib/feedify/config"
 )
 
 type StreamMessage struct {
@@ -30,7 +31,8 @@ func (m StreamMessage) GetAdapter() StreamAdapterStore {
 }
 
 func NewStreamMessage(channel string) (*StreamMessage, error) {
-	adapter, err := NewAdapterStore("socket_redis", nil)
+	adapter_type := config.GetConfigKey("stream::adapter_message")
+	adapter, err := NewAdapterStore(adapter_type, nil)
 	if err != nil {
 		return nil, errors.New("Cannot load stream message adapter")
 	}

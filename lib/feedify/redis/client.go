@@ -1,9 +1,10 @@
 package redis
 
 import (
+	"errors"
 	"github.com/fzzy/radix/redis"
 	"github.com/fzzy/radix/extra/pubsub"
-	"errors"
+	"github.com/feedlabs/feedify/lib/feedify/config"
 )
 
 type RedisClient struct {
@@ -42,5 +43,9 @@ func (r RedisClient) Subscribe(channel []string, callback func(bool, string, str
 }
 
 func NewRedisClient() (*RedisClient) {
-	return &RedisClient{"localhost", "6379", "tcp"}
+	host := config.GetConfigKey("redis::host")
+	port := config.GetConfigKey("redis::port")
+	protocol := config.GetConfigKey("redis::protocol")
+
+	return &RedisClient{host, port, protocol}
 }
