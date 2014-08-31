@@ -12,7 +12,9 @@ type FeedController struct {
 
 func (this *FeedController) Post() {
 	var ob entity.Feed
+
 	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
+
 	feedid := entity.AddFeed(ob)
 	this.Data["json"] = map[string]string{"FeedId": feedid}
 	this.ServeJson()
@@ -39,7 +41,7 @@ func (this *FeedController) Put() {
 	var ob entity.Feed
 	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
 
-	err := entity.UpdateFeed(feedId, ob.Name)
+	err := entity.UpdateFeed(feedId, ob.Data)
 	if err != nil {
 		this.Data["json"] = err
 	} else {

@@ -3,11 +3,8 @@ package controllers
 import (
 	"strings"
 	"github.com/feedlabs/feedify/lib/feedify/db/adapter"
-	"github.com/feedlabs/feedify/lib/feedify/stream"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"time"
-	"fmt"
 )
 
 type ResponseInfo struct {
@@ -52,20 +49,4 @@ func init() {
 
 	cayley = adapter.NewCayley()
 	cayley.Connect()
-
-
-	channels := []string{"channelA", "channelB"}
-	message, _ := stream.NewStreamMessage("channelA")
-
-	message.Subscribe(channels, func(timeout bool, message string, channel string) {
-		if !timeout {
-			fmt.Println("publish:", message, " channel:", channel)
-		} else {
-			fmt.Println("error: sub timedout")
-		}
-	})
-
-	time.Sleep(100 * time.Millisecond)
-
-	message.Publish("hello to channelA")
 }
