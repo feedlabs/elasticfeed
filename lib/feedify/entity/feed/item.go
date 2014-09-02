@@ -1,5 +1,0 @@
-package feed
-
-func init() {
-
-}
