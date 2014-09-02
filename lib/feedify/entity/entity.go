@@ -2,6 +2,7 @@ package entity
 
 var (
 	Users map[string]*User
+	Feeds map[string]*Feed
 )
 
 type User struct {
@@ -9,11 +10,13 @@ type User struct {
 	Name	string
 }
 
-var (
-	Feeds map[string]*Feed
-)
-
 type Feed struct {
 	FeedId	string
+	Data	string
+	Entries map[string]*FeedEntry
+}
+
+type FeedEntry struct {
+	Id		string
 	Data	string
 }

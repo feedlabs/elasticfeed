@@ -17,5 +17,11 @@ fi
 # install dependencies
 # go get github.com/bitly/go-nsq
 
+# redis client
 go get github.com/fzzy/radix/redis
+
+# logger
 go get github.com/barakmich/glog
+
+# basic/digest authorisation
+https://github.com/abbot/go-http-auth
