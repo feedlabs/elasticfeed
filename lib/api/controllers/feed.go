@@ -22,7 +22,7 @@ func (this *FeedController) Post() {
 }
 
 func (this *FeedController) Get() {
-	feedId := this.Ctx.Input.Params[":id"]
+	feedId := this.Ctx.Input.Params[":feedId"]
 	if feedId != "" {
 		ob, err := entity.GetFeed(feedId)
 		if err != nil {
@@ -38,7 +38,7 @@ func (this *FeedController) Get() {
 }
 
 func (this *FeedController) Put() {
-	feedId := this.Ctx.Input.Params[":id"]
+	feedId := this.Ctx.Input.Params[":feedId"]
 	var ob entity.Feed
 	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
 
@@ -52,7 +52,7 @@ func (this *FeedController) Put() {
 }
 
 func (this *FeedController) Delete() {
-	feedId := this.Ctx.Input.Params[":id"]
+	feedId := this.Ctx.Input.Params[":feedId"]
 	entity.DeleteFeed(feedId)
 	this.Data["json"] = "delete success!"
 	this.ServeJson()

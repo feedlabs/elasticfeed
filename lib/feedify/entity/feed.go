@@ -4,28 +4,17 @@ import (
 	"time"
 	"errors"
 	"strconv"
-
-	"github.com/feedlabs/feedify/lib/feedify/stream"
-)
-
-var (
-	message *stream.StreamMessage
 )
 
 func init() {
 	Feeds = make(map[string]*Feed)
-	Feeds["1"] = &Feed{"1", "foo"}
-	Feeds["2"] = &Feed{"2", "bar"}
-	Feeds["3"] = &Feed{"3", "foobar"}
-
-	message, _ = stream.NewStreamMessage()
 }
 
 func AddFeed(feed Feed) (FeedId string) {
 	feed.FeedId = strconv.FormatInt(time.Now().UnixNano(), 10)
-	Feeds[feed.FeedId] = &feed
 
-	message.Publish(feed.Data)
+	feed.Entries = make(map[string]*FeedEntry)
+	Feeds[feed.FeedId] = &feed
 
 	return feed.FeedId
 }
