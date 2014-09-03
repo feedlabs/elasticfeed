@@ -18,16 +18,28 @@ curl -XPOST -H "content-type:application/json" -d '{Data:"new feed entry"}' feed
 }
 
 curl -XPUT -H "content-type:application/json" -d '{"Data":"updated new feed page"}' feed.dev:10111/v1/feed/1409731977215584330
-"update success!"
+{
+  "result": "update success",
+  "status": "ok"
+}
 
 curl -XPUT -H "content-type:application/json" -d '{"Data":"updated new feed entry"}' feed.dev:10111/v1/feed/1409731977215584330/entry/1409731990598877748
-"update success!"
+{
+  "result": "update success",
+  "status": "ok"
+}
 
 curl -XDELETE feed.dev:10111/v1/feed/1409731977215584330/entry/1409731990598877748
-"delete success!"
+{
+  "result": "delete success",
+  "status": "ok"
+}
 
 curl -XDELETE feed.dev:10111/v1/feed/1409731977215584330
-"delete success!"
+{
+  "result": "delete success",
+  "status": "ok"
+}
 
 curl feed.dev:10111/v1/feed/
 {}
