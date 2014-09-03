@@ -19,7 +19,7 @@ func (this *FeedEntryController) Post() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 
 	id := entity.AddFeedEntry(ob, feedId)
-	this.Data["json"] = map[string]string{"FeedId": id}
+	this.Data["json"] = map[string]string{"id": id}
 	this.ServeJson()
 }
 
@@ -47,13 +47,15 @@ func (this *FeedEntryController) Put() {
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
 	var ob entity.FeedEntry
-	json.Unmarshal(this.Ctx.Input.RequestBody, &ob)
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
 
 	err := entity.UpdateFeedEntry(feedEntryId, feedId, ob.Data)
 	if err != nil {
-		this.Data["json"] = err
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
-		this.Data["json"] = "update success!"
+		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
 	}
 	this.ServeJson()
 }
@@ -64,6 +66,6 @@ func (this *FeedEntryController) Delete() {
 
 	entity.DeleteFeedEntry(feedEntryId, feedId)
 
-	this.Data["json"] = "delete success!"
+	this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
 	this.ServeJson()
 }
