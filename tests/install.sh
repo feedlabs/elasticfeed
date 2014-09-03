@@ -24,4 +24,4 @@ go get github.com/fzzy/radix/redis
 go get github.com/barakmich/glog
 
 # basic/digest authorisation
-https://github.com/abbot/go-http-auth
+# https://github.com/abbot/go-http-auth
