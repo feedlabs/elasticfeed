@@ -36,12 +36,12 @@ func GetFeedEntryList(FeedId string) map[string]*FeedEntry {
 	return Feeds[FeedId].Entries
 }
 
-func UpdateFeedEntry(FeedEntryId string, FeedId string, Data string) (err error) {
+func UpdateFeedEntry(FeedEntryId string, FeedId string, data string) (err error) {
 	if v, ok := Feeds[FeedId].Entries[FeedEntryId]; ok {
-		v.Data = Data
+		v.Data = data
 		return nil
 	}
-	return errors.New("FeedEntryId for FeedId Not Exist")
+	return errors.New("FeedEntry id " + FeedEntryId + " for Feed id " + FeedId + " does not exist")
 }
 
 func DeleteFeedEntry(FeedEntryId string, FeedId string) {

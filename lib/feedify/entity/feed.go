@@ -10,34 +10,34 @@ func init() {
 	Feeds = make(map[string]*Feed)
 }
 
-func AddFeed(feed Feed) (FeedId string) {
-	feed.FeedId = strconv.FormatInt(time.Now().UnixNano(), 10)
+func AddFeed(feed Feed) (id string) {
+	feed.Id = strconv.FormatInt(time.Now().UnixNano(), 10)
 
 	feed.Entries = make(map[string]*FeedEntry)
-	Feeds[feed.FeedId] = &feed
+	Feeds[feed.Id] = &feed
 
-	return feed.FeedId
+	return feed.Id
 }
 
-func GetFeed(FeedId string) (feed *Feed, err error) {
-	if v, ok := Feeds[FeedId]; ok {
+func GetFeed(id string) (feed *Feed, err error) {
+	if v, ok := Feeds[id]; ok {
 		return v, nil
 	}
-	return nil, errors.New("FeedId Not Exist")
+	return nil, errors.New("Id not exist")
 }
 
 func GetFeedList() map[string]*Feed {
 	return Feeds
 }
 
-func UpdateFeed(FeedId string, Data string) (err error) {
-	if v, ok := Feeds[FeedId]; ok {
-		v.Data = Data
+func UpdateFeed(id string, data string) (err error) {
+	if v, ok := Feeds[id]; ok {
+		v.Data = data
 		return nil
 	}
-	return errors.New("FeedId Not Exist")
+	return errors.New("Feed id " + id + " does not exist")
 }
 
-func DeleteFeed(FeedId string) {
-	delete(Feeds, FeedId)
+func DeleteFeed(id string) {
+	delete(Feeds, id)
 }
