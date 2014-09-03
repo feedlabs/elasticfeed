@@ -18,6 +18,6 @@ ln -s $(pwd) $GOPATH/src/github.com/feedlabs/feedify
 `go run test/feedify.go`
 
 #### Dependencies
-`go get github.com/astaxie/beego`
-`go get github.com/fzzy/radix/redis`
-`go get github.com/barakmich/glog`
+* `go get github.com/astaxie/beego`
+* `go get github.com/fzzy/radix/redis`
+* `go get github.com/barakmich/glog`
