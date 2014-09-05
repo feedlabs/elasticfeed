@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/feedlabs/feedify/lib/feedify/service"
+	"github.com/feedlabs/feedify/service"
 )
 
 var (

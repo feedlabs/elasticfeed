@@ -6,7 +6,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 
-	"github.com/feedlabs/feedify/lib/feedify/service"
+	"github.com/feedlabs/feedify/service"
 )
 
 type ResponseInfo struct {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/feedlabs/feedify/lib/api/resources"
+	"github.com/feedlabs/api/public/v1/resources"
 )
 
 type FeedController struct {
