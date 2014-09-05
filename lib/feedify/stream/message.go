@@ -26,7 +26,7 @@ func (m StreamMessage) GetAdapter() StreamAdapterStore {
 }
 
 func NewStreamMessage() (*StreamMessage, error) {
-	adapter_type := config.GetConfigKey("stream::adapter_message")
+	adapter_type := config.GetConfigKey("stream::message_adapter")
 	adapter, err := NewAdapterStore(adapter_type, nil)
 	if err != nil {
 		return nil, errors.New("Cannot load stream message adapter")
