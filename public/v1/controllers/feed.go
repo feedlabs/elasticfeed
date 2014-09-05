@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/public/v1/resources"
+	"github.com/feedlabs/api/resources"
 )
 
 type FeedController struct {
