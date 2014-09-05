@@ -16,7 +16,7 @@ type RedisClient struct {
 }
 
 func (r RedisClient) Cmd(command string, args ...interface{}) error {
-	c, err := redis.Dial(r.protocol, r.host+":"+r.port)
+	c, err := redis.Dial(r.protocol, r.host + ":" + r.port)
 	if err != nil {
 		return errors.New("Redis dial error")
 	}
@@ -25,7 +25,7 @@ func (r RedisClient) Cmd(command string, args ...interface{}) error {
 }
 
 func (r RedisClient) _subscribe(channel []string, callback func(bool, string, string)) error {
-	c, err := redis.Dial(r.protocol, r.host+":"+r.port)
+	c, err := redis.Dial(r.protocol, r.host + ":" + r.port)
 	if err != nil {
 		return errors.New("Redis dial error")
 	}
@@ -44,7 +44,7 @@ func (r RedisClient) Subscribe(channel []string, callback func(bool, string, str
 	go r._subscribe(channel, callback)
 }
 
-func NewRedisClient() *RedisClient {
+func NewRedisClient() (*RedisClient) {
 	host := config.GetConfigKey("redis::host")
 	port := config.GetConfigKey("redis::port")
 	protocol := config.GetConfigKey("redis::protocol")
