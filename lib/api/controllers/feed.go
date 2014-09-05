@@ -5,7 +5,7 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/feedlabs/feedify/lib/feedify/entity"
+	"github.com/feedlabs/feedify/lib/api/resources"
 )
 
 type FeedController struct {
@@ -13,12 +13,12 @@ type FeedController struct {
 }
 
 func (this *FeedController) Post() {
-	var ob entity.Feed
+	var ob resources.Feed
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	feedid := entity.AddFeed(ob)
+	feedid := resources.AddFeed(ob)
 	this.Data["json"] = map[string]string{"id": feedid}
 	this.ServeJson()
 }
@@ -26,14 +26,14 @@ func (this *FeedController) Post() {
 func (this *FeedController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	if feedId != "" {
-		ob, err := entity.GetFeed(feedId)
+		ob, err := resources.GetFeed(feedId)
 		if err != nil {
 			this.Data["json"] = err
 		} else {
 			this.Data["json"] = ob
 		}
 	} else {
-		obs := entity.GetFeedList()
+		obs := resources.GetFeedList()
 		this.Data["json"] = obs
 	}
 	this.ServeJson()
@@ -41,12 +41,12 @@ func (this *FeedController) Get() {
 
 func (this *FeedController) Put() {
 	feedId := this.Ctx.Input.Params[":feedId"]
-	var ob entity.Feed
+	var ob resources.Feed
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := entity.UpdateFeed(feedId, ob.Data)
+	err := resources.UpdateFeed(feedId, ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -57,7 +57,7 @@ func (this *FeedController) Put() {
 
 func (this *FeedController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
-	entity.DeleteFeed(feedId)
+	resources.DeleteFeed(feedId)
 
 	this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
 	this.ServeJson()

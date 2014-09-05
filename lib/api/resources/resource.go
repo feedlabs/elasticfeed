@@ -1,4 +1,4 @@
-package entity
+package resources
 
 var (
 	Feeds map[string]*Feed
