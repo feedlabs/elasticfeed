@@ -1,6 +1,10 @@
 api
 ===
 
+what should be done
+-------------------
+![structure](https://cloud.githubusercontent.com/assets/1843523/4171533/32530bd4-353e-11e4-96a9-5be825db2923.png)
+
 #### Development
 Create symbolic link from you directory to `GOPATH`
 ```
