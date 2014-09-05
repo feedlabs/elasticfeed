@@ -9,8 +9,8 @@ import (
 	"github.com/astaxie/beego"
 
 	// feedify packages
-	"github.com/feedlabs/feedify/lib/feedify/config"
 	_ "github.com/feedlabs/feedify/lib/api"
+	"github.com/feedlabs/feedify/lib/feedify/config"
 	_ "github.com/feedlabs/feedify/lib/feedify/stream/adapter/message"
 )
 

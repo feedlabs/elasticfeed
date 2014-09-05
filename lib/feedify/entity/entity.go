@@ -5,12 +5,12 @@ var (
 )
 
 type Feed struct {
-	Id		string
-	Data	string
-	Entries	map[string]*FeedEntry
+	Id      string
+	Data    string
+	Entries map[string]*FeedEntry
 }
 
 type FeedEntry struct {
-	Id		string
-	Data	string
+	Id   string
+	Data string
 }

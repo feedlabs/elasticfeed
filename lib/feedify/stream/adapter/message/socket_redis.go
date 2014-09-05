@@ -23,7 +23,7 @@ type StreamAdapterStore struct {
 }
 
 func (m StreamAdapterStore) Publish(message string) {
-	message_socketredis := "{\"type\":\"publish\", \"data\":" + message +"}"
+	message_socketredis := "{\"type\":\"publish\", \"data\":" + message + "}"
 	m.client.Cmd("publish", "socket-redis-down", message_socketredis)
 }
 

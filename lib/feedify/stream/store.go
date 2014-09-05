@@ -54,8 +54,8 @@ type NewStoreFunc func(Options) (StreamAdapterStore, error)
 type InitStoreFunc func(Options) error
 
 type register struct {
-	newFunc      NewStoreFunc
-	initFunc     InitStoreFunc
+	newFunc  NewStoreFunc
+	initFunc InitStoreFunc
 }
 
 var storeRegistry = make(map[string]register)
@@ -65,8 +65,8 @@ func RegisterAdapterStore(name string, newFunc NewStoreFunc, initFunc InitStoreF
 		panic("already registered stream adapter " + name)
 	}
 	storeRegistry[name] = register{
-		newFunc:      newFunc,
-		initFunc:     initFunc,
+		newFunc:  newFunc,
+		initFunc: initFunc,
 	}
 }
 

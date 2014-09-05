@@ -5,8 +5,8 @@ import (
 )
 
 type CayleyAdapter struct {
-	host	string
-	port	string
+	host string
+	port string
 }
 
 func (m CayleyAdapter) Connect() {

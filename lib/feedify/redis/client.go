@@ -3,15 +3,15 @@ package redis
 import (
 	"errors"
 
-	"github.com/fzzy/radix/redis"
 	"github.com/fzzy/radix/extra/pubsub"
+	"github.com/fzzy/radix/redis"
 
 	"github.com/feedlabs/feedify/lib/feedify/config"
 )
 
 type RedisClient struct {
-	host string
-	port string
+	host     string
+	port     string
 	protocol string
 }
 

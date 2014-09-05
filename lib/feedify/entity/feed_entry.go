@@ -1,9 +1,9 @@
 package entity
 
 import (
-	"time"
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/feedlabs/feedify/lib/feedify/service"
 )

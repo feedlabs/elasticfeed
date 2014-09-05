@@ -24,8 +24,8 @@ func (this *DefaultController) Get() {
 func GetResponseFormat(input *context.BeegoInput) string {
 	format := "json"
 	parts := strings.Split(input.Uri(), ".")
-	if (len(parts) > 1) {
-		format = parts[len(parts) - 1]
+	if len(parts) > 1 {
+		format = parts[len(parts)-1]
 	}
 	return format
 }
