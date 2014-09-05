@@ -3,7 +3,7 @@ feedify
 
 what should be done
 -------------------
-![structure](https://cloud.githubusercontent.com/assets/1843523/3927887/bb8c4260-2401-11e4-944f-3f89eeefb72f.png)
+![structure](https://cloud.githubusercontent.com/assets/1843523/4164978/36a80e50-34fd-11e4-8620-fa8b30d37d0a.png)
 
 
 #### Development
