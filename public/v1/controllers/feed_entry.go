@@ -3,13 +3,12 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/astaxie/beego"
-
+	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/public/v1/resources"
 )
 
 type FeedEntryController struct {
-	beego.Controller
+	feedify.Controller
 }
 
 func (this *FeedEntryController) Post() {
