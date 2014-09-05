@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/feedlabs/feedify/lib/api/controllers"
 	"github.com/astaxie/beego"
+	"github.com/feedlabs/feedify/lib/api/controllers"
 )
 
 func init() {

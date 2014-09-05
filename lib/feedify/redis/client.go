@@ -2,8 +2,10 @@ package redis
 
 import (
 	"errors"
+
 	"github.com/fzzy/radix/redis"
 	"github.com/fzzy/radix/extra/pubsub"
+
 	"github.com/feedlabs/feedify/lib/feedify/config"
 )
 

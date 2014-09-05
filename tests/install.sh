@@ -24,4 +24,12 @@ go get github.com/fzzy/radix/redis
 go get github.com/barakmich/glog
 
 # basic/digest authorisation
-# https://github.com/abbot/go-http-auth
+# go get github.com/abbot/go-http-auth
+
+# neo4j graph database client
+# go get github.com/jmcvetta/neoism
+
+# javascript interpreter: scenario-engine ?
+# go get github.com/robertkrimen/otto
+
+# https://www.restytesty.com
