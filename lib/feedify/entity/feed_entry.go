@@ -5,22 +5,25 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/feedlabs/feedify/lib/feedify/stream"
+	"github.com/feedlabs/feedify/lib/feedify/service"
 )
 
 var (
-	message *stream.StreamMessage
+	stream *service.StreamService
 )
 
 func init() {
-	message, _ = stream.NewStreamMessage()
+	stream, _ = service.NewStreamService()
+	if stream == nil {
+		panic(errors.New("Cannot create stream service"))
+	}
 }
 
 func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
 	feedEntry.Id = strconv.FormatInt(time.Now().UnixNano(), 10)
 	Feeds[FeedId].Entries[feedEntry.Id] = &feedEntry
 
-	message.Publish(feedEntry.Data)
+	stream.Message.Publish(feedEntry.Data)
 
 	return feedEntry.Id
 }

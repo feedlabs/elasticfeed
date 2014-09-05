@@ -2,18 +2,15 @@ package controllers
 
 import (
 	"strings"
-	"github.com/feedlabs/feedify/lib/feedify/db/adapter"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+
+	"github.com/feedlabs/feedify/lib/feedify/service"
 )
 
 type ResponseInfo struct {
 }
-
-var mongo *adapter.Mongo
-var neo4j *adapter.Neo4j
-var memcache *adapter.Memcache
-var cayley *adapter.Cayley
 
 type DefaultController struct {
 	beego.Controller
@@ -38,15 +35,9 @@ func GetRequestParam(input *context.BeegoInput, param string) string {
 }
 
 func init() {
-	mongo = adapter.NewMongo()
-	mongo.Connect()
-
-	neo4j = adapter.NewNeo4j()
+	neo4j := service.NewNeo4j()
 	neo4j.Connect()
 
-	memcache = adapter.NewMemcache()
+	memcache := service.NewMemcache()
 	memcache.Connect()
-
-	cayley = adapter.NewCayley()
-	cayley.Connect()
 }
