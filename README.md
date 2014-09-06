@@ -17,4 +17,4 @@ ln -s $(pwd) $GOPATH/src/github.com/feedlabs/api
 `go run api.go`
 
 #### Dependencies
-* `go get github.com/feedlabs/feedify`
+* `go get github.com/feedlabs/feedify` [repo](https://github.com/feedlabs/feedify)
