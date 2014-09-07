@@ -12,12 +12,12 @@ FEEDLABS_API_PATH=$FEEDLABS_PACKAGE_DIR/api
 
 if [ ! -e $FEEDLABS_FEEDIFY_PATH ]; then
   mkdir -p $FEEDLABS_PACKAGE_DIR
-  ln -s $SOURCE_DIR/.. $FEEDLABS_FEEDIFY_PATH
+  ln -s $SOURCE_DIR/../feedify $FEEDLABS_FEEDIFY_PATH
 fi
 
-if [ ! -e FEEDLABS_API_PATH ]; then
+if [ ! -e $FEEDLABS_API_PATH ]; then
   mkdir -p $FEEDLABS_PACKAGE_DIR
-  ln -s $SOURCE_DIR/.. FEEDLABS_API_PATH
+  ln -s $SOURCE_DIR $FEEDLABS_API_PATH
 fi
 
 # install dependencies
