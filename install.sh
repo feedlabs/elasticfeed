@@ -34,3 +34,6 @@ go get github.com/jmcvetta/neoism
 
 # javascript interpreter: scenario-engine ?
 go get github.com/robertkrimen/otto
+
+# memcache
+go get github.com/bradfitz/gomemcache/memcache

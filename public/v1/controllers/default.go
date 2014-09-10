@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"fmt"
+
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/feedify/service"
 )
@@ -29,4 +31,7 @@ func init() {
 
 	memcache := service.NewCache()
 	memcache.Connect()
+	memcache.Set("feed", "hello from memcache feed")
+	memcache.Set("api", "hello from memcache api")
+	fmt.Println(memcache.GetMulti([]string{"feed", "api"}))
 }
