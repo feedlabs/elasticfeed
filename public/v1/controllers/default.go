@@ -20,7 +20,12 @@ func (this *DefaultController) Get() {
 func init() {
 	graph, _ := service.NewGraph()
 	graph.Connect()
-	graph.Query("myquery")
+	graph.Query(`
+				START n=node(*)
+				MATCH (n)-[r:outranks]->(m)
+				WHERE n.shirt = {color}
+				RETURN n.name, type(r), m.name
+			`)
 
 	memcache := service.NewCache()
 	memcache.Connect()
