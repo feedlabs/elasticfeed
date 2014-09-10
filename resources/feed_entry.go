@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	stream, _ = service.NewStreamService()
+	stream, _ = service.NewStream()
 	if stream == nil {
 		panic(errors.New("Cannot create stream service"))
 	}

@@ -18,9 +18,10 @@ func (this *DefaultController) Get() {
 }
 
 func init() {
-	neo4j := service.NewNeo4j()
-	neo4j.Connect()
+	graph, _ := service.NewGraph()
+	graph.Connect()
+	graph.Query("myquery")
 
-	memcache := service.NewMemcache()
+	memcache := service.NewCache()
 	memcache.Connect()
 }
