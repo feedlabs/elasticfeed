@@ -4,19 +4,22 @@ import (
 	"errors"
 	"strconv"
 	"time"
+
+	"github.com/feedlabs/feedify/graph/entity"
 )
 
 func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
 	feedEntry.Id = strconv.FormatInt(time.Now().UnixNano(), 10)
 	Feeds[FeedId].Entries[feedEntry.Id] = &feedEntry
 
-	stream.Message.Publish(feedEntry.Data)
+	message.Publish(feedEntry.Data)
 
 	return feedEntry.Id
 }
 
 func GetFeedEntry(FeedEntryId string, FeedId string) (feedEntry *FeedEntry, err error) {
-	node := graph.Storage.Node(1)
+	var node *entity.GraphNode
+	node = storage.Node(1)
 	node.GetRelation(1)
 
 	if v, ok := Feeds[FeedId].Entries[FeedEntryId]; ok {
