@@ -4,20 +4,7 @@ import (
 	"errors"
 	"strconv"
 	"time"
-
-	"github.com/feedlabs/feedify/service"
 )
-
-var (
-	stream *service.StreamService
-)
-
-func init() {
-	stream, _ = service.NewStream()
-	if stream == nil {
-		panic(errors.New("Cannot create stream service"))
-	}
-}
 
 func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
 	feedEntry.Id = strconv.FormatInt(time.Now().UnixNano(), 10)
@@ -29,6 +16,9 @@ func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
 }
 
 func GetFeedEntry(FeedEntryId string, FeedId string) (feedEntry *FeedEntry, err error) {
+	node := graph.Storage.Node(1)
+	node.GetRelation(1)
+
 	if v, ok := Feeds[FeedId].Entries[FeedEntryId]; ok {
 		return v, nil
 	}

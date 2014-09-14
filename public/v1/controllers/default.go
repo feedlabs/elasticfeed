@@ -21,8 +21,8 @@ func (this *DefaultController) Get() {
 
 func init() {
 	graph, _ := service.NewGraph()
-	graph.Connect()
-	graph.Query(`
+	graph.Storage.Connect()
+	graph.Storage.Query(`
 				START n=node(*)
 				MATCH (n)-[r:outranks]->(m)
 				WHERE n.shirt = {color}
