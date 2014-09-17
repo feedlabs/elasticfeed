@@ -17,6 +17,11 @@ curl -XPOST -H "content-type:application/json" -d '{"data":"new feed entry"}' fe
   "id": "1409731990598877748"
 }
 
+curl -XPOST -H "content-type:application/json" -d '{"from-source-id": <int>, "data":"new feed entry"}' feed.dev:10111/v1/feed/1409731977215584330/entry
+{
+  "id": "1409731990598877748"
+}
+
 curl -XPUT -H "content-type:application/json" -d '{"data":"updated new feed page"}' feed.dev:10111/v1/feed/1409731977215584330
 {
   "result": "update success",
