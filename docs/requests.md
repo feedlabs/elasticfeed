@@ -7,7 +7,7 @@ API requests
 curl feed.dev:10111/v1/feed/
 {}
 
-curl -XPOST -H "content-type:application/json" -d '{"data":"new feed page"}' feed.dev:10111/v1/feed
+curl -XPOST -H "content-type:application/json" -d '{"id": <int>, "tags": [], "data":">new feed page"}' feed.dev:10111/v1/feed
 {
   "id": "1409731977215584330"
 }
