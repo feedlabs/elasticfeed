@@ -18,6 +18,7 @@ func (this *FeedController) Post() {
 	json.Unmarshal(data, &ob)
 
 	feedid := resources.AddFeed(ob)
+
 	this.Data["json"] = map[string]string{"id": feedid}
 	this.ServeJson()
 }
@@ -26,8 +27,9 @@ func (this *FeedController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	if feedId != "" {
 		ob, err := resources.GetFeed(feedId)
+
 		if err != nil {
-			this.Data["json"] = err
+			this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 		} else {
 			this.Data["json"] = ob
 		}
@@ -56,8 +58,13 @@ func (this *FeedController) Put() {
 
 func (this *FeedController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
-	resources.DeleteFeed(feedId)
+	err := resources.DeleteFeed(feedId)
 
-	this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
+	result := "delete success"
+	if err != nil {
+		result = err.Error()
+	}
+
+	this.Data["json"] = map[string]string{"result": result, "status": "ok"}
 	this.ServeJson()
 }

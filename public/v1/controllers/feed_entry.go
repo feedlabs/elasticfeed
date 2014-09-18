@@ -18,8 +18,8 @@ func (this *FeedEntryController) Post() {
 	json.Unmarshal(data, &ob)
 
 	feedId := this.Ctx.Input.Params[":feedId"]
-
 	id := resources.AddFeedEntry(ob, feedId)
+
 	this.Data["json"] = map[string]string{"id": id}
 	this.ServeJson()
 }
@@ -31,7 +31,7 @@ func (this *FeedEntryController) Get() {
 	if feedId != "" && feedEntryId != "" {
 		ob, err := resources.GetFeedEntry(feedEntryId, feedId)
 		if err != nil {
-			this.Data["json"] = err
+			this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 		} else {
 			this.Data["json"] = ob
 		}

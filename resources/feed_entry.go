@@ -4,8 +4,6 @@ import (
 	"errors"
 	"strconv"
 	"time"
-
-	"github.com/feedlabs/feedify/graph/entity"
 )
 
 func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
@@ -18,10 +16,6 @@ func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
 }
 
 func GetFeedEntry(FeedEntryId string, FeedId string) (feedEntry *FeedEntry, err error) {
-	var node *entity.GraphNode
-	node = storage.Node(1)
-	node.GetRelation(1)
-
 	if v, ok := Feeds[FeedId].Entries[FeedEntryId]; ok {
 		return v, nil
 	}
