@@ -31,15 +31,15 @@ func SetGlobalResponseHeader() {
 
 func init() {
 	SetGlobalResponseHeader()
-
 	graph, _ := service.NewGraph()
 	graph.Storage.Connect()
-	graph.Storage.Query(`
+	query := graph.Storage.Query(`
 				START n=node(*)
-				MATCH (n)-[r:outranks]->(m)
-				WHERE n.shirt = {color}
-				RETURN n.name, type(r), m.name
+				WHERE n:feed
+				RETURN n
 			`)
+
+	fmt.Println(query.Result)
 
 	memcache := service.NewCache()
 	memcache.Connect()
