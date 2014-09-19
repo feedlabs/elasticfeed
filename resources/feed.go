@@ -7,18 +7,23 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
+const RESOURCE_FEED_LABEL = "feed"
+
 func init() {
 	Feeds = make(map[string]*Feed)
 }
 
-func AddFeed(feed Feed) (id string) {
+func AddFeed(feed Feed) (id string, err error) {
 	properties := graph.Props{"data": feed.Data}
-	label := "feed"
-	node, _ := storage.NewNode(properties, label)
+	_feed, err := storage.NewNode(properties, RESOURCE_FEED_LABEL)
 
-	feed.Id = strconv.Itoa(node.Id)
+	if err != nil {
+		return "0", err
+	}
 
-	return feed.Id
+	feed.Id = strconv.Itoa(_feed.Id)
+
+	return feed.Id, nil
 }
 
 func GetFeed(id string) (feed *Feed, err error) {
@@ -29,30 +34,33 @@ func GetFeed(id string) (feed *Feed, err error) {
 		return nil, err
 	}
 
-	if node != nil {
+	if node != nil && contains(node.Labels, RESOURCE_FEED_LABEL) {
 		data := node.Data["data"].(string)
-		return &Feed{strconv.Itoa(node.Id), data, nil}, nil
+		rels, _ := storage.RelationshipsNode(node.Id, "contains")
+		return &Feed{strconv.Itoa(node.Id), data, len(rels)}, nil
 	}
 
-	return nil, errors.New("Id not exist")
+	return nil, errors.New("FeedId not exist")
 }
 
-func GetFeedList() map[string]*Feed {
-	nodes, err := storage.FindNodesByLabel("feed")
+func GetFeedList() []*Feed {
+	nodes, err := storage.FindNodesByLabel(RESOURCE_FEED_LABEL)
 	if err != nil {
 		nodes = nil
 	}
 
-	Feeds = make(map[string]*Feed)
+	var feeds []*Feed
 
 	for _, node := range nodes {
 		data := node.Data["data"].(string)
 		id := strconv.Itoa(node.Id)
-		Feeds[id] = &Feed{id , data, nil}
-		Feeds[id].Entries = make(map[string]*FeedEntry)
+		rels, _ := storage.RelationshipsNode(node.Id, "contains")
+
+		feed := &Feed{id , data, len(rels)}
+		feeds = append(feeds, feed)
 	}
 
-	return Feeds
+	return feeds
 }
 
 func UpdateFeed(id string, data string) (err error) {

@@ -17,9 +17,14 @@ func (this *FeedController) Post() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	feedid := resources.AddFeed(ob)
+	feedid, err := resources.AddFeed(ob)
 
-	this.Data["json"] = map[string]string{"id": feedid}
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": feedid}
+	}
+
 	this.ServeJson()
 }
 
