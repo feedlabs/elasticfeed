@@ -77,7 +77,7 @@ func UpdateFeedEntry(FeedEntryId string, FeedId string, data string) (err error)
 
 func DeleteFeedEntry(FeedEntryId string, FeedId string) {
 
-	_data := BODY_HEADER + `"Id": "` + FeedEntryId + `", "Action": "delete"` + BODY_BOTTOM
+	_data := BODY_HEADER + `"Id": "` + FeedEntryId + `", "Action": "remove"` + BODY_BOTTOM
 	message.Publish(_data)
 
 	delete(Feeds[FeedId].Entries, FeedEntryId)
