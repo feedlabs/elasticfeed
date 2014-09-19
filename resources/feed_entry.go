@@ -46,7 +46,7 @@ func AddFeedEntry(feedEntry FeedEntry, FeedId string) (FeedEntryId string) {
 	feedEntry.Id = strconv.FormatInt(time.Now().UnixNano(), 10)
 	Feeds[FeedId].Entries[feedEntry.Id] = &feedEntry
 
-	_data := BODY_HEADER + `"Id": "` + feedEntry.Id + `", "Action": "add", "Tag": {}, "Data": "` + feedEntry.Data + `"` + BODY_BOTTOM
+	_data := BODY_HEADER + `"Id": "` + feedEntry.Id + `", "Action": "add", "Tag": {}, "Data": ` + strconv.Quote(feedEntry.Data) + BODY_BOTTOM
 	message.Publish(_data)
 
 	return feedEntry.Id
@@ -67,7 +67,7 @@ func UpdateFeedEntry(FeedEntryId string, FeedId string, data string) (err error)
 	if v, ok := Feeds[FeedId].Entries[FeedEntryId]; ok {
 		v.Data = data
 
-		_data := BODY_HEADER + `"Id": "` + FeedEntryId + `", "Action": "update", "Tag": {}, "Data": "` + data + `"` + BODY_BOTTOM
+		_data := BODY_HEADER + `"Id": "` + FeedEntryId + `", "Action": "update", "Tag": {}, "Data": ` + strconv.Quote(data) + BODY_BOTTOM
 		message.Publish(_data)
 
 		return nil
