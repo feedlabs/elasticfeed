@@ -139,9 +139,15 @@ func DeleteFeedEntry(id string, FeedId string) (error) {
 		return err
 	}
 
+	_id, _ := strconv.Atoi(entry.Id)
+	_rels, _ := storage.RelationshipsNode(_id, "contains")
+
+	for _, rel := range _rels {
+		storage.DeleteRelation(rel.Id)
+	}
+
 	_data := BODY_HEADER + `"Id": "` + entry.Id + `", "Action": "remove"` + BODY_BOTTOM
 	message.Publish(_data)
 
-	_id, _ := strconv.Atoi(id)
 	return storage.DeleteNode(_id)
 }

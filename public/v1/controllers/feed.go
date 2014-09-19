@@ -65,11 +65,11 @@ func (this *FeedController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	err := resources.DeleteFeed(feedId)
 
-	result := "delete success"
 	if err != nil {
-		result = err.Error()
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
 	}
 
-	this.Data["json"] = map[string]string{"result": result, "status": "ok"}
 	this.ServeJson()
 }
