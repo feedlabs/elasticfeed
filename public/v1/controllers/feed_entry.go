@@ -40,6 +40,7 @@ func (this *FeedEntryController) Get() {
 		this.Data["json"] = obs
 	}
 
+	this.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	this.ServeJson()
 }
 
