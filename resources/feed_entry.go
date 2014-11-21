@@ -9,6 +9,21 @@ import (
 
 const RESOURCE_ENTRY_LABEL = "entry"
 
+// user_feed_token = channel_id + feed_id => e.g aabbccddee + aabbcc
+// for private feeds there will be 1 websocket connection
+// for public company feeds will be 1 websocket connection
+// basically for each channel is 1 websocket connection
+// private and public channel will stream through multiple feed-pages events
+//
+// channel => channel_id
+// event => 'feed:' + feed_id
+// data => [{				// action object
+//		id => string		// entryId
+//		tags => strings...	// array of strings
+//		action => string	// add/delete/update
+//		data => string		// entry data as content; string e.g. json.stringify
+// }, {}, {}]
+
 const BODY_HEADER = `{
   "channel": "iO5wshd5fFE5YXxJ/hfyKQ==:17",
   "event": "CM_Action_Abstract:SEND:31",
