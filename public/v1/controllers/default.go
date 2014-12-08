@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"fmt"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 
@@ -33,17 +31,4 @@ func init() {
 	SetGlobalResponseHeader()
 	graph, _ := service.NewGraph()
 	graph.Storage.Connect()
-	query := graph.Storage.Query(`
-				START n=node(*)
-				WHERE n:feed
-				RETURN n
-			`)
-
-	fmt.Println(query.Result)
-
-	memcache := service.NewCache()
-	memcache.Connect()
-	memcache.Set("feed", "hello from memcache feed")
-	memcache.Set("api", "hello from memcache api")
-	fmt.Println(memcache.GetMulti([]string{"feed", "api"}))
 }
