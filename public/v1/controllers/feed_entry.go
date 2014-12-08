@@ -18,9 +18,14 @@ func (this *FeedEntryController) Post() {
 	json.Unmarshal(data, &ob)
 
 	feedId := this.Ctx.Input.Params[":feedId"]
+	id, err := resources.AddFeedEntry(ob, feedId)
 
-	id := resources.AddFeedEntry(ob, feedId)
-	this.Data["json"] = map[string]string{"id": id}
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": id}
+	}
+
 	this.ServeJson()
 }
 
@@ -31,13 +36,18 @@ func (this *FeedEntryController) Get() {
 	if feedId != "" && feedEntryId != "" {
 		ob, err := resources.GetFeedEntry(feedEntryId, feedId)
 		if err != nil {
-			this.Data["json"] = err
+			this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 		} else {
 			this.Data["json"] = ob
 		}
 	} else {
-		obs := resources.GetFeedEntryList(feedId)
+		obs, err := resources.GetFeedEntryList(feedId)
 		this.Data["json"] = obs
+		if err != nil {
+			this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		} else {
+			this.Data["json"] = obs
+		}
 	}
 
 	this.ServeJson()
@@ -65,8 +75,13 @@ func (this *FeedEntryController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	resources.DeleteFeedEntry(feedEntryId, feedId)
+	err := resources.DeleteFeedEntry(feedEntryId, feedId)
 
-	this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
+	}
+
 	this.ServeJson()
 }

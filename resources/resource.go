@@ -18,12 +18,13 @@ var (
 type Feed struct {
 	Id      string
 	Data    string
-	Entries map[string]*FeedEntry
+	Entries int
 }
 
 type FeedEntry struct {
-	Id   string
-	Data string
+	Id   	string
+	FeedId	string
+	Data 	string
 }
 
 func init() {
@@ -38,4 +39,9 @@ func init() {
 		panic(errors.New("Cannot create graph service"))
 	}
 	storage = graph_service.Storage
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s { if a == e { return true } }
+	return false
 }
