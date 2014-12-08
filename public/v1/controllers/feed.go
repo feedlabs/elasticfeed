@@ -11,6 +11,38 @@ type FeedController struct {
 	feedify.Controller
 }
 
+type FeedGETRequest struct {
+	// as said in api-docu
+}
+
+type FeedPOSTRequest struct {
+	// as said in api-docu
+}
+
+type FeedPUTRequest struct {
+	// as said in api-docu
+}
+
+type FeedDELETERequest struct {
+	// as said in api-docu
+}
+
+type FeedGETResponse struct {
+	// as said in api-docu
+}
+
+type FeedPOSTResponse struct {
+	// as said in api-docu
+}
+
+type FeedPUTResponse struct {
+	// as said in api-docu
+}
+
+type FeedDELETEResponse struct {
+	// as said in api-docu
+}
+
 func (this *FeedController) Post() {
 	var ob resources.Feed
 
