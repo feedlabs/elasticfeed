@@ -24,7 +24,7 @@ ln -s $(pwd) $GOPATH/src/github.com/feedlabs/api
 ##### Install
 
 ```
-npm install apidoc -g
+$ npm install apidoc -g
 ```
 
 ##### Generate
@@ -34,5 +34,6 @@ $ apidoc -i public/ -o docs/api
 ```
 
 ##### View
-
-open `docs/api/index.html`
+```
+$ open `docs/api/index.html`
+```
