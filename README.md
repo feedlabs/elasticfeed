@@ -30,7 +30,7 @@ npm install apidoc -g
 #### Create docu
 
 ```
-$ apidoc -i public/ -o doc
+$ apidoc -i public/ -o docs/api
 ```
 
 #### View docu
