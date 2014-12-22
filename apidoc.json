@@ -1,0 +1,15 @@
+{
+  "name": "API Documentation",
+  "version": "1.0.0",
+  "description": "Write a short description",
+  "title": "Feedify API Documentation",
+  "url" : "https://api.feedlabs.com/v1/",
+  "header": {
+    "title": "Principles",
+    "filename": "docs/apidoc-header.md"
+  },
+  "footer": {
+    "title": "Appendix",
+    "filename": "docs/apidoc-footer.md"
+  }
+}
