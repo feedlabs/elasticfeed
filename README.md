@@ -35,4 +35,4 @@ $ apidoc -i public/ -o docs/api
 
 ##### View
 
-open `/doc/index.html`
+open `docs/api/index.html`
