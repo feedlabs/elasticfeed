@@ -35,5 +35,5 @@ $ apidoc -i public/ -o docs/api
 
 ##### View
 ```
-$ open `docs/api/index.html`
+$ open docs/api/index.html
 ```
