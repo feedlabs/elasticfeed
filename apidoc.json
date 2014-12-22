@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Write a short description",
   "title": "Feedify API Documentation",
-  "url" : "https://api.feedlabs.com/v1/",
+  "url": "https://api.feedlabs.com/v1/",
   "header": {
     "title": "Principles",
     "filename": "docs/apidoc-header.md"
@@ -11,5 +11,40 @@
   "footer": {
     "title": "Appendix",
     "filename": "docs/apidoc-footer.md"
-  }
+  },
+  "order": [
+    "Application",
+      "GetApplicationList",
+      "GetApplication",
+      "PostApplication",
+      "PutApplication",
+      "DeleteApplication",
+    "Feed",
+      "GetFeedList",
+      "GetFeed",
+      "PostFeed",
+      "PutFeed",
+      "DeleteFeed",
+    "Entry",
+      "GetEntry",
+      "PostEntry",
+      "PutEntry",
+      "DeleteEntry",
+      "GetEntryListFeed",
+      "GetEntryFeed",
+      "PostEntryFeed",
+      "PostEntryFeedAdd",
+      "RemoveEntry",
+    "Admin",
+      "GetAdminList",
+      "GetAdmin",
+      "PostAdmin",
+      "PutAdmin",
+      "DeleteAdmin",
+    "Token",
+      "GetTokenList",
+      "GetToken",
+      "PostToken",
+      "DeleteToken"
+  ]
 }
