@@ -18,3 +18,21 @@ ln -s $(pwd) $GOPATH/src/github.com/feedlabs/api
 
 #### Dependencies
 * `go get github.com/feedlabs/feedify` [repo](https://github.com/feedlabs/feedify)
+
+### create Doc
+
+#### Install
+
+```
+npm install apidoc -g
+```
+
+#### Create docu
+
+```
+$ apidoc -i public/ -o doc
+```
+
+#### View docu
+
+open `/doc/index.html`
