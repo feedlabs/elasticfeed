@@ -5,6 +5,7 @@ import (
 
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/public/v1/template/feed_entry"
 )
 
 type FeedEntryController struct {
@@ -29,25 +30,31 @@ func (this *FeedEntryController) Post() {
 	this.ServeJson()
 }
 
+func (this *FeedEntryController) GetList() {
+	feed_entry.RequestGetList(this.GetInput())
+
+	feedId := this.Ctx.Input.Params[":feedId"]
+	obs, err := resources.GetFeedEntryList(feedId)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
+
+	feed_entry.ResponseGetList()
+	this.ServeJson()
+}
+
 func (this *FeedEntryController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	if feedId != "" && feedEntryId != "" {
-		ob, err := resources.GetFeedEntry(feedEntryId, feedId)
-		if err != nil {
-			this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
-		} else {
-			this.Data["json"] = ob
-		}
+	ob, err := resources.GetFeedEntry(feedEntryId, feedId)
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
-		obs, err := resources.GetFeedEntryList(feedId)
-		this.Data["json"] = obs
-		if err != nil {
-			this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
-		} else {
-			this.Data["json"] = obs
-		}
+		this.Data["json"] = ob
 	}
 
 	this.ServeJson()

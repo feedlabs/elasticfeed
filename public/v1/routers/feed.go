@@ -6,9 +6,9 @@ import (
 )
 
 func init() {
-	feedify.Router("/v1/feed", &controllers.FeedController{}, "get:Get;post:Post")
+	feedify.Router("/v1/feed", &controllers.FeedController{}, "get:GetList;post:Post")
 	feedify.Router("/v1/feed/:feedId:int", &controllers.FeedController{}, "get:Get;delete:Delete;put:Put")
 
-	feedify.Router("/v1/feed/:feedId:int/entry", &controllers.FeedEntryController{}, "get:Get;post:Post")
+	feedify.Router("/v1/feed/:feedId:int/entry", &controllers.FeedEntryController{}, "get:GetList;post:Post")
 	feedify.Router("/v1/feed/:feedId:int/entry/:feedEntryId:int", &controllers.FeedEntryController{}, "get:Get;delete:Delete;put:Put")
 }
