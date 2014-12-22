@@ -13,17 +13,24 @@ func init() {
 	Feeds = make(map[string]*Feed)
 }
 
-func AddFeed(feed Feed) (id string, err error) {
-	properties := graph.Props{"data": feed.Data}
-	_feed, err := storage.NewNode(properties, RESOURCE_FEED_LABEL)
-
+func GetFeedList() []*Feed {
+	nodes, err := storage.FindNodesByLabel(RESOURCE_FEED_LABEL)
 	if err != nil {
-		return "0", err
+		nodes = nil
 	}
 
-	feed.Id = strconv.Itoa(_feed.Id)
+	var feeds []*Feed
 
-	return feed.Id, nil
+	for _, node := range nodes {
+		data := node.Data["data"].(string)
+		id := strconv.Itoa(node.Id)
+		rels, _ := storage.RelationshipsNode(node.Id, "contains")
+
+		feed := &Feed{id , data, len(rels)}
+		feeds = append(feeds, feed)
+	}
+
+	return feeds
 }
 
 func GetFeed(id string) (feed *Feed, err error) {
@@ -43,24 +50,17 @@ func GetFeed(id string) (feed *Feed, err error) {
 	return nil, errors.New("FeedId not exist")
 }
 
-func GetFeedList() []*Feed {
-	nodes, err := storage.FindNodesByLabel(RESOURCE_FEED_LABEL)
+func AddFeed(feed Feed) (id string, err error) {
+	properties := graph.Props{"data": feed.Data}
+	_feed, err := storage.NewNode(properties, RESOURCE_FEED_LABEL)
+
 	if err != nil {
-		nodes = nil
+		return "0", err
 	}
 
-	var feeds []*Feed
+	feed.Id = strconv.Itoa(_feed.Id)
 
-	for _, node := range nodes {
-		data := node.Data["data"].(string)
-		id := strconv.Itoa(node.Id)
-		rels, _ := storage.RelationshipsNode(node.Id, "contains")
-
-		feed := &Feed{id , data, len(rels)}
-		feeds = append(feeds, feed)
-	}
-
-	return feeds
+	return feed.Id, nil
 }
 
 func UpdateFeed(id string, data string) (err error) {

@@ -21,7 +21,7 @@ type Feed struct {
 	Entries int
 }
 
-type FeedEntry struct {
+type Entry struct {
 	Id   	string
 	FeedId	string
 	Data 	string
