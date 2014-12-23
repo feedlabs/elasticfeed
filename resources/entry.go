@@ -7,8 +7,6 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
-const RESOURCE_ENTRY_LABEL = "entry"
-
 // user_feed_token = channel_id + feed_id => e.g aabbccddee + aabbcc
 // for private feeds there will be 1 websocket connection
 // for public company feeds will be 1 websocket connection

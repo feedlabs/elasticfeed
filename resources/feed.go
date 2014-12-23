@@ -7,8 +7,6 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
-const RESOURCE_FEED_LABEL = "feed"
-
 func init() {
 	Feeds = make(map[string]*Feed)
 }
