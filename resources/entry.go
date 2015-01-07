@@ -58,8 +58,8 @@ const BODY_BOTTOM = `
   }
 }`
 
-func GetEntryList(FeedId string) (feedEntries []*Entry, err error) {
-	feed, err := GetFeed(FeedId)
+func GetEntryList(FeedId string, ApplicationId string) (feedEntries []*Entry, err error) {
+	feed, err := GetFeed(FeedId, ApplicationId)
 
 	if err != nil {
 		return nil, err
@@ -79,8 +79,8 @@ func GetEntryList(FeedId string) (feedEntries []*Entry, err error) {
 	return entries, nil
 }
 
-func GetEntry(id string, FeedId string) (feedEntry *Entry, err error) {
-	feed, err := GetFeed(FeedId)
+func GetEntry(id string, FeedId string, ApplicationId string) (feedEntry *Entry, err error) {
+	feed, err := GetFeed(FeedId, ApplicationId)
 	if err != nil {
 		return nil, err
 	}
@@ -100,9 +100,9 @@ func GetEntry(id string, FeedId string) (feedEntry *Entry, err error) {
 	return nil, errors.New("EntryId not exist")
 }
 
-func AddEntry(feedEntry Entry, FeedId string) (EntryId string, err error) {
+func AddEntry(feedEntry Entry, FeedId string, ApplicationId string) (EntryId string, err error) {
 	// get feed
-	feed, err := GetFeed(FeedId)
+	feed, err := GetFeed(FeedId, ApplicationId)
 	if err != nil {
 		return "0", err
 	}
@@ -131,8 +131,8 @@ func AddEntry(feedEntry Entry, FeedId string) (EntryId string, err error) {
 	return feedEntry.Id, nil
 }
 
-func UpdateEntry(id string, FeedId string, data string) (err error) {
-	entry, err := GetEntry(id, FeedId)
+func UpdateEntry(id string, FeedId string, ApplicationId string, data string) (err error) {
+	entry, err := GetEntry(id, FeedId, ApplicationId)
 
 	if err != nil {
 		return err
@@ -145,8 +145,8 @@ func UpdateEntry(id string, FeedId string, data string) (err error) {
 	return storage.SetPropertyNode(_id, "data", data)
 }
 
-func DeleteEntry(id string, FeedId string) (error) {
-	entry, err := GetEntry(id, FeedId)
+func DeleteEntry(id string, FeedId string, ApplicationId string) (error) {
+	entry, err := GetEntry(id, FeedId, ApplicationId)
 
 	if err != nil {
 		return err
