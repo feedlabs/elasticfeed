@@ -7,8 +7,16 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
-func init() {
-	Applications = make(map[string]*Application)
+func (this *Application) AddFeed(feed Feed) (id string, err error) {
+	return AddFeed(feed, this.Id)
+}
+
+func (this *Application) GetFeed(id string) (feed *Feed, err error) {
+	return GetFeed(id, this.Id)
+}
+
+func (this *Application) GetFeedList() ([]*Feed, error) {
+	return GetFeedList(this.Id)
 }
 
 func GetApplicationList() []*Application {
@@ -69,4 +77,8 @@ func UpdateApplication(id string, data string) (err error) {
 func DeleteApplication(id string) (error) {
 	_id, _ := strconv.Atoi(id)
 	return storage.DeleteNode(_id)
+}
+
+func init() {
+	Applications = make(map[string]*Application)
 }

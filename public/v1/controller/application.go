@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
+
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resources"
 	"github.com/feedlabs/api/public/v1/template/application"
 )
 
@@ -21,6 +24,10 @@ type ApplicationController struct {
  */
 func (this *ApplicationController) GetList() {
 	application.RequestGetList(this.GetInput())
+
+	obs := resources.GetApplicationList()
+	this.Data["json"] = obs
+
 	application.ResponseGetList()
 	this.ServeJson()
 }
@@ -37,6 +44,16 @@ func (this *ApplicationController) GetList() {
  */
 func (this *ApplicationController) Get() {
 	application.RequestGet(this.GetInput())
+
+	appId := this.Ctx.Input.Params[":applicationId"]
+	ob, err := resources.GetApplication(appId)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = ob
+	}
+
 	application.ResponseGet()
 	this.ServeJson()
 }
@@ -53,6 +70,20 @@ func (this *ApplicationController) Get() {
  */
 func (this *ApplicationController) Post() {
 	application.RequestPost(this.GetInput())
+
+	var ob resources.Application
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	appid, err := resources.AddApplication(ob)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": appid}
+	}
+
 	application.ResponsePost()
 	this.ServeJson()
 }
@@ -70,6 +101,20 @@ func (this *ApplicationController) Post() {
 
 func (this *ApplicationController) Put() {
 	application.RequestPut(this.GetInput())
+
+	appId := this.Ctx.Input.Params[":applicationId"]
+	var ob resources.Feed
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	err := resources.UpdateFeed(appId, ob.Data)
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
+	}
+
 	application.ResponsePut()
 	this.ServeJson()
 }
@@ -86,6 +131,16 @@ func (this *ApplicationController) Put() {
  */
 func (this *ApplicationController) Delete() {
 	application.RequestDelete(this.GetInput())
+
+	appId := this.Ctx.Input.Params[":applicationId"]
+	err := resources.DeleteFeed(appId)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
+	}
+
 	application.ResponseDelete()
 	this.ServeJson()
 }
