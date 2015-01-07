@@ -103,12 +103,12 @@ func (this *ApplicationController) Put() {
 	application.RequestPut(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	var ob resources.Feed
+	var ob resources.Application
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resources.UpdateFeed(appId, ob.Data)
+	err := resources.UpdateApplication(appId, ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -133,7 +133,7 @@ func (this *ApplicationController) Delete() {
 	application.RequestDelete(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	err := resources.DeleteFeed(appId)
+	err := resources.DeleteApplication(appId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
