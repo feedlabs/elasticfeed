@@ -25,8 +25,15 @@ type FeedController struct {
 func (this *FeedController) GetList() {
 	feed.RequestGetList(this.GetInput())
 
-	obs := resources.GetFeedList()
-	this.Data["json"] = obs
+	appId := this.Ctx.Input.Params[":applicationId"]
+	app, err := resources.GetApplication(appId)
+	obs, err := app.GetFeedList()
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
 
 	feed.ResponseGetList()
 	this.ServeJson()
@@ -45,8 +52,9 @@ func (this *FeedController) GetList() {
 func (this *FeedController) Get() {
 	feed.RequestGet(this.GetInput())
 
+	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	ob, err := resources.GetFeed(feedId)
+	ob, err := resources.GetFeed(feedId, appId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -69,19 +77,24 @@ func (this *FeedController) Get() {
  * @apiUse FeedPostResponse
  */
 func (this *FeedController) Post() {
+	feed.RequestPost(this.GetInput())
+
 	var ob resources.Feed
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	feedid, err := resources.AddFeed(ob)
+	appId := this.Ctx.Input.Params[":applicationId"]
+	app, err := resources.GetApplication(appId)
+	feedId, err := app.AddFeed(ob)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
-		this.Data["json"] = map[string]string{"id": feedid}
+		this.Data["json"] = map[string]string{"id": feedId}
 	}
 
+	feed.ResponsePost()
 	this.ServeJson()
 }
 
@@ -96,6 +109,8 @@ func (this *FeedController) Post() {
  * @apiUse FeedPostResponse
  */
 func (this *FeedController) Put() {
+	feed.RequestPut(this.GetInput())
+
 	feedId := this.Ctx.Input.Params[":feedId"]
 	var ob resources.Feed
 
@@ -108,6 +123,8 @@ func (this *FeedController) Put() {
 	} else {
 		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
 	}
+
+	feed.ResponsePut()
 	this.ServeJson()
 }
 
@@ -122,6 +139,8 @@ func (this *FeedController) Put() {
  * @apiUse FeedDeleteResponse
  */
 func (this *FeedController) Delete() {
+	feed.RequestDelete(this.GetInput())
+
 	feedId := this.Ctx.Input.Params[":feedId"]
 	err := resources.DeleteFeed(feedId)
 
@@ -131,5 +150,6 @@ func (this *FeedController) Delete() {
 		this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
 	}
 
+	feed.ResponseDelete()
 	this.ServeJson()
 }

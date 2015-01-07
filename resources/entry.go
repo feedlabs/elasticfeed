@@ -7,8 +7,6 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
-const RESOURCE_ENTRY_LABEL = "entry"
-
 // user_feed_token = channel_id + feed_id => e.g aabbccddee + aabbcc
 // for private feeds there will be 1 websocket connection
 // for public company feeds will be 1 websocket connection
@@ -60,8 +58,8 @@ const BODY_BOTTOM = `
   }
 }`
 
-func GetEntryList(FeedId string) (feedEntries []*Entry, err error) {
-	feed, err := GetFeed(FeedId)
+func GetEntryList(FeedId string, ApplicationId string) (feedEntries []*Entry, err error) {
+	feed, err := GetFeed(FeedId, ApplicationId)
 
 	if err != nil {
 		return nil, err
@@ -75,14 +73,16 @@ func GetEntryList(FeedId string) (feedEntries []*Entry, err error) {
 	for _, rel := range _rels {
 		data := rel.EndNode.Data["data"].(string)
 		entry := &Entry{strconv.Itoa(rel.EndNode.Id), FeedId, data}
-		entries = append(entries, entry)
+		if entry != nil && contains(rel.EndNode.Labels, RESOURCE_ENTRY_LABEL) && feed.Id == rel.EndNode.Data["feedId"].(string) {
+			entries = append(entries, entry)
+		}
 	}
 
 	return entries, nil
 }
 
-func GetEntry(id string, FeedId string) (feedEntry *Entry, err error) {
-	feed, err := GetFeed(FeedId)
+func GetEntry(id string, FeedId string, ApplicationId string) (feedEntry *Entry, err error) {
+	feed, err := GetFeed(FeedId, ApplicationId)
 	if err != nil {
 		return nil, err
 	}
@@ -99,12 +99,12 @@ func GetEntry(id string, FeedId string) (feedEntry *Entry, err error) {
 		return &Entry{strconv.Itoa(entry.Id), FeedId, data}, nil
 	}
 
-	return nil, errors.New("EntryId not exist")
+	return nil, errors.New("EntryId `"+id+"` not exist")
 }
 
-func AddEntry(feedEntry Entry, FeedId string) (EntryId string, err error) {
+func AddEntry(feedEntry Entry, FeedId string, ApplicationId string) (EntryId string, err error) {
 	// get feed
-	feed, err := GetFeed(FeedId)
+	feed, err := GetFeed(FeedId, ApplicationId)
 	if err != nil {
 		return "0", err
 	}
@@ -133,8 +133,8 @@ func AddEntry(feedEntry Entry, FeedId string) (EntryId string, err error) {
 	return feedEntry.Id, nil
 }
 
-func UpdateEntry(id string, FeedId string, data string) (err error) {
-	entry, err := GetEntry(id, FeedId)
+func UpdateEntry(id string, FeedId string, ApplicationId string, data string) (err error) {
+	entry, err := GetEntry(id, FeedId, ApplicationId)
 
 	if err != nil {
 		return err
@@ -147,8 +147,8 @@ func UpdateEntry(id string, FeedId string, data string) (err error) {
 	return storage.SetPropertyNode(_id, "data", data)
 }
 
-func DeleteEntry(id string, FeedId string) (error) {
-	entry, err := GetEntry(id, FeedId)
+func DeleteEntry(id string, FeedId string, ApplicationId string) (error) {
+	entry, err := GetEntry(id, FeedId, ApplicationId)
 
 	if err != nil {
 		return err

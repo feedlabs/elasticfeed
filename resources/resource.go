@@ -8,23 +8,65 @@ import (
 	"github.com/feedlabs/feedify/stream"
 )
 
-var (
-	Feeds map[string]*Feed
+const RESOURCE_ORG_LABEL = "org"
+const RESOURCE_ADMIN_LABEL = "admin"
+const RESOURCE_TOKEN_LABEL = "token"
+const RESOURCE_APPLICATION_LABEL = "application"
+const RESOURCE_FEED_LABEL = "feed"
+const RESOURCE_ENTRY_LABEL = "entry"
 
-	message	*stream.StreamMessage
-	storage	*graph.GraphStorage
+var (
+	Orgs       		map[string]*Org
+	Admins       	map[string]*Admin
+	Tokens       	map[string]*Token
+	Applications 	map[string]*Application
+	Feeds        	map[string]*Feed
+	Entries      	map[string]*Entry
+
+	message    *stream.StreamMessage
+	storage    *graph.GraphStorage
 )
 
+type Org struct {
+	Id           string
+	ApiKey       string
+
+	Admins       int
+	Applications int
+}
+
+type Admin struct {
+	Id               string
+	OrgId            string
+	Data             string
+
+	Tokens			int
+}
+
+type Token struct {
+	Id             string
+	AdminId        string
+	Data           string
+}
+
+type Application struct {
+	Id        string
+	Data      string
+	Feeds     int
+}
+
 type Feed struct {
-	Id      string
-	Data    string
-	Entries int
+	Id            string
+	ApplicationId string
+	Data          string
+
+	Entries       int
 }
 
 type Entry struct {
-	Id   	string
-	FeedId	string
-	Data 	string
+	Id        string
+	FeedId    string
+	Data      string
 }
 
 func init() {
