@@ -11,7 +11,7 @@ func init() {
 	Admins = make(map[string]*Admin)
 }
 
-func GetAdminList() []*Admin {
+func GetAdminList(OrgId string) []*Admin {
 	nodes, err := storage.FindNodesByLabel(RESOURCE_ADMIN_LABEL)
 	if err != nil {
 		nodes = nil
@@ -24,14 +24,14 @@ func GetAdminList() []*Admin {
 		id := strconv.Itoa(node.Id)
 		rels, _ := storage.RelationshipsNode(node.Id, "contains")
 
-		admin := &Admin{id , data, len(rels)}
+		admin := &Admin{id , OrgId, data, len(rels)}
 		admins = append(admins, admin)
 	}
 
 	return admins
 }
 
-func GetAdmin(id string) (admin *Admin, err error) {
+func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
 	_id, err := strconv.Atoi(id)
 	node, err := storage.Node(_id)
 
@@ -42,7 +42,7 @@ func GetAdmin(id string) (admin *Admin, err error) {
 	if node != nil && contains(node.Labels, RESOURCE_ADMIN_LABEL) {
 		data := node.Data["data"].(string)
 		rels, _ := storage.RelationshipsNode(node.Id, "contains")
-		return &Admin{strconv.Itoa(node.Id), data, len(rels)}, nil
+		return &Admin{strconv.Itoa(node.Id), OrgId, data, len(rels)}, nil
 	}
 
 	return nil, errors.New("AdminId not exist")

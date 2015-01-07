@@ -39,11 +39,13 @@ type Admin struct {
 	Id               string
 	OrgId            string
 	Data             string
+
+	Tokens			int
 }
 
 type Token struct {
 	Id             string
-	AdminId        int
+	AdminId        string
 	Data           string
 }
 

@@ -68,7 +68,7 @@ func (this *OrgController) Post() {
  * @apiUse OrgPutResponse
  */
 
-func (this *ApplicationController) Put() {
+func (this *OrgController) Put() {
 	org.RequestPut(this.GetInput())
 	org.ResponsePut()
 	this.ServeJson()

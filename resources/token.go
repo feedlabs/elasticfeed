@@ -11,7 +11,7 @@ func init() {
 	Tokens = make(map[string]*Token)
 }
 
-func GetTokenList() []*Token {
+func GetTokenList(AdminId string) []*Token {
 	nodes, err := storage.FindNodesByLabel(RESOURCE_TOKEN_LABEL)
 	if err != nil {
 		nodes = nil
@@ -23,14 +23,14 @@ func GetTokenList() []*Token {
 		data := node.Data["data"].(string)
 		id := strconv.Itoa(node.Id)
 
-		token := &Token{id , data}
+		token := &Token{id, AdminId, data}
 		tokens = append(tokens, token)
 	}
 
 	return tokens
 }
 
-func GetToken(id string) (token *Token, err error) {
+func GetToken(id string, AdminId string) (token *Token, err error) {
 	_id, err := strconv.Atoi(id)
 	node, err := storage.Node(_id)
 
@@ -40,7 +40,7 @@ func GetToken(id string) (token *Token, err error) {
 
 	if node != nil && contains(node.Labels, RESOURCE_TOKEN_LABEL) {
 		data := node.Data["data"].(string)
-		return &Token{strconv.Itoa(node.Id), data}, nil
+		return &Token{strconv.Itoa(node.Id), AdminId, data}, nil
 	}
 
 	return nil, errors.New("TokenId not exist")
