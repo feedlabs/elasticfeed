@@ -28,6 +28,7 @@ var (
 type Admin struct {
 	Id           string
 	Data         string
+
 	Applications int
 }
 
@@ -43,9 +44,11 @@ type Application struct {
 }
 
 type Feed struct {
-	Id      string
-	Data    string
-	Entries int
+	Id            string
+	ApplicationId string
+	Data          string
+
+	Entries       int
 }
 
 type Entry struct {
