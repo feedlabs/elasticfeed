@@ -15,20 +15,23 @@ func (this *Feed) GetEntryList() (entries []*Entry, err error) {
 	return GetEntryList(this.Id, this.ApplicationId)
 }
 
-func GetFeedList(appId string) (feedList []*Feed, err error) {
-	nodes, err := storage.FindNodesByLabel(RESOURCE_FEED_LABEL)
+func GetFeedList(ApplicationId string) (feedList []*Feed, err error) {
+	app, err := GetApplication(ApplicationId)
 	if err != nil {
-		nodes = nil
+		return nil, err
 	}
+
+	_id, _ := strconv.Atoi(app.Id)
+	_rels, _ := storage.RelationshipsNode(_id, "contains")
 
 	var feeds []*Feed
 
-	for _, node := range nodes {
-		data := node.Data["data"].(string)
-		id := strconv.Itoa(node.Id)
-		rels, _ := storage.RelationshipsNode(node.Id, "contains")
+	for _, rel := range _rels {
+		data := rel.EndNode.Data["data"].(string)
+		id := strconv.Itoa(rel.EndNode.Id)
+		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "contains")
 
-		feed := &Feed{id , appId, data, len(rels)}
+		feed := &Feed{id , ApplicationId, data, len(rels)}
 		feeds = append(feeds, feed)
 	}
 
@@ -36,6 +39,11 @@ func GetFeedList(appId string) (feedList []*Feed, err error) {
 }
 
 func GetFeed(id string, applicationId string) (feed *Feed, err error) {
+	app, err := GetApplication(applicationId)
+	if err != nil {
+		return nil, err
+	}
+
 	_id, err := strconv.Atoi(id)
 	node, err := storage.Node(_id)
 
@@ -43,13 +51,13 @@ func GetFeed(id string, applicationId string) (feed *Feed, err error) {
 		return nil, err
 	}
 
-	if node != nil && contains(node.Labels, RESOURCE_FEED_LABEL) {
+	if node != nil && contains(node.Labels, RESOURCE_FEED_LABEL) && app.Id == node.Data["applicationId"].(string) {
 		data := node.Data["data"].(string)
 		rels, _ := storage.RelationshipsNode(node.Id, "contains")
 		return &Feed{strconv.Itoa(node.Id), applicationId, data, len(rels)}, nil
 	}
 
-	return nil, errors.New("FeedId not exist")
+	return nil, errors.New("FeedId not exist for ApplicationId `"+applicationId+"`")
 }
 
 func AddFeed(feed Feed, applicationId string) (id string, err error) {

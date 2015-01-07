@@ -97,7 +97,7 @@ func GetEntry(id string, FeedId string, ApplicationId string) (feedEntry *Entry,
 		return &Entry{strconv.Itoa(entry.Id), FeedId, data}, nil
 	}
 
-	return nil, errors.New("EntryId not exist")
+	return nil, errors.New("EntryId `"+id+"` not exist")
 }
 
 func AddEntry(feedEntry Entry, FeedId string, ApplicationId string) (EntryId string, err error) {
