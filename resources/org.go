@@ -87,3 +87,41 @@ func DeleteOrg(id string) (error) {
 func init() {
 	Orgs = make(map[string]*Org)
 }
+
+// TOKEN PART
+
+func GetOrgTokenList(orgId string) (orgList []*Token, err error) {
+	return nil, nil
+}
+
+func GetOrgToken(id string, orgId string) (org *Token, err error) {
+	return nil, nil
+}
+
+func AddOrgToken(token Token, orgId string) (id string, err error) {
+	// get org
+	org, err := GetOrg(orgId)
+	if err != nil {
+		return "0", err
+	}
+
+	// add token
+	properties := graph.Props{"data": token.Data}
+	_token, err := storage.NewNode(properties, RESOURCE_TOKEN_LABEL)
+
+	if err != nil {
+		return "0", err
+	}
+
+	// create relation
+	_adminId, _ := strconv.Atoi(org.Id)
+	rel, err := storage.RelateNodes(_adminId, _token.Id, "token", nil)
+
+	if err != nil || rel.Type == "" {
+		return "0", err
+	}
+
+	token.Id = strconv.Itoa(_token.Id)
+
+	return token.Id, nil
+}

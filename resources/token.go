@@ -55,11 +55,11 @@ func GetToken(id string, AdminId string, OrgId string) (token *Token, err error)
 }
 
 func AddTokenForOrganisation(token Token, orgId string) (id string, err error) {
-	return nil, nil
+	return "0", nil
 }
 
 func AddToken(token Token, adminId string, orgId string) (id string, err error) {
-	// get org
+	// get admin
 	admin, err := GetAdmin(adminId, orgId)
 	if err != nil {
 		return "0", err

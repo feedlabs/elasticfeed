@@ -24,8 +24,8 @@ func SetGlobalResponseHeader() {
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
 }
 
-func GetMyOrgId() string{
-	return "47"
+func GetMyOrgId() string {
+	return "0"
 }
 
 func AuthenticateHTTPRequest() {
@@ -34,16 +34,6 @@ func AuthenticateHTTPRequest() {
 
 func GenerateChannelID() {
 	// should generate proper ID
-}
-
-func GenerateFeedID() {
-	// should contain channelID
-}
-
-func GenerateClientID() {
-	// Should be as base for feedID and feedChannelID
-	// clientID should allow to generate single channel (websocket connection) for multiple feed-pages
-	// if used public/private multiple feed-pages in the same time there should be up to 2 websocket connections
 }
 
 func init() {

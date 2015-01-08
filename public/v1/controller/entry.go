@@ -41,7 +41,7 @@ func (this *EntryController) GetListByFeed() {
 }
 
 /**
- * @api {get} application/:applicationId/entry/:entryId Get
+ * @api {get} application/:applicationId/entry/:entryId Get (Global)
  * @apiVersion 1.0.0
  * @apiName GetEntry
  * @apiGroup Entry
@@ -83,7 +83,7 @@ func (this *EntryController) Get() {
 }
 
 /**
- * @api {post} application/:applicationId/entry Create
+ * @api {post} application/:applicationId/entry Create (Global)
  * @apiVersion 1.0.0
  * @apiName PostEntry
  * @apiGroup Entry
@@ -149,7 +149,7 @@ func (this *EntryController) PostToFeed() {
 }
 
 /**
- * @api {put} application/:applicationId/entry/:entryId Update
+ * @api {put} application/:applicationId/entry/:entryId Update (Global)
  * @apiVersion 1.0.0
  * @apiName PutEntry
  * @apiGroup Entry
@@ -182,7 +182,7 @@ func (this *EntryController) Put() {
 }
 
 /**
- * @api {delete} application/:applicationId/entry/:entryId Delete
+ * @api {delete} application/:applicationId/entry/:entryId Delete (Global)
  * @apiVersion 1.0.0
  * @apiName DeleteEntry
  * @apiGroup Entry

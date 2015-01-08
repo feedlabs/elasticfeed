@@ -91,10 +91,23 @@ func (this *OrgController) Post() {
 
 func (this *OrgController) Put() {
 	org.RequestPut(this.GetInput())
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	var ob resources.Org
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	err := resources.UpdateOrg(orgId, ob.Data)
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
+	}
+
 	org.ResponsePut()
 	this.ServeJson()
 }
-
 
 /**
  * @api {delete} org/:orgId Delete
