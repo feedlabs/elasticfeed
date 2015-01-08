@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
+
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resources"
 	"github.com/feedlabs/api/public/v1/template/org"
 )
 
@@ -21,6 +24,10 @@ type OrgController struct {
  */
 func (this *OrgController) GetList() {
 	org.RequestGetList(this.GetInput())
+
+	obs := resources.GetOrgList()
+	this.Data["json"] = obs
+
 	org.ResponseGetList()
 	this.ServeJson()
 }
@@ -53,6 +60,20 @@ func (this *OrgController) Get() {
  */
 func (this *OrgController) Post() {
 	org.RequestPost(this.GetInput())
+
+	var ob resources.Org
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	orgid, err := resources.AddOrg(ob)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": orgid}
+	}
+
 	org.ResponsePost()
 	this.ServeJson()
 }

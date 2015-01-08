@@ -24,6 +24,10 @@ func SetGlobalResponseHeader() {
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
 }
 
+func GetMyOrgId() string{
+	return "47"
+}
+
 func AuthenticateHTTPRequest() {
 	// should handle auth
 }

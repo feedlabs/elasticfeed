@@ -27,7 +27,7 @@ func (this *EntryController) GetListByFeed() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	feed, err := resources.GetFeed(feedId, appId)
+	feed, err := resources.GetFeed(feedId, appId, GetMyOrgId())
 	obs, err := feed.GetEntryList()
 
 	if err != nil {
@@ -71,7 +71,7 @@ func (this *EntryController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	ob, err := resources.GetEntry(feedEntryId, feedId, appId)
+	ob, err := resources.GetEntry(feedEntryId, feedId, appId, GetMyOrgId())
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -134,7 +134,7 @@ func (this *EntryController) PostToFeed() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	app, err := resources.GetApplication(appId)
+	app, err := resources.GetApplication(appId, GetMyOrgId())
 	feed, err := app.GetFeed(feedId)
 	entryId, err := feed.AddEntry(ob)
 
@@ -170,7 +170,7 @@ func (this *EntryController) Put() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resources.UpdateEntry(feedEntryId, feedId, appId, ob.Data)
+	err := resources.UpdateEntry(feedEntryId, feedId, appId, GetMyOrgId(), ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -198,7 +198,7 @@ func (this *EntryController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	err := resources.DeleteEntry(feedEntryId, feedId, appId)
+	err := resources.DeleteEntry(feedEntryId, feedId, appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

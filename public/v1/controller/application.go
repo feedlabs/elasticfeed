@@ -25,8 +25,13 @@ type ApplicationController struct {
 func (this *ApplicationController) GetList() {
 	application.RequestGetList(this.GetInput())
 
-	obs := resources.GetApplicationList()
-	this.Data["json"] = obs
+	obs, err := resources.GetApplicationList(GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
 
 	application.ResponseGetList()
 	this.ServeJson()
@@ -46,7 +51,7 @@ func (this *ApplicationController) Get() {
 	application.RequestGet(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	ob, err := resources.GetApplication(appId)
+	ob, err := resources.GetApplication(appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -76,7 +81,7 @@ func (this *ApplicationController) Post() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	appid, err := resources.AddApplication(ob)
+	appid, err := resources.AddApplication(ob, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

@@ -26,7 +26,7 @@ func (this *FeedController) GetList() {
 	feed.RequestGetList(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	app, err := resources.GetApplication(appId)
+	app, err := resources.GetApplication(appId, GetMyOrgId())
 	obs, err := app.GetFeedList()
 
 	if err != nil {
@@ -54,7 +54,7 @@ func (this *FeedController) Get() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	ob, err := resources.GetFeed(feedId, appId)
+	ob, err := resources.GetFeed(feedId, appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -85,7 +85,7 @@ func (this *FeedController) Post() {
 	json.Unmarshal(data, &ob)
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	app, err := resources.GetApplication(appId)
+	app, err := resources.GetApplication(appId, GetMyOrgId())
 	feedId, err := app.AddFeed(ob)
 
 	if err != nil {

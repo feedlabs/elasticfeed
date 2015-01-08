@@ -11,26 +11,34 @@ func init() {
 	Tokens = make(map[string]*Token)
 }
 
-func GetTokenList(AdminId string) []*Token {
-	nodes, err := storage.FindNodesByLabel(RESOURCE_TOKEN_LABEL)
+func GetTokenList(AdminId string, OrgId string) (tokenLinst []*Token, err error) {
+	admin, err := GetAdmin(AdminId, OrgId)
 	if err != nil {
-		nodes = nil
+		return nil, err
 	}
+
+	_id, _ := strconv.Atoi(admin.Id)
+	_rels, _ := storage.RelationshipsNode(_id, "token")
 
 	var tokens []*Token
 
-	for _, node := range nodes {
-		data := node.Data["data"].(string)
-		id := strconv.Itoa(node.Id)
+	for _, rel := range _rels {
+		data := rel.EndNode.Data["data"].(string)
+		id := strconv.Itoa(rel.EndNode.Id)
 
-		token := &Token{id, AdminId, data}
+		token := &Token{id, admin, data}
 		tokens = append(tokens, token)
 	}
 
-	return tokens
+	return tokens, nil
 }
 
-func GetToken(id string, AdminId string) (token *Token, err error) {
+func GetToken(id string, AdminId string, OrgId string) (token *Token, err error) {
+	admin, err := GetAdmin(AdminId, OrgId)
+	if err != nil {
+		return nil, err
+	}
+
 	_id, err := strconv.Atoi(id)
 	node, err := storage.Node(_id)
 
@@ -40,17 +48,36 @@ func GetToken(id string, AdminId string) (token *Token, err error) {
 
 	if node != nil && contains(node.Labels, RESOURCE_TOKEN_LABEL) {
 		data := node.Data["data"].(string)
-		return &Token{strconv.Itoa(node.Id), AdminId, data}, nil
+		return &Token{strconv.Itoa(node.Id), admin, data}, nil
 	}
 
 	return nil, errors.New("TokenId not exist")
 }
 
-func AddToken(token Token) (id string, err error) {
+func AddTokenForOrganisation(token Token, orgId string) (id string, err error) {
+	return nil, nil
+}
+
+func AddToken(token Token, adminId string, orgId string) (id string, err error) {
+	// get org
+	admin, err := GetAdmin(adminId, orgId)
+	if err != nil {
+		return "0", err
+	}
+
+	// add token
 	properties := graph.Props{"data": token.Data}
 	_token, err := storage.NewNode(properties, RESOURCE_TOKEN_LABEL)
 
 	if err != nil {
+		return "0", err
+	}
+
+	// create relation
+	_adminId, _ := strconv.Atoi(admin.Id)
+	rel, err := storage.RelateNodes(_adminId, _token.Id, "token", nil)
+
+	if err != nil || rel.Type == "" {
 		return "0", err
 	}
 

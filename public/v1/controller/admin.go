@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
+
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resources"
 	"github.com/feedlabs/api/public/v1/template/admin"
 )
 
@@ -21,6 +24,15 @@ type AdminController struct {
  */
 func (this *AdminController) GetList() {
 	admin.RequestGetList(this.GetInput())
+
+	obs, err := resources.GetAdminList(GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
+
 	admin.ResponseGetList()
 	this.ServeJson()
 }
@@ -53,6 +65,20 @@ func (this *AdminController) Get() {
  */
 func (this *AdminController) Post() {
 	admin.RequestPost(this.GetInput())
+
+	var ob resources.Admin
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	adminid, err := resources.AddAdmin(ob, GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": adminid}
+	}
+
 	admin.ResponsePost()
 	this.ServeJson()
 }

@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
+
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resources"
 	"github.com/feedlabs/api/public/v1/template/token"
 )
 
@@ -21,6 +24,16 @@ type TokenController struct {
  */
 func (this *TokenController) GetList() {
 	token.RequestGetList(this.GetInput())
+
+	adminId := this.Ctx.Input.Params[":adminId"]
+	obs, err := resources.GetTokenList(adminId, GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
+
 	token.ResponseGetList()
 	this.ServeJson()
 }
@@ -53,6 +66,21 @@ func (this *TokenController) Get() {
  */
 func (this *TokenController) Post() {
 	token.RequestPost(this.GetInput())
+
+	var ob resources.Token
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	adminId := this.Ctx.Input.Params[":adminId"]
+	appid, err := resources.AddToken(ob, adminId, GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": appid}
+	}
+
 	token.ResponsePost()
 	this.ServeJson()
 }
