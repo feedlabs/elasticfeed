@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/context"
 
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resources"
 	"github.com/feedlabs/feedify/service"
 )
 
@@ -25,11 +26,19 @@ func SetGlobalResponseHeader() {
 }
 
 func GetMyOrgId() string {
-	return "0"
+	return resources.GetClientOrgId()
+}
+
+func GetSecret() string {
+	return resources.GetApiSecret()
 }
 
 func AuthenticateHTTPRequest() {
 	// should handle auth
+	// get token length
+	// 32 -> client token -> orgId
+	// 128 -> global api token
+	// IP whitelisting
 }
 
 func GenerateChannelID() {

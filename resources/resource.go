@@ -46,9 +46,9 @@ type Admin struct {
 }
 
 type Token struct {
-	Id             string
-	Admin          *Admin
-	Data           string
+	Id                  string
+	Admin          		*Admin
+	Data                string
 }
 
 type Application struct {
