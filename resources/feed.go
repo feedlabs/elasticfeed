@@ -53,7 +53,7 @@ func GetFeed(id string, applicationId string, orgId string) (feed *Feed, err err
 
 	if node != nil && contains(node.Labels, RESOURCE_FEED_LABEL) && app.Id == node.Data["applicationId"].(string) {
 		data := node.Data["data"].(string)
-		rels, _ := storage.RelationshipsNode(node.Id, "feed")
+		rels, _ := storage.RelationshipsNode(node.Id, "entry")
 		return &Feed{strconv.Itoa(node.Id), app, data, len(rels)-1}, nil
 	}
 
