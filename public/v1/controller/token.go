@@ -19,8 +19,8 @@ type TokenController struct {
  * @apiGroup Token
  * @apiDescription This will return a list of all organisation tokens
  *
- * @apiUse OrgTokenGetListRequest
- * @apiUse OrgTokenGetListResponse
+ * @apiUse TokenGetListRequest
+ * @apiUse TokenGetListResponse
  */
 func (this *TokenController) GetOrgList() {
 	token.RequestGetList(this.GetInput())
@@ -45,8 +45,8 @@ func (this *TokenController) GetOrgList() {
  * @apiGroup Token
  * @apiDescription This will return a specific organisation token
  *
- * @apiUse OrgTokenGetRequest
- * @apiUse OrgTokenGetResponse
+ * @apiUse TokenGetRequest
+ * @apiUse TokenGetResponse
  */
 func (this *TokenController) GetOrg() {
 	token.RequestGet(this.GetInput())
@@ -72,8 +72,8 @@ func (this *TokenController) GetOrg() {
  * @apiGroup Token
  * @apiDescription Create a organisation token
  *
- * @apiUse OrgTokenPostRequest
- * @apiUse OrgTokenPostResponse
+ * @apiUse TokenPostRequest
+ * @apiUse TokenPostResponse
  */
 func (this *TokenController) PostOrg() {
 	token.RequestPost(this.GetInput())
@@ -103,8 +103,8 @@ func (this *TokenController) PostOrg() {
  * @apiGroup Token
  * @apiDescription Delete a specific organisation token
 
- * @apiUse OrgTokenDeleteRequest
- * @apiUse OrgTokenDeleteResponse
+ * @apiUse TokenDeleteRequest
+ * @apiUse TokenDeleteResponse
  */
 func (this *TokenController) DeleteOrg() {
 	token.RequestDelete(this.GetInput())

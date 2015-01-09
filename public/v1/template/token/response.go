@@ -1,7 +1,7 @@
 package token
 
 /**
- * @apiDefine OrgTokenGetListResponse
+ * @apiDefine TokenGetListResponse
  *
  * @apiSuccess {Object[]}  orgTokenList                Array of all organisation tokens
  * @apiSuccess {String}    orgTokenList.id             The orgToken id
@@ -22,7 +22,7 @@ func ResponseGetList() {
 }
 
 /**
- * @apiDefine OrgTokenGetResponse
+ * @apiDefine TokenGetResponse
  *
  * @apiSuccess {String}    id             The id
  * @apiSuccess {Int}       createStamp    Unix time stamp of create time
@@ -40,7 +40,7 @@ func ResponseGet() {
 }
 
 /**
- * @apiDefine OrgTokenPostResponse
+ * @apiDefine TokenPostResponse
  *
  * @apiSuccess {String}    id             The id
  * @apiSuccess {Int}       createStamp    Unix time stamp of create time
@@ -57,7 +57,7 @@ func ResponsePost() {
 }
 
 /**
- * @apiDefine OrgTokenPutResponse
+ * @apiDefine TokenPutResponse
  *
  * @apiSuccess {String}    id             The id
  * @apiSuccess {Int}       createStamp    Unix time stamp of create time
@@ -74,7 +74,7 @@ func ResponsePut() {
 }
 
 /**
- * @apiDefine OrgTokenDeleteResponse
+ * @apiDefine TokenDeleteResponse
  *
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK

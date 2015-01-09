@@ -5,7 +5,7 @@ import (
 )
 
 /**
- * @apiDefine OrgTokenGetListRequest
+ * @apiDefine TokenGetListRequest
  *
  */
 func RequestGetList(input *context.Input) {
@@ -13,7 +13,7 @@ func RequestGetList(input *context.Input) {
 }
 
 /**
- * @apiDefine OrgTokenGetRequest
+ * @apiDefine TokenGetRequest
  *
  * @apiParam {String} orgId  The org id
  */
@@ -22,14 +22,14 @@ func RequestGet(input *context.Input) {
 }
 
 /**
- * @apiDefine OrgTokenPostRequest
+ * @apiDefine TokenPostRequest
  */
 func RequestPost(input *context.Input) {
 
 }
 
 /**
- * @apiDefine OrgTokenPutRequest
+ * @apiDefine TokenPutRequest
  *
  * @apiParam {String}    orgId        The org id
  */
@@ -38,7 +38,7 @@ func RequestPut(input *context.Input) {
 }
 
 /**
- * @apiDefine OrgTokenDeleteRequest
+ * @apiDefine TokenDeleteRequest
  *
  * @apiParam {String}  orgId  The org id
  */
