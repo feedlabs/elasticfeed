@@ -6,6 +6,7 @@ import (
 
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/helpers"
 	"github.com/feedlabs/feedify/service"
 )
 
@@ -29,7 +30,7 @@ func SetGlobalResponseHeader() {
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
 
 	var AuthUser = func(ctx *context.Context) {
-		UserOrg = resources.Auth(ctx)
+		UserOrg = helpers.Auth(ctx)
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
@@ -39,7 +40,7 @@ func GetMyOrgId() string {
 }
 
 func GetSecret() string {
-	return resources.GetApiSecret()
+	return helpers.GetApiSecret()
 }
 
 func GenerateChannelID() {

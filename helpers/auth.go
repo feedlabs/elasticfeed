@@ -1,16 +1,16 @@
-package resources
+package helpers
 
 import (
-	"github.com/feedlabs/feedify"
 	"github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
+	"github.com/feedlabs/api/resources"
 )
 
 var (
 	a *auth.DigestAuth
 )
 
-func Auth(ctx *context.Context) *Org {
+func Auth(ctx *context.Context) *resources.Org {
 	if GetAuthType()== "basic" {
 		return AuthBasic(ctx)
 	} else if GetAuthType() == "digest" {
@@ -19,17 +19,6 @@ func Auth(ctx *context.Context) *Org {
 	return nil
 }
 
-func GetApiSecret() string {
-	return feedify.GetConfigKey("api::secret")
-}
-
-func GetAuthType() string {
-	return feedify.GetConfigKey("auth::type")
-}
-
-func GetAuthRealm() string {
-	return feedify.GetConfigKey("auth::realm")
-}
 
 func SecretBasic(user, realm string) string {
 	if user == "john" {
@@ -60,17 +49,17 @@ func SecretDigest(user, realm string) string {
 	return ""
 }
 
-func AuthBasic(ctx *context.Context) *Org {
+func AuthBasic(ctx *context.Context) *resources.Org {
 	authenticator := auth.NewBasicAuthenticator(GetAuthRealm(), SecretBasic)
 
 	if username := authenticator.CheckAuth(ctx.Request); username == "" {
 		authenticator.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	}
 
-	return &Org{"0", "", "", 0, 0, 0}
+	return &resources.Org{"0", "", "", 0, 0, 0}
 }
 
-func AuthDigest(ctx *context.Context) *Org {
+func AuthDigest(ctx *context.Context) *resources.Org {
 	if a == nil {
 		a = auth.NewDigestAuthenticator(GetAuthRealm(), SecretDigest)
 	}
@@ -88,9 +77,5 @@ func AuthDigest(ctx *context.Context) *Org {
 		}
 	}
 
-	return &Org{"0", "", "", 0, 0, 0}
-}
-
-func GenerateChannelID() {
-	// should generate proper ID
+	return &resources.Org{"0", "", "", 0, 0, 0}
 }
