@@ -13,6 +13,10 @@ type DefaultController struct {
 	feedify.Controller
 }
 
+var (
+	UserOrg *resources.Org
+)
+
 func (this *DefaultController) Get() {
 	this.Data["json"] = map[string]string{"succes": "ok"}
 	this.ServeJson()
@@ -23,22 +27,19 @@ func SetGlobalResponseHeader() {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
+
+	var AuthUser = func(ctx *context.Context) {
+		UserOrg = resources.Auth(ctx)
+	}
+	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
 
 func GetMyOrgId() string {
-	return resources.GetClientOrgId()
+	return UserOrg.Id
 }
 
 func GetSecret() string {
 	return resources.GetApiSecret()
-}
-
-func AuthenticateHTTPRequest() {
-	// should handle auth
-	// get token length
-	// 32 -> client token -> orgId
-	// 128 -> global api token
-	// IP whitelisting
 }
 
 func GenerateChannelID() {
