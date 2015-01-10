@@ -1,6 +1,8 @@
 package helper
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	auth "github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
 	"github.com/feedlabs/api/resource"
@@ -11,12 +13,18 @@ var (
 )
 
 func Auth(ctx *context.Context) *resource.Org {
-	if GetAuthType()== "basic" {
+	if GetAuthType() == "basic" {
 		return AuthBasic(ctx)
 	} else if GetAuthType() == "digest" {
 		return AuthDigest(ctx)
 	}
 	return nil
+}
+
+func GetMd5(s string) string {
+	h := md5.New()
+	h.Write([]byte(s))
+	return hex.EncodeToString(h.Sum(nil))
 }
 
 func SecretBasic(user, realm string) string {
@@ -42,8 +50,8 @@ func Crypt(password string) string {
 
 func SecretDigest(user, realm string) string {
 	if user == "john" {
-		// password is "hello" and realm "localhost"
-		return "121280a68cd55fc949b5b980d47a5718"
+		password := "hello"
+		return GetMd5(user + ":" + realm + ":" + password)
 	}
 	return ""
 }
