@@ -110,3 +110,11 @@ func DeleteAdmin(id string) (error) {
 func (this *Admin) IsSuperUser() bool {
 	return this.Username == config.GetApiSuperuser()
 }
+
+func (this *Admin) IsWhitelisted(ip string) bool {
+	if this.IsSuperUser() {
+		return ip == config.GetApiWhitelist()
+	}
+
+	return Contains(this.Whitelist, ip)
+}

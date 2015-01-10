@@ -70,9 +70,7 @@ func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 			return admin
 		}
 
-		if (admin.IsSuperUser() && GetIP(ctx.Request) != config.GetApiWhitelist()) ||
-				!resource.Contains(admin.Whitelist, GetIP(ctx.Request)) {
-
+		if !admin.IsWhitelisted(GetIP(ctx.Request)) {
 			a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 		}
 
