@@ -8,8 +8,16 @@ import (
 	"github.com/feedlabs/api/helper/config"
 )
 
-func init() {
-	Admins = make(map[string]*Admin)
+func (this *Admin) IsSuperUser() bool {
+	return this.Username == config.GetApiSuperuser()
+}
+
+func (this *Admin) IsWhitelisted(ip string) bool {
+	if this.IsSuperUser() {
+		return ip == config.GetApiWhitelist()
+	}
+
+	return Contains(this.Whitelist, ip)
 }
 
 func GetAdminList(OrgId string) (adminList []*Admin, err error) {
@@ -33,18 +41,6 @@ func GetAdminList(OrgId string) (adminList []*Admin, err error) {
 	}
 
 	return admins, nil
-}
-
-func FindAdminByUsername(username string) (admin *Admin, err error) {
-	org := &Org{"0", "", "", 0, 0, 0}
-	whitelist := []string{"127.0.0.1", "192.168.1.51"}
-
-	password := "hello"
-	if username == config.GetApiSuperuser() {
-		password = config.GetApiSecret()
-	}
-
-	return &Admin{"0", org, username, whitelist, password, 0}, nil
 }
 
 func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
@@ -107,14 +103,18 @@ func DeleteAdmin(id string) (error) {
 	return storage.DeleteNode(_id)
 }
 
-func (this *Admin) IsSuperUser() bool {
-	return this.Username == config.GetApiSuperuser()
-}
+func FindAdminByUsername(username string) (admin *Admin, err error) {
+	org := &Org{"0", "", "", 0, 0, 0}
+	whitelist := []string{"127.0.0.1", "192.168.1.51"}
 
-func (this *Admin) IsWhitelisted(ip string) bool {
-	if this.IsSuperUser() {
-		return ip == config.GetApiWhitelist()
+	password := "hello"
+	if username == config.GetApiSuperuser() {
+		password = config.GetApiSecret()
 	}
 
-	return Contains(this.Whitelist, ip)
+	return &Admin{"0", org, username, whitelist, password, 0}, nil
+}
+
+func init() {
+	Admins = make(map[string]*Admin)
 }
