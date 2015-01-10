@@ -53,8 +53,7 @@ func AuthBasic(ctx *context.Context) *resource.Admin {
 	return GetAdminByName(username)
 }
 
-func AuthDigest(ctx *context.Context) *resource.Admin {
-
+func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 	if a == nil {
 		a = auth.NewDigestAuthenticator(GetAuthRealm(), SecretDigest)
 	}
@@ -64,9 +63,10 @@ func AuthDigest(ctx *context.Context) *resource.Admin {
 		a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	} else {
 
-		admin := GetAdminByName(username)
+		admin = GetAdminByName(username)
 
-		if (admin.Data == GetApiSuperuser() && GetIP(ctx.Request) != GetApiWhitelist()) || !resource.Contains(GetAdminWhitelist(admin), GetIP(ctx.Request)) {
+		if (admin.Data == GetApiSuperuser() && GetIP(ctx.Request) != GetApiWhitelist()) ||
+				!resource.Contains(GetAdminWhitelist(admin), GetIP(ctx.Request)) {
 			a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 		}
 
@@ -80,7 +80,7 @@ func AuthDigest(ctx *context.Context) *resource.Admin {
 		}
 	}
 
-	return GetAdminByName(username)
+	return admin
 }
 
 func GetAdminWhitelist(admin *resource.Admin) []string {
