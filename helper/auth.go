@@ -24,27 +24,14 @@ func SecretBasic(user, realm string) string {
 		token := "hello"
 		return Crypt(token)
 	}
-	if user == "aabbccddeeffgghhiijjkk" {
-		token := "x-oauth-basic"
-		return Crypt(token)
-	}
-	if user == "chris" {
-		token := "352735982359372598327958723957329"
-		return Crypt(token)
-	}
 	return ""
-}
-
-func Crypt(password string) string {
-	md5 := string(auth.MD5Crypt([]byte(password), []byte(""), []byte("$$")))
-	return md5
 }
 
 func SecretDigest(user, realm string) string {
 	if user == "john" {
 		// password is "hello" and realm "localhost"
-		password := "hello"
-		return GetMd5(user + ":" + realm + ":" + password)
+		token := "hello"
+		return GetMd5(user + ":" + realm + ":" + token)
 	}
 	return ""
 }
