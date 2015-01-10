@@ -36,11 +36,10 @@ func SetGlobalResponseHeader() {
 }
 
 func GetMyOrgId() string {
-	return Admin.Org.Id
-}
-
-func GetSecret() string {
-	return helper.GetApiSecret()
+	if Admin != nil && Admin.Org != nil {
+		return Admin.Org.Id
+	}
+	return "0"
 }
 
 func AdminChannelID() string {

@@ -73,7 +73,7 @@ func GetEntryList(FeedId string, ApplicationId string, OrgId string) (feedEntrie
 	for _, rel := range _rels {
 		data := rel.EndNode.Data["data"].(string)
 		entry := &Entry{strconv.Itoa(rel.EndNode.Id), feed, data}
-		if entry != nil && contains(rel.EndNode.Labels, RESOURCE_ENTRY_LABEL) && feed.Id == rel.EndNode.Data["feedId"].(string) {
+		if entry != nil && Contains(rel.EndNode.Labels, RESOURCE_ENTRY_LABEL) && feed.Id == rel.EndNode.Data["feedId"].(string) {
 			entries = append(entries, entry)
 		}
 	}
@@ -94,7 +94,7 @@ func GetEntry(id string, FeedId string, ApplicationId string, OrgId string) (fee
 		return nil, err
 	}
 
-	if entry != nil && contains(entry.Labels, RESOURCE_ENTRY_LABEL) && feed.Id == entry.Data["feedId"].(string) {
+	if entry != nil && Contains(entry.Labels, RESOURCE_ENTRY_LABEL) && feed.Id == entry.Data["feedId"].(string) {
 		data := entry.Data["data"].(string)
 		return &Entry{strconv.Itoa(entry.Id), feed, data}, nil
 	}

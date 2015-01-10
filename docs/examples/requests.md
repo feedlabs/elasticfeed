@@ -1,6 +1,11 @@
 API requests
 ------------
 
+#### Auth
+##### Superuser
+`curl  -u x-super-user:supersecret 192.168.1.51:10100/v1/org --digest`
+##### Admin
+`curl  -u john:hello 192.168.1.51:10100/v1/application --digest`
 
 #### Examples
 ```

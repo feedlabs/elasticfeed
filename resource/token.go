@@ -46,7 +46,7 @@ func GetToken(id string, AdminId string, OrgId string) (token *Token, err error)
 		return nil, err
 	}
 
-	if node != nil && contains(node.Labels, RESOURCE_TOKEN_LABEL) {
+	if node != nil && Contains(node.Labels, RESOURCE_TOKEN_LABEL) {
 		data := node.Data["data"].(string)
 		return &Token{strconv.Itoa(node.Id), admin, data}, nil
 	}
