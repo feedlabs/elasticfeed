@@ -30,11 +30,6 @@ func SecretBasic(user, realm string) string {
 }
 
 func SecretDigest(user, realm string) string {
-	if user == config.GetApiSuperuser() {
-		token := config.GetApiSecret()
-		return GetMd5(user + ":" + realm + ":" + token)
-	}
-
 	admin, err := resource.FindAdminByUsername(user)
 	if err == nil {
 		token := admin.Data
@@ -69,11 +64,13 @@ func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 		a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	} else {
 
-		var err error
-		admin, err = resource.FindAdminByUsername(username)
+		admin, err := resource.FindAdminByUsername(username)
 
-		if err != nil ||
-				(admin.IsSuperUser() && GetIP(ctx.Request) != config.GetApiWhitelist()) ||
+		if err != nil {
+			return admin
+		}
+
+		if (admin.IsSuperUser() && GetIP(ctx.Request) != config.GetApiWhitelist()) ||
 				!resource.Contains(admin.Whitelist, GetIP(ctx.Request)) {
 
 			a.RequireAuth(ctx.ResponseWriter, ctx.Request)

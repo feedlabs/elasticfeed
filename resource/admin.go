@@ -39,7 +39,12 @@ func FindAdminByUsername(username string) (admin *Admin, err error) {
 	org := &Org{"0", "", "", 0, 0, 0}
 	whitelist := []string{"127.0.0.1", "192.168.1.51"}
 
-	return &Admin{"0", org, username, whitelist, "hello", 0}, nil
+	password := "hello"
+	if username == config.GetApiSuperuser() {
+		password = config.GetApiSecret()
+	}
+
+	return &Admin{"0", org, username, whitelist, password, 0}, nil
 }
 
 func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
