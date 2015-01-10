@@ -45,7 +45,7 @@ func GetOrg(id string) (org *Org, err error) {
 		return nil, err
 	}
 
-	if node != nil && contains(node.Labels, RESOURCE_ORG_LABEL) {
+	if node != nil && Contains(node.Labels, RESOURCE_ORG_LABEL) {
 		data := node.Data["data"].(string)
 		admin_rels, _ := storage.RelationshipsNode(node.Id, "admin")
 		app_rels, _ := storage.RelationshipsNode(node.Id, "app")

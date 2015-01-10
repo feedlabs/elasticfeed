@@ -55,7 +55,7 @@ func GetApplication(id string, orgId string) (application *Application, err erro
 		return nil, err
 	}
 
-	if node != nil && contains(node.Labels, RESOURCE_APPLICATION_LABEL) {
+	if node != nil && Contains(node.Labels, RESOURCE_APPLICATION_LABEL) {
 		data := node.Data["data"].(string)
 		rels, _ := storage.RelationshipsNode(node.Id, "feed")
 		return &Application{strconv.Itoa(node.Id), org, data, len(rels)}, nil

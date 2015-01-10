@@ -41,8 +41,9 @@ type Admin struct {
 	Id               string
 	Org              *Org
 
-	Username            string
-	Data                string
+	Username             string
+	Whitelist            []string
+	Data                 string
 
 	Tokens            int
 }
@@ -88,7 +89,7 @@ func init() {
 	storage = graph_service.Storage
 }
 
-func contains(s []string, e string) bool {
+func Contains(s []string, e string) bool {
 	for _, a := range s { if a == e { return true } }
 	return false
 }
