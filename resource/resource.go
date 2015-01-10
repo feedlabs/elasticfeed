@@ -40,14 +40,16 @@ type Org struct {
 type Admin struct {
 	Id               string
 	Org              *Org
-	Data             string
+
+	Username            string
+	Data                string
 
 	Tokens            int
 }
 
 type Token struct {
 	Id                  string
-	Admin          		*Admin
+	Admin                *Admin
 	Data                string
 }
 
