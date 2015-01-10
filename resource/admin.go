@@ -27,7 +27,7 @@ func GetAdminList(OrgId string) (adminList []*Admin, err error) {
 		id := strconv.Itoa(rel.EndNode.Id)
 		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "token")
 
-		admin := &Admin{id, org, data, len(rels)}
+		admin := &Admin{id, org, rel.EndNode.Data["username"].(string), data, len(rels)}
 		admins = append(admins, admin)
 	}
 
@@ -50,7 +50,7 @@ func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
 	if node != nil && contains(node.Labels, RESOURCE_ADMIN_LABEL) {
 		data := node.Data["data"].(string)
 		rels, _ := storage.RelationshipsNode(node.Id, "token")
-		return &Admin{strconv.Itoa(node.Id), org, data, len(rels)}, nil
+		return &Admin{strconv.Itoa(node.Id), org, node.Data["username"].(string), data, len(rels)}, nil
 	}
 
 	return nil, errors.New("AdminId not exist")

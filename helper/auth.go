@@ -28,6 +28,11 @@ func SecretBasic(user, realm string) string {
 }
 
 func SecretDigest(user, realm string) string {
+	if user == GetApiSuperuser() {
+		token := GetApiSecret()
+		return GetMd5(user + ":" + realm + ":" + token)
+	}
+
 	if user == "john" {
 		token := "hello"
 		return GetMd5(user + ":" + realm + ":" + token)
@@ -38,21 +43,31 @@ func SecretDigest(user, realm string) string {
 func AuthBasic(ctx *context.Context) *resource.Admin {
 	authenticator := auth.NewBasicAuthenticator(GetAuthRealm(), SecretBasic)
 
-	if username := authenticator.CheckAuth(ctx.Request); username == "" {
+	username := authenticator.CheckAuth(ctx.Request)
+	if username == "" {
 		authenticator.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	}
 
-	return &resource.Admin{"0", &resource.Org{"0", "", "", 0, 0, 0}, "", 0}
+	return GetAdminByName(username)
 }
 
 func AuthDigest(ctx *context.Context) *resource.Admin {
+
 	if a == nil {
 		a = auth.NewDigestAuthenticator(GetAuthRealm(), SecretDigest)
 	}
 
-	if username, authinfo := a.CheckAuth(ctx.Request); username == "" {
+	username, authinfo := a.CheckAuth(ctx.Request)
+	if username == "" {
 		a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	} else {
+
+		admin := GetAdminByName(username)
+
+		if (admin.Data == GetApiSuperuser() && GetIP(ctx.Request) != GetApiWhitelist()) || (GetAdminWhitelist(admin) != GetIP(ctx.Request)) {
+			a.RequireAuth(ctx.ResponseWriter, ctx.Request)
+		}
+
 		ar := &auth.AuthenticatedRequest{Request: *ctx.Request, Username: username}
 		if authinfo != nil {
 			ctx.ResponseWriter.Header().Set("Authentication-Info", *authinfo)
@@ -63,5 +78,17 @@ func AuthDigest(ctx *context.Context) *resource.Admin {
 		}
 	}
 
-	return &resource.Admin{"0", &resource.Org{"0", "", "", 0, 0, 0}, "", 0}
+	return GetAdminByName(username)
+}
+
+func GetAdminWhitelist(admin *resource.Admin) string {
+	if admin.Username == "john" {
+		return "127.0.0.1"
+	}
+
+	return ""
+}
+
+func GetAdminByName(username string) *resource.Admin {
+	return &resource.Admin{"0", &resource.Org{"0", "", "", 0, 0, 0}, username, "", 0}
 }
