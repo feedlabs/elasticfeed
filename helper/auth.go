@@ -22,14 +22,13 @@ func Auth(ctx *context.Context) *resource.Admin {
 func SecretBasic(user, realm string) string {
 	if user == "john" {
 		token := "hello"
-		return Crypt(token)
+		return GetCrypt(token)
 	}
 	return ""
 }
 
 func SecretDigest(user, realm string) string {
 	if user == "john" {
-		// password is "hello" and realm "localhost"
 		token := "hello"
 		return GetMd5(user + ":" + realm + ":" + token)
 	}
