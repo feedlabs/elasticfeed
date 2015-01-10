@@ -10,7 +10,7 @@ var (
 	a *auth.DigestAuth
 )
 
-func Auth(ctx *context.Context) *resource.Org {
+func Auth(ctx *context.Context) *resource.Admin {
 	if GetAuthType() == "basic" {
 		return AuthBasic(ctx)
 	} else if GetAuthType() == "digest" {
@@ -42,23 +42,24 @@ func Crypt(password string) string {
 
 func SecretDigest(user, realm string) string {
 	if user == "john" {
+		// password is "hello" and realm "localhost"
 		password := "hello"
 		return GetMd5(user + ":" + realm + ":" + password)
 	}
 	return ""
 }
 
-func AuthBasic(ctx *context.Context) *resource.Org {
+func AuthBasic(ctx *context.Context) *resource.Admin {
 	authenticator := auth.NewBasicAuthenticator(GetAuthRealm(), SecretBasic)
 
 	if username := authenticator.CheckAuth(ctx.Request); username == "" {
 		authenticator.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	}
 
-	return &resource.Org{"0", "", "", 0, 0, 0}
+	return &resource.Admin{"0", &resource.Org{"0", "", "", 0, 0, 0}, "", 0}
 }
 
-func AuthDigest(ctx *context.Context) *resource.Org {
+func AuthDigest(ctx *context.Context) *resource.Admin {
 	if a == nil {
 		a = auth.NewDigestAuthenticator(GetAuthRealm(), SecretDigest)
 	}
@@ -76,5 +77,5 @@ func AuthDigest(ctx *context.Context) *resource.Org {
 		}
 	}
 
-	return &resource.Org{"0", "", "", 0, 0, 0}
+	return &resource.Admin{"0", &resource.Org{"0", "", "", 0, 0, 0}, "", 0}
 }

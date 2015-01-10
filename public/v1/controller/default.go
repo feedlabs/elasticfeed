@@ -15,7 +15,7 @@ type DefaultController struct {
 }
 
 var (
-	UserOrg *resource.Org
+	Admin *resource.Admin
 )
 
 func (this *DefaultController) Get() {
@@ -30,21 +30,21 @@ func SetGlobalResponseHeader() {
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
 
 	var AuthUser = func(ctx *context.Context) {
-		UserOrg = helper.Auth(ctx)
+		Admin = helper.Auth(ctx)
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
 
 func GetMyOrgId() string {
-	return UserOrg.Id
+	return Admin.Org.Id
 }
 
 func GetSecret() string {
 	return helper.GetApiSecret()
 }
 
-func GenerateChannelID() string {
-	return helper.GenerateChannelID()
+func AdminChannelID() string {
+	return helper.AdminChannelID(Admin)
 }
 
 func init() {
