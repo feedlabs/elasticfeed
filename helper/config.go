@@ -1,4 +1,4 @@
-package helpers
+package helper
 
 import (
 	"github.com/feedlabs/feedify"
@@ -14,9 +14,4 @@ func GetAuthType() string {
 
 func GetAuthRealm() string {
 	return feedify.GetConfigKey("auth::realm")
-}
-
-
-func GenerateChannelID() {
-	// should generate proper ID
 }

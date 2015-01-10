@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/application"
 )
 
@@ -25,7 +25,7 @@ type ApplicationController struct {
 func (this *ApplicationController) GetList() {
 	application.RequestGetList(this.GetInput())
 
-	obs, err := resources.GetApplicationList(GetMyOrgId())
+	obs, err := resource.GetApplicationList(GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -51,7 +51,7 @@ func (this *ApplicationController) Get() {
 	application.RequestGet(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	ob, err := resources.GetApplication(appId, GetMyOrgId())
+	ob, err := resource.GetApplication(appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -76,12 +76,12 @@ func (this *ApplicationController) Get() {
 func (this *ApplicationController) Post() {
 	application.RequestPost(this.GetInput())
 
-	var ob resources.Application
+	var ob resource.Application
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	appid, err := resources.AddApplication(ob, GetMyOrgId())
+	appid, err := resource.AddApplication(ob, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -108,12 +108,12 @@ func (this *ApplicationController) Put() {
 	application.RequestPut(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	var ob resources.Application
+	var ob resource.Application
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resources.UpdateApplication(appId, ob.Data)
+	err := resource.UpdateApplication(appId, ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -138,7 +138,7 @@ func (this *ApplicationController) Delete() {
 	application.RequestDelete(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	err := resources.DeleteApplication(appId)
+	err := resource.DeleteApplication(appId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

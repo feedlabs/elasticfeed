@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/entry"
 )
 
@@ -27,7 +27,7 @@ func (this *EntryController) GetListByFeed() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	feed, err := resources.GetFeed(feedId, appId, GetMyOrgId())
+	feed, err := resource.GetFeed(feedId, appId, GetMyOrgId())
 	obs, err := feed.GetEntryList()
 
 	if err != nil {
@@ -71,7 +71,7 @@ func (this *EntryController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	ob, err := resources.GetEntry(feedEntryId, feedId, appId, GetMyOrgId())
+	ob, err := resource.GetEntry(feedEntryId, feedId, appId, GetMyOrgId())
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -130,11 +130,11 @@ func (this *EntryController) PostToFeed() {
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
 
-	var ob resources.Entry
+	var ob resource.Entry
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	app, err := resources.GetApplication(appId, GetMyOrgId())
+	app, err := resource.GetApplication(appId, GetMyOrgId())
 	feed, err := app.GetFeed(feedId)
 	entryId, err := feed.AddEntry(ob)
 
@@ -165,12 +165,12 @@ func (this *EntryController) Put() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	var ob resources.Entry
+	var ob resource.Entry
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resources.UpdateEntry(feedEntryId, feedId, appId, GetMyOrgId(), ob.Data)
+	err := resource.UpdateEntry(feedEntryId, feedId, appId, GetMyOrgId(), ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -198,7 +198,7 @@ func (this *EntryController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	err := resources.DeleteEntry(feedEntryId, feedId, appId, GetMyOrgId())
+	err := resource.DeleteEntry(feedEntryId, feedId, appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

@@ -1,16 +1,16 @@
-package helpers
+package helper
 
 import (
 	"github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
-	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/resource"
 )
 
 var (
 	a *auth.DigestAuth
 )
 
-func Auth(ctx *context.Context) *resources.Org {
+func Auth(ctx *context.Context) *resource.Org {
 	if GetAuthType()== "basic" {
 		return AuthBasic(ctx)
 	} else if GetAuthType() == "digest" {
@@ -49,17 +49,17 @@ func SecretDigest(user, realm string) string {
 	return ""
 }
 
-func AuthBasic(ctx *context.Context) *resources.Org {
+func AuthBasic(ctx *context.Context) *resource.Org {
 	authenticator := auth.NewBasicAuthenticator(GetAuthRealm(), SecretBasic)
 
 	if username := authenticator.CheckAuth(ctx.Request); username == "" {
 		authenticator.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	}
 
-	return &resources.Org{"0", "", "", 0, 0, 0}
+	return &resource.Org{"0", "", "", 0, 0, 0}
 }
 
-func AuthDigest(ctx *context.Context) *resources.Org {
+func AuthDigest(ctx *context.Context) *resource.Org {
 	if a == nil {
 		a = auth.NewDigestAuthenticator(GetAuthRealm(), SecretDigest)
 	}
@@ -77,5 +77,5 @@ func AuthDigest(ctx *context.Context) *resources.Org {
 		}
 	}
 
-	return &resources.Org{"0", "", "", 0, 0, 0}
+	return &resource.Org{"0", "", "", 0, 0, 0}
 }

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/token"
 )
 
@@ -26,7 +26,7 @@ func (this *TokenController) GetOrgList() {
 	token.RequestGetList(this.GetInput())
 
 	orgId := this.Ctx.Input.Params[":orgId"]
-	obs, err := resources.GetOrgTokenList(orgId)
+	obs, err := resource.GetOrgTokenList(orgId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -53,7 +53,7 @@ func (this *TokenController) GetOrg() {
 
 	orgId := this.Ctx.Input.Params[":orgId"]
 	tokenId := this.Ctx.Input.Params[":tokenId"]
-	ob, err := resources.GetOrgToken(tokenId, orgId)
+	ob, err := resource.GetOrgToken(tokenId, orgId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -78,13 +78,13 @@ func (this *TokenController) GetOrg() {
 func (this *TokenController) PostOrg() {
 	token.RequestPost(this.GetInput())
 
-	var ob resources.Token
+	var ob resource.Token
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
 	orgId := this.Ctx.Input.Params[":orgId"]
-	tokenid, err := resources.AddOrgToken(ob, orgId)
+	tokenid, err := resource.AddOrgToken(ob, orgId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -130,7 +130,7 @@ func (this *TokenController) GetAdminList() {
 	token.RequestGetList(this.GetInput())
 
 	adminId := this.Ctx.Input.Params[":adminId"]
-	obs, err := resources.GetTokenList(adminId, GetMyOrgId())
+	obs, err := resource.GetTokenList(adminId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -171,13 +171,13 @@ func (this *TokenController) GetAdmin() {
 func (this *TokenController) PostAdmin() {
 	token.RequestPost(this.GetInput())
 
-	var ob resources.Token
+	var ob resource.Token
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
 	adminId := this.Ctx.Input.Params[":adminId"]
-	appid, err := resources.AddToken(ob, adminId, GetMyOrgId())
+	appid, err := resource.AddToken(ob, adminId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

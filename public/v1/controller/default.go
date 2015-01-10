@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego/context"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resources"
-	"github.com/feedlabs/api/helpers"
+	"github.com/feedlabs/api/resource"
+	"github.com/feedlabs/api/helper"
 	"github.com/feedlabs/feedify/service"
 )
 
@@ -15,7 +15,7 @@ type DefaultController struct {
 }
 
 var (
-	UserOrg *resources.Org
+	UserOrg *resource.Org
 )
 
 func (this *DefaultController) Get() {
@@ -30,7 +30,7 @@ func SetGlobalResponseHeader() {
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
 
 	var AuthUser = func(ctx *context.Context) {
-		UserOrg = helpers.Auth(ctx)
+		UserOrg = helper.Auth(ctx)
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
@@ -40,11 +40,11 @@ func GetMyOrgId() string {
 }
 
 func GetSecret() string {
-	return helpers.GetApiSecret()
+	return helper.GetApiSecret()
 }
 
-func GenerateChannelID() {
-	// should generate proper ID
+func GenerateChannelID() string {
+	return helper.GenerateChannelID()
 }
 
 func init() {
