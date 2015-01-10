@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/abbot/go-http-auth"
+	auth "github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
 	"github.com/feedlabs/api/resource"
 )
@@ -18,7 +18,6 @@ func Auth(ctx *context.Context) *resource.Org {
 	}
 	return nil
 }
-
 
 func SecretBasic(user, realm string) string {
 	if user == "john" {
