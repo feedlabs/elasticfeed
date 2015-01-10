@@ -20,8 +20,9 @@ func Auth(ctx *context.Context) *resource.Admin {
 }
 
 func SecretBasic(user, realm string) string {
-	if user == "john" {
-		token := "hello"
+	admin := GetAdminByName(user)
+	if admin.Data != "" {
+		token := admin.Data
 		return GetCrypt(token)
 	}
 	return ""
@@ -33,8 +34,9 @@ func SecretDigest(user, realm string) string {
 		return GetMd5(user + ":" + realm + ":" + token)
 	}
 
-	if user == "john" {
-		token := "hello"
+	admin := GetAdminByName(user)
+	if admin.Data != "" {
+		token := admin.Data
 		return GetMd5(user + ":" + realm + ":" + token)
 	}
 	return ""
@@ -89,5 +91,5 @@ func GetAdminByName(username string) *resource.Admin {
 	org := &resource.Org{"0", "", "", 0, 0, 0}
 	whitelist := []string{"127.0.0.1", "192.168.1.51"}
 
-	return &resource.Admin{"0", org, username, whitelist, "", 0}
+	return &resource.Admin{"0", org, username, whitelist, "hello", 0}
 }
