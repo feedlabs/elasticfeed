@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/feedlabs/feedify/graph"
+	"github.com/feedlabs/api/helper/config"
 )
 
 func init() {
@@ -32,6 +33,13 @@ func GetAdminList(OrgId string) (adminList []*Admin, err error) {
 	}
 
 	return admins, nil
+}
+
+func FindAdminByUsername(username string) (admin *Admin, err error) {
+	org := &Org{"0", "", "", 0, 0, 0}
+	whitelist := []string{"127.0.0.1", "192.168.1.51"}
+
+	return &Admin{"0", org, username, whitelist, "hello", 0}, nil
 }
 
 func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
@@ -92,4 +100,8 @@ func UpdateAdmin(id string, data string) (err error) {
 func DeleteAdmin(id string) (error) {
 	_id, _ := strconv.Atoi(id)
 	return storage.DeleteNode(_id)
+}
+
+func (this *Admin) IsSuperUser() bool {
+	return this.Username == config.GetApiSuperuser()
 }

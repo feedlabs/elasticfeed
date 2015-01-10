@@ -4,6 +4,7 @@ import (
 	auth "github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
 	"github.com/feedlabs/api/resource"
+	"github.com/feedlabs/api/helper/config"
 )
 
 var (
@@ -11,17 +12,17 @@ var (
 )
 
 func Auth(ctx *context.Context) *resource.Admin {
-	if GetAuthType() == "basic" {
+	if config.GetAuthType() == "basic" {
 		return AuthBasic(ctx)
-	} else if GetAuthType() == "digest" {
+	} else if config.GetAuthType() == "digest" {
 		return AuthDigest(ctx)
 	}
 	return nil
 }
 
 func SecretBasic(user, realm string) string {
-	admin := GetAdminByName(user)
-	if admin.Data != "" {
+	admin, err := resource.FindAdminByUsername(user)
+	if err == nil {
 		token := admin.Data
 		return GetCrypt(token)
 	}
@@ -29,13 +30,13 @@ func SecretBasic(user, realm string) string {
 }
 
 func SecretDigest(user, realm string) string {
-	if user == GetApiSuperuser() {
-		token := GetApiSecret()
+	if user == config.GetApiSuperuser() {
+		token := config.GetApiSecret()
 		return GetMd5(user + ":" + realm + ":" + token)
 	}
 
-	admin := GetAdminByName(user)
-	if admin.Data != "" {
+	admin, err := resource.FindAdminByUsername(user)
+	if err == nil {
 		token := admin.Data
 		return GetMd5(user + ":" + realm + ":" + token)
 	}
@@ -43,19 +44,24 @@ func SecretDigest(user, realm string) string {
 }
 
 func AuthBasic(ctx *context.Context) *resource.Admin {
-	authenticator := auth.NewBasicAuthenticator(GetAuthRealm(), SecretBasic)
+	authenticator := auth.NewBasicAuthenticator(config.GetAuthRealm(), SecretBasic)
 
 	username := authenticator.CheckAuth(ctx.Request)
 	if username == "" {
 		authenticator.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	}
 
-	return GetAdminByName(username)
+	admin, err := resource.FindAdminByUsername(username)
+	if err == nil {
+		return nil
+	}
+
+	return admin
 }
 
 func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 	if a == nil {
-		a = auth.NewDigestAuthenticator(GetAuthRealm(), SecretDigest)
+		a = auth.NewDigestAuthenticator(config.GetAuthRealm(), SecretDigest)
 	}
 
 	username, authinfo := a.CheckAuth(ctx.Request)
@@ -63,10 +69,12 @@ func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 		a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	} else {
 
-		admin = GetAdminByName(username)
+		var err error
+		admin, err = resource.FindAdminByUsername(username)
 
-		if (IsSuperUser(admin) && GetIP(ctx.Request) != GetApiWhitelist()) ||
-				!resource.Contains(GetAdminWhitelist(admin), GetIP(ctx.Request)) {
+		if err != nil ||
+				(admin.IsSuperUser() && GetIP(ctx.Request) != config.GetApiWhitelist()) ||
+				!resource.Contains(admin.Whitelist, GetIP(ctx.Request)) {
 
 			a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 		}

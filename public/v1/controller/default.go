@@ -39,10 +39,6 @@ func GetMyOrgId() string {
 	return Admin.Org.Id
 }
 
-func GetSecret() string {
-	return helper.GetApiSecret()
-}
-
 func AdminChannelID() string {
 	return helper.AdminChannelID(Admin)
 }

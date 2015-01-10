@@ -1,4 +1,4 @@
-package helper
+package config
 
 import (
 	"github.com/feedlabs/feedify"
