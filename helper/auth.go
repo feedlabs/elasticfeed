@@ -65,8 +65,9 @@ func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 
 		admin = GetAdminByName(username)
 
-		if (admin.Data == GetApiSuperuser() && GetIP(ctx.Request) != GetApiWhitelist()) ||
+		if (IsSuperUser(admin) && GetIP(ctx.Request) != GetApiWhitelist()) ||
 				!resource.Contains(GetAdminWhitelist(admin), GetIP(ctx.Request)) {
+
 			a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 		}
 
@@ -83,13 +84,3 @@ func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 	return admin
 }
 
-func GetAdminWhitelist(admin *resource.Admin) []string {
-	return admin.Whitelist
-}
-
-func GetAdminByName(username string) *resource.Admin {
-	org := &resource.Org{"0", "", "", 0, 0, 0}
-	whitelist := []string{"127.0.0.1", "192.168.1.51"}
-
-	return &resource.Admin{"0", org, username, whitelist, "hello", 0}
-}
