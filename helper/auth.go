@@ -1,8 +1,6 @@
 package helper
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	auth "github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
 	"github.com/feedlabs/api/resource"
@@ -19,12 +17,6 @@ func Auth(ctx *context.Context) *resource.Org {
 		return AuthDigest(ctx)
 	}
 	return nil
-}
-
-func GetMd5(s string) string {
-	h := md5.New()
-	h.Write([]byte(s))
-	return hex.EncodeToString(h.Sum(nil))
 }
 
 func SecretBasic(user, realm string) string {
