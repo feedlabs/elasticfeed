@@ -6,6 +6,9 @@ import (
 )
 
 func init() {
-	feedify.Router("/v1/token", &controller.TokenController{}, "get:GetList;post:Post")
-	feedify.Router("/v1/token/:tokenId:string", &controller.TokenController{}, "get:Get;delete:Delete")
+	feedify.Router("/v1/org/:orgId:string/token", &controller.TokenController{}, "get:GetOrgList;post:PostOrg")
+	feedify.Router("/v1/org/:orgId:string/token/:tokenId:string", &controller.TokenController{}, "get:GetOrg;delete:DeleteOrg")
+
+	feedify.Router("/v1/admin/:adminId:string/token", &controller.TokenController{}, "get:GetAdminList;post:PostAdmin")
+	feedify.Router("/v1/admin/:adminId:string/token/:tokenId:string", &controller.TokenController{}, "get:GetAdmin;delete:DeleteAdmin")
 }

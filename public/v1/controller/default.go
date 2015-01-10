@@ -5,12 +5,18 @@ import (
 	"github.com/astaxie/beego/context"
 
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resource"
+	"github.com/feedlabs/api/helper"
 	"github.com/feedlabs/feedify/service"
 )
 
 type DefaultController struct {
 	feedify.Controller
 }
+
+var (
+	Admin *resource.Admin
+)
 
 func (this *DefaultController) Get() {
 	this.Data["json"] = map[string]string{"succes": "ok"}
@@ -22,24 +28,23 @@ func SetGlobalResponseHeader() {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
+
+	var AuthUser = func(ctx *context.Context) {
+		Admin = helper.Auth(ctx)
+	}
+	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
 
-func AuthenticateHTTPRequest() {
-	// should handle auth
+func GetMyOrgId() string {
+	return Admin.Org.Id
 }
 
-func GenerateChannelID() {
-	// should generate proper ID
+func GetSecret() string {
+	return helper.GetApiSecret()
 }
 
-func GenerateFeedID() {
-	// should contain channelID
-}
-
-func GenerateClientID() {
-	// Should be as base for feedID and feedChannelID
-	// clientID should allow to generate single channel (websocket connection) for multiple feed-pages
-	// if used public/private multiple feed-pages in the same time there should be up to 2 websocket connections
+func AdminChannelID() string {
+	return helper.AdminChannelID(Admin)
 }
 
 func init() {

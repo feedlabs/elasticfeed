@@ -4,7 +4,6 @@ import (
 	"github.com/feedlabs/feedify/context"
 )
 
-
 /**
  * @apiDefine TokenGetListRequest
  *
@@ -16,7 +15,7 @@ func RequestGetList(input *context.Input) {
 /**
  * @apiDefine TokenGetRequest
  *
- * @apiParam {String}  token  The token
+ * @apiParam {String} orgId  The org id
  */
 func RequestGet(input *context.Input) {
 
@@ -24,17 +23,24 @@ func RequestGet(input *context.Input) {
 
 /**
  * @apiDefine TokenPostRequest
- *
- * @apiParam {String}  name  The name of the feed
  */
 func RequestPost(input *context.Input) {
 
 }
 
 /**
+ * @apiDefine TokenPutRequest
+ *
+ * @apiParam {String}    orgId        The org id
+ */
+func RequestPut(input *context.Input) {
+
+}
+
+/**
  * @apiDefine TokenDeleteRequest
  *
- * @apiParam {String}  token  The token
+ * @apiParam {String}  orgId  The org id
  */
 func RequestDelete(input *context.Input) {
 

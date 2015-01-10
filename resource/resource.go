@@ -1,4 +1,4 @@
-package resources
+package resource
 
 import (
 	"errors"
@@ -16,48 +16,51 @@ const RESOURCE_FEED_LABEL = "feed"
 const RESOURCE_ENTRY_LABEL = "entry"
 
 var (
-	Orgs       		map[string]*Org
-	Admins       	map[string]*Admin
-	Tokens       	map[string]*Token
-	Applications 	map[string]*Application
-	Feeds        	map[string]*Feed
-	Entries      	map[string]*Entry
+	Orgs            map[string]*Org
+	Admins        map[string]*Admin
+	Tokens        map[string]*Token
+	Applications    map[string]*Application
+	Feeds            map[string]*Feed
+	Entries        map[string]*Entry
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
 )
 
 type Org struct {
-	Id           string
-	ApiKey       string
+	Id               string
+	ApiKey           string
+	Data             string
 
-	Admins       int
-	Applications int
+	Tokens            int
+	Admins            int
+	Applications      int
 }
 
 type Admin struct {
 	Id               string
-	OrgId            string
+	Org              *Org
 	Data             string
 
-	Tokens			int
+	Tokens            int
 }
 
 type Token struct {
-	Id             string
-	AdminId        string
-	Data           string
+	Id                  string
+	Admin          		*Admin
+	Data                string
 }
 
 type Application struct {
 	Id        string
+	Org       *Org
 	Data      string
 	Feeds     int
 }
 
 type Feed struct {
 	Id            string
-	ApplicationId string
+	Application   *Application
 	Data          string
 
 	Entries       int
@@ -65,7 +68,7 @@ type Feed struct {
 
 type Entry struct {
 	Id        string
-	FeedId    string
+	Feed      *Feed
 	Data      string
 }
 

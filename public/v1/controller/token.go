@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
+
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/token"
 )
 
@@ -10,64 +13,193 @@ type TokenController struct {
 }
 
 /**
- * @api {get} token Get List
+ * @api {get} org/:orgId/token Get List (Org)
  * @apiVersion 1.0.0
- * @apiName GetTokenList
+ * @apiName GetOrgTokenList
  * @apiGroup Token
- * @apiDescription This will return a list of all tokens.
+ * @apiDescription This will return a list of all organisation tokens
  *
  * @apiUse TokenGetListRequest
  * @apiUse TokenGetListResponse
  */
-func (this *TokenController) GetList() {
+func (this *TokenController) GetOrgList() {
 	token.RequestGetList(this.GetInput())
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	obs, err := resource.GetOrgTokenList(orgId)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
+
 	token.ResponseGetList()
 	this.ServeJson()
 }
 
 /**
- * @api {get} token/:token Get
+ * @api {get} org/:orgId/token/:tokenId Get (Org)
  * @apiVersion 1.0.0
- * @apiName GetToken
+ * @apiName GetOrgToken
  * @apiGroup Token
- * @apiDescription This will return a specific token.
+ * @apiDescription This will return a specific organisation token
  *
  * @apiUse TokenGetRequest
  * @apiUse TokenGetResponse
  */
-func (this *TokenController) Get() {
+func (this *TokenController) GetOrg() {
+	token.RequestGet(this.GetInput())
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	tokenId := this.Ctx.Input.Params[":tokenId"]
+	ob, err := resource.GetOrgToken(tokenId, orgId)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = ob
+	}
+
+	token.ResponseGet()
+	this.ServeJson()
+}
+
+/**
+ * @api {post} org/:orgId/token Create (Org)
+ * @apiVersion 1.0.0
+ * @apiName PostOrgToken
+ * @apiGroup Token
+ * @apiDescription Create a organisation token
+ *
+ * @apiUse TokenPostRequest
+ * @apiUse TokenPostResponse
+ */
+func (this *TokenController) PostOrg() {
+	token.RequestPost(this.GetInput())
+
+	var ob resource.Token
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	tokenid, err := resource.AddOrgToken(ob, orgId)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": tokenid}
+	}
+
+	token.ResponsePost()
+	this.ServeJson()
+}
+
+/**
+ * @api {delete} org/:orgId/token/:tokenId Delete (Org)
+ * @apiVersion 1.0.0
+ * @apiName DeleteOrgToken
+ * @apiGroup Token
+ * @apiDescription Delete a specific organisation token
+
+ * @apiUse TokenDeleteRequest
+ * @apiUse TokenDeleteResponse
+ */
+func (this *TokenController) DeleteOrg() {
+	token.RequestDelete(this.GetInput())
+
+//	orgId := this.Ctx.Input.Params[":orgId"]
+//	tokenId := this.Ctx.Input.Params[":tokenId"]
+
+	token.ResponseDelete()
+	this.ServeJson()
+}
+
+/**
+ * @api {get} admin/:adminId/token Get List (Admin)
+ * @apiVersion 1.0.0
+ * @apiName GetTokenList
+ * @apiGroup Token
+ * @apiDescription This will return a list of all tokens for specific admin.
+ *
+ * @apiUse TokenGetListRequest
+ * @apiUse TokenGetListResponse
+ */
+func (this *TokenController) GetAdminList() {
+	token.RequestGetList(this.GetInput())
+
+	adminId := this.Ctx.Input.Params[":adminId"]
+	obs, err := resource.GetTokenList(adminId, GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = obs
+	}
+
+	token.ResponseGetList()
+	this.ServeJson()
+}
+
+/**
+ * @api {get} admin/:adminId/token/:token Get (Admin)
+ * @apiVersion 1.0.0
+ * @apiName GetToken
+ * @apiGroup Token
+ * @apiDescription This will return a specific token for specific admin.
+ *
+ * @apiUse TokenGetRequest
+ * @apiUse TokenGetResponse
+ */
+func (this *TokenController) GetAdmin() {
 	token.RequestGet(this.GetInput())
 	token.ResponseGet()
 	this.ServeJson()
 }
 
 /**
- * @api {post} token Create
+ * @api {post} admin/:adminId/token Create (Admin)
  * @apiVersion 1.0.0
  * @apiName PostToken
  * @apiGroup Token
- * @apiDescription Create a token.
+ * @apiDescription Create a token for specific admin.
  *
  * @apiUse TokenPostRequest
  * @apiUse TokenPostResponse
  */
-func (this *TokenController) Post() {
+func (this *TokenController) PostAdmin() {
 	token.RequestPost(this.GetInput())
+
+	var ob resource.Token
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	adminId := this.Ctx.Input.Params[":adminId"]
+	appid, err := resource.AddToken(ob, adminId, GetMyOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": appid}
+	}
+
 	token.ResponsePost()
 	this.ServeJson()
 }
 
 /**
- * @api {delete} token/:token Delete
+ * @api {delete} admin/:adminId/token/:token Delete (Admin)
  * @apiVersion 1.0.0
  * @apiName DeleteToken
  * @apiGroup Token
- * @apiDescription Delete a specific token.
+ * @apiDescription Delete a specific token for specific admin.
 
  * @apiUse TokenDeleteRequest
  * @apiUse TokenDeleteResponse
  */
-func (this *TokenController) Delete() {
+func (this *TokenController) DeleteAdmin() {
 	token.RequestDelete(this.GetInput())
 	token.ResponseDelete()
 	this.ServeJson()

@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
+
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/org"
 )
 
@@ -21,6 +24,10 @@ type OrgController struct {
  */
 func (this *OrgController) GetList() {
 	org.RequestGetList(this.GetInput())
+
+	obs := resource.GetOrgList()
+	this.Data["json"] = obs
+
 	org.ResponseGetList()
 	this.ServeJson()
 }
@@ -53,6 +60,20 @@ func (this *OrgController) Get() {
  */
 func (this *OrgController) Post() {
 	org.RequestPost(this.GetInput())
+
+	var ob resource.Org
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	orgid, err := resource.AddOrg(ob)
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"id": orgid}
+	}
+
 	org.ResponsePost()
 	this.ServeJson()
 }
@@ -70,10 +91,23 @@ func (this *OrgController) Post() {
 
 func (this *OrgController) Put() {
 	org.RequestPut(this.GetInput())
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	var ob resource.Org
+
+	data := this.Ctx.Input.CopyBody()
+	json.Unmarshal(data, &ob)
+
+	err := resource.UpdateOrg(orgId, ob.Data)
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
+	}
+
 	org.ResponsePut()
 	this.ServeJson()
 }
-
 
 /**
  * @api {delete} org/:orgId Delete

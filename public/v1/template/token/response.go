@@ -1,20 +1,16 @@
 package token
 
-
 /**
  * @apiDefine TokenGetListResponse
  *
- * @apiSuccess {Object[]}  tokenList              Array of all tokens
- * @apiSuccess {String}    tokenList.token        The token
- * @apiSuccess {String}    tokenList.name         The name of the token
- * @apiSuccess {Int}       tokenList.createStamp  Unix time stamp of create time
+ * @apiSuccess {Object[]}  orgTokenList                Array of all organisation tokens
+ * @apiSuccess {String}    orgTokenList.id             The orgToken id
  *
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
- *     "tokenList": [
+ *     "orgTokenList": [
  *       {
- *         "token": "KAJFDA7GFTRE87FDS78F7",
- *         "name": "Super Saiyan",
+ *         "id": "KAJFDA7GFTRE87FDS78F7",
  *         "createStamp": "1415637736",
  *       },
  *       ...
@@ -28,16 +24,15 @@ func ResponseGetList() {
 /**
  * @apiDefine TokenGetResponse
  *
- * @apiSuccess {String}    token        The token
- * @apiSuccess {String}    name         The name of the token
- * @apiSuccess {Int}       createStamp  Unix time stamp of create time
+ * @apiSuccess {String}    id             The id
+ * @apiSuccess {Int}       createStamp    Unix time stamp of create time
  *
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
  *     {
- *       "token": "KAJFDA7GFTRE87FDS78F7",
- *       "name": "Super Saiyan",
- *       "createStamp": "1415637736",
+ *       "id": "KAJFDA7GFTRE87FDS78F7",
+ *         ...
+ *        "createStamp": "1415637736",
  *     }
  */
 func ResponseGet() {
@@ -47,19 +42,34 @@ func ResponseGet() {
 /**
  * @apiDefine TokenPostResponse
  *
- * @apiSuccess {String}    token        The token
- * @apiSuccess {String}    name         The name of the token
- * @apiSuccess {Int}       createStamp  Unix time stamp of create time
+ * @apiSuccess {String}    id             The id
+ * @apiSuccess {Int}       createStamp    Unix time stamp of create time
  *
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
  *     {
- *       "token": "KAJFDA7GFTRE87FDS78F7",
- *       "name": "Super Saiyan",
+ *       "id": "KAJFDA7GFTRE87FDS78F7",
  *       "createStamp": "1415637736",
  *     }
  */
 func ResponsePost() {
+
+}
+
+/**
+ * @apiDefine TokenPutResponse
+ *
+ * @apiSuccess {String}    id             The id
+ * @apiSuccess {Int}       createStamp    Unix time stamp of create time
+ *
+ * @apiSuccessExample {json} Success-Response:
+ * HTTP/1.1 200 OK
+ *     {
+ *       "id": "KAJFDA7GFTRE87FDS78F7",
+ *       "createStamp": "1415637736",
+ *     }
+ */
+func ResponsePut() {
 
 }
 

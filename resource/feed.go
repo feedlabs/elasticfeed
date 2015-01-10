@@ -1,4 +1,4 @@
-package resources
+package resource
 
 import (
 	"errors"
@@ -8,38 +8,38 @@ import (
 )
 
 func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {
-	return AddEntry(entry, this.Id, this.ApplicationId)
+	return AddEntry(entry, this.Id, this.Application.Id, this.Application.Org.Id)
 }
 
 func (this *Feed) GetEntryList() (entries []*Entry, err error) {
-	return GetEntryList(this.Id, this.ApplicationId)
+	return GetEntryList(this.Id, this.Application.Id, this.Application.Org.Id)
 }
 
-func GetFeedList(ApplicationId string) (feedList []*Feed, err error) {
-	app, err := GetApplication(ApplicationId)
+func GetFeedList(ApplicationId string, OrgId string) (feedList []*Feed, err error) {
+	app, err := GetApplication(ApplicationId, OrgId)
 	if err != nil {
 		return nil, err
 	}
 
 	_id, _ := strconv.Atoi(app.Id)
-	_rels, _ := storage.RelationshipsNode(_id, "contains")
+	_rels, _ := storage.RelationshipsNode(_id, "feed")
 
 	var feeds []*Feed
 
 	for _, rel := range _rels {
 		data := rel.EndNode.Data["data"].(string)
 		id := strconv.Itoa(rel.EndNode.Id)
-		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "contains")
+		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "entry")
 
-		feed := &Feed{id , ApplicationId, data, len(rels) - 1}
+		feed := &Feed{id , app, data, len(rels) - 1}
 		feeds = append(feeds, feed)
 	}
 
 	return feeds, err
 }
 
-func GetFeed(id string, applicationId string) (feed *Feed, err error) {
-	app, err := GetApplication(applicationId)
+func GetFeed(id string, applicationId string, orgId string) (feed *Feed, err error) {
+	app, err := GetApplication(applicationId, orgId)
 	if err != nil {
 		return nil, err
 	}
@@ -53,16 +53,16 @@ func GetFeed(id string, applicationId string) (feed *Feed, err error) {
 
 	if node != nil && contains(node.Labels, RESOURCE_FEED_LABEL) && app.Id == node.Data["applicationId"].(string) {
 		data := node.Data["data"].(string)
-		rels, _ := storage.RelationshipsNode(node.Id, "contains")
-		return &Feed{strconv.Itoa(node.Id), applicationId, data, len(rels)-1}, nil
+		rels, _ := storage.RelationshipsNode(node.Id, "entry")
+		return &Feed{strconv.Itoa(node.Id), app, data, len(rels)-1}, nil
 	}
 
 	return nil, errors.New("FeedId not exist for ApplicationId `"+applicationId+"`")
 }
 
-func AddFeed(feed Feed, applicationId string) (id string, err error) {
+func AddFeed(feed Feed, applicationId string, orgId string) (id string, err error) {
 	// get feed
-	app, err := GetApplication(applicationId)
+	app, err := GetApplication(applicationId, orgId)
 	if err != nil {
 		return "0", err
 	}
@@ -77,7 +77,7 @@ func AddFeed(feed Feed, applicationId string) (id string, err error) {
 
 	// create relation
 	_appId, _ := strconv.Atoi(app.Id)
-	rel, err := storage.RelateNodes(_appId, _feed.Id, "contains", nil)
+	rel, err := storage.RelateNodes(_appId, _feed.Id, "feed", nil)
 
 	if err != nil || rel.Type == "" {
 		return "0", err

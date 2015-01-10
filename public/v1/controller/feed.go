@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/feed"
 )
 
@@ -26,7 +26,7 @@ func (this *FeedController) GetList() {
 	feed.RequestGetList(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	app, err := resources.GetApplication(appId)
+	app, err := resource.GetApplication(appId, GetMyOrgId())
 	obs, err := app.GetFeedList()
 
 	if err != nil {
@@ -54,7 +54,7 @@ func (this *FeedController) Get() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	ob, err := resources.GetFeed(feedId, appId)
+	ob, err := resource.GetFeed(feedId, appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -79,13 +79,13 @@ func (this *FeedController) Get() {
 func (this *FeedController) Post() {
 	feed.RequestPost(this.GetInput())
 
-	var ob resources.Feed
+	var ob resource.Feed
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	app, err := resources.GetApplication(appId)
+	app, err := resource.GetApplication(appId, GetMyOrgId())
 	feedId, err := app.AddFeed(ob)
 
 	if err != nil {
@@ -112,12 +112,12 @@ func (this *FeedController) Put() {
 	feed.RequestPut(this.GetInput())
 
 	feedId := this.Ctx.Input.Params[":feedId"]
-	var ob resources.Feed
+	var ob resource.Feed
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resources.UpdateFeed(feedId, ob.Data)
+	err := resource.UpdateFeed(feedId, ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -142,7 +142,7 @@ func (this *FeedController) Delete() {
 	feed.RequestDelete(this.GetInput())
 
 	feedId := this.Ctx.Input.Params[":feedId"]
-	err := resources.DeleteFeed(feedId)
+	err := resource.DeleteFeed(feedId)
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

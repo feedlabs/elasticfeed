@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resources"
+	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/entry"
 )
 
@@ -27,7 +27,7 @@ func (this *EntryController) GetListByFeed() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	feed, err := resources.GetFeed(feedId, appId)
+	feed, err := resource.GetFeed(feedId, appId, GetMyOrgId())
 	obs, err := feed.GetEntryList()
 
 	if err != nil {
@@ -41,7 +41,7 @@ func (this *EntryController) GetListByFeed() {
 }
 
 /**
- * @api {get} application/:applicationId/entry/:entryId Get
+ * @api {get} application/:applicationId/entry/:entryId Get (Global)
  * @apiVersion 1.0.0
  * @apiName GetEntry
  * @apiGroup Entry
@@ -71,7 +71,7 @@ func (this *EntryController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	ob, err := resources.GetEntry(feedEntryId, feedId, appId)
+	ob, err := resource.GetEntry(feedEntryId, feedId, appId, GetMyOrgId())
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -83,7 +83,7 @@ func (this *EntryController) Get() {
 }
 
 /**
- * @api {post} application/:applicationId/entry Create
+ * @api {post} application/:applicationId/entry Create (Global)
  * @apiVersion 1.0.0
  * @apiName PostEntry
  * @apiGroup Entry
@@ -130,11 +130,11 @@ func (this *EntryController) PostToFeed() {
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
 
-	var ob resources.Entry
+	var ob resource.Entry
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	app, err := resources.GetApplication(appId)
+	app, err := resource.GetApplication(appId, GetMyOrgId())
 	feed, err := app.GetFeed(feedId)
 	entryId, err := feed.AddEntry(ob)
 
@@ -149,7 +149,7 @@ func (this *EntryController) PostToFeed() {
 }
 
 /**
- * @api {put} application/:applicationId/entry/:entryId Update
+ * @api {put} application/:applicationId/entry/:entryId Update (Global)
  * @apiVersion 1.0.0
  * @apiName PutEntry
  * @apiGroup Entry
@@ -165,12 +165,12 @@ func (this *EntryController) Put() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	var ob resources.Entry
+	var ob resource.Entry
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resources.UpdateEntry(feedEntryId, feedId, appId, ob.Data)
+	err := resource.UpdateEntry(feedEntryId, feedId, appId, GetMyOrgId(), ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -182,7 +182,7 @@ func (this *EntryController) Put() {
 }
 
 /**
- * @api {delete} application/:applicationId/entry/:entryId Delete
+ * @api {delete} application/:applicationId/entry/:entryId Delete (Global)
  * @apiVersion 1.0.0
  * @apiName DeleteEntry
  * @apiGroup Entry
@@ -198,7 +198,7 @@ func (this *EntryController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	err := resources.DeleteEntry(feedEntryId, feedId, appId)
+	err := resource.DeleteEntry(feedEntryId, feedId, appId, GetMyOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
