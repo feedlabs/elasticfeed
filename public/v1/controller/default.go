@@ -7,7 +7,6 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/helper"
-	"github.com/feedlabs/feedify/service"
 )
 
 type DefaultController struct {
@@ -51,6 +50,4 @@ func SetAuthenticationFilter() {
 func init() {
 	SetAuthenticationFilter()
 	SetGlobalResponseHeader()
-	graph, _ := service.NewGraph()
-	graph.Storage.Connect()
 }
