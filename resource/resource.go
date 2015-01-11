@@ -94,3 +94,12 @@ func Contains(s []string, e string) bool {
 	for _, a := range s { if a == e { return true } }
 	return false
 }
+
+func ConvertInterfaceToStringArray(d interface{}) []string {
+	data := d.([]interface{})
+	output := make([]string, len(data))
+	for i := 0; i < len(data); i++ {
+		output[i] = data[i].(string)
+	}
+	return output
+}

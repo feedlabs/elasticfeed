@@ -121,15 +121,6 @@ func FindAdminByUsername(username string) (admin *Admin, err error) {
 	return &Admin{"0", org, username, true, whitelist, password, 0}, nil
 }
 
-func ConvertInterfaceToStringArray(d interface{}) []string {
-	data := d.([]interface{})
-	whitelist := make([]string, len(data))
-	for i := 0; i < len(data); i++ {
-		whitelist[i] = data[i].(string)
-	}
-	return whitelist
-}
-
 func init() {
 	Admins = make(map[string]*Admin)
 }
