@@ -48,6 +48,16 @@ func (this *AdminController) GetList() {
  */
 func (this *AdminController) Get() {
 	admin.RequestGet(this.GetInput())
+
+	adminId := this.Ctx.Input.Params[":adminId"]
+	ob, err := resource.GetAdmin(adminId, this.GetAdminOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = ob
+	}
+
 	admin.ResponseGet()
 	this.ServeJson()
 }

@@ -41,11 +41,12 @@ type Admin struct {
 	Id               string
 	Org              *Org
 
-	Username             string
-	Whitelist            []string
-	Data                 string
+	Username              string
+	Maintainer            bool
+	Whitelist             []string
+	Data                  string
 
-	Tokens            int
+	Tokens                int
 }
 
 type Token struct {

@@ -7,6 +7,9 @@ API requests
 ##### Admin
 `curl  -u john:hello 192.168.1.51:10100/v1/application --digest`
 
+#### User
+`curl  -u john:hello -XPOST -H "content-type:application/json" -d '{"data":"NEW ADMIN", "Maintainer":true,"Username":"kris", "Whitelist":["127.0.0.1", "10.10.10.1"]}' 127.0.0.1:10100/v1/adming --digest`
+
 #### Examples
 ```
 curl feed.dev:10111/v1/feed/

@@ -12,6 +12,10 @@ func (this *Admin) IsSuperUser() bool {
 	return this.Username == config.GetApiSuperuser()
 }
 
+func (this *Admin) IsMaintainer() bool {
+	return this.Maintainer
+}
+
 func (this *Admin) IsWhitelisted(ip string) bool {
 	if this.IsSuperUser() {
 		return ip == config.GetApiWhitelist()
@@ -34,9 +38,10 @@ func GetAdminList(OrgId string) (adminList []*Admin, err error) {
 	for _, rel := range _rels {
 		data := rel.EndNode.Data["data"].(string)
 		id := strconv.Itoa(rel.EndNode.Id)
-		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "token")
+		tokens, _ := storage.RelationshipsNode(rel.EndNode.Id, "token")
+		whitelist := ConvertInterfaceToStringArray(rel.EndNode.Data["whitelist"])
 
-		admin := &Admin{id, org, rel.EndNode.Data["username"].(string), []string{rel.EndNode.Data["whitelist"].(string)}, data, len(rels)}
+		admin := &Admin{id, org, rel.EndNode.Data["username"].(string), rel.EndNode.Data["maintainer"].(bool), whitelist, data, len(tokens)}
 		admins = append(admins, admin)
 	}
 
@@ -58,8 +63,10 @@ func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
 
 	if node != nil && Contains(node.Labels, RESOURCE_ADMIN_LABEL) {
 		data := node.Data["data"].(string)
-		rels, _ := storage.RelationshipsNode(node.Id, "token")
-		return &Admin{strconv.Itoa(node.Id), org, node.Data["username"].(string), []string{node.Data["whitelist"].(string)}, data, len(rels)}, nil
+		tokens, _ := storage.RelationshipsNode(node.Id, "token")
+		whitelist := ConvertInterfaceToStringArray(node.Data["whitelist"])
+
+		return &Admin{strconv.Itoa(node.Id), org, node.Data["username"].(string), node.Data["maintainer"].(bool), whitelist, data, len(tokens)}, nil
 	}
 
 	return nil, errors.New("AdminId not exist")
@@ -72,8 +79,10 @@ func AddAdmin(admin Admin, orgId string) (id string, err error) {
 		return "0", err
 	}
 
+	// check if admin with e-mail/username already exists?
+
 	// add admin
-	properties := graph.Props{"data": admin.Data}
+	properties := graph.Props{"username": admin.Username, "maintainer": admin.Maintainer, "whitelist": admin.Whitelist, "data": admin.Data}
 	_admin, err := storage.NewNode(properties, RESOURCE_ADMIN_LABEL)
 
 	if err != nil {
@@ -81,10 +90,7 @@ func AddAdmin(admin Admin, orgId string) (id string, err error) {
 	}
 
 	// create relation
-	_orgId, _ := strconv.Atoi(org.Id)
-	rel, err := storage.RelateNodes(_orgId, _admin.Id, "admin", nil)
-
-	if err != nil || rel.Type == "" {
+	if org.AssignAdmin(_admin.Id) {
 		return "0", err
 	}
 
@@ -104,7 +110,7 @@ func DeleteAdmin(id string) (error) {
 }
 
 func FindAdminByUsername(username string) (admin *Admin, err error) {
-	org := &Org{"0", "", "", 0, 0, 0}
+	org := &Org{"26", "", "", 0, 0, 0}
 	whitelist := []string{"127.0.0.1", "192.168.1.51"}
 
 	password := "hello"
@@ -112,7 +118,16 @@ func FindAdminByUsername(username string) (admin *Admin, err error) {
 		password = config.GetApiSecret()
 	}
 
-	return &Admin{"0", org, username, whitelist, password, 0}, nil
+	return &Admin{"0", org, username, true, whitelist, password, 0}, nil
+}
+
+func ConvertInterfaceToStringArray(d interface{}) []string {
+	data := d.([]interface{})
+	whitelist := make([]string, len(data))
+	for i := 0; i < len(data); i++ {
+		whitelist[i] = data[i].(string)
+	}
+	return whitelist
 }
 
 func init() {

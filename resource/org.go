@@ -11,6 +11,17 @@ func (this *Org) AddApplication(app Application) (id string, err error) {
 	return AddApplication(app, this.Id)
 }
 
+func (this *Org) AssignAdmin(adminId int) bool {
+	_orgId, _ := strconv.Atoi(this.Id)
+	rel, err := storage.RelateNodes(_orgId, adminId, "admin", nil)
+
+	if err != nil || rel.Type == "" {
+		return false
+	}
+
+	return true
+}
+
 func GetOrgList() (orgList []*Org, err error) {
 	nodes, err := storage.FindNodesByLabel(RESOURCE_ORG_LABEL)
 	if err != nil {
