@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/entry"
 )
 
 type EntryController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**
@@ -27,7 +26,7 @@ func (this *EntryController) GetListByFeed() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	feed, err := resource.GetFeed(feedId, appId, GetMyOrgId())
+	feed, err := resource.GetFeed(feedId, appId, this.GetAdminOrgId())
 	obs, err := feed.GetEntryList()
 
 	if err != nil {
@@ -71,7 +70,7 @@ func (this *EntryController) Get() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	ob, err := resource.GetEntry(feedEntryId, feedId, appId, GetMyOrgId())
+	ob, err := resource.GetEntry(feedEntryId, feedId, appId, this.GetAdminOrgId())
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -134,7 +133,7 @@ func (this *EntryController) PostToFeed() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	app, err := resource.GetApplication(appId, GetMyOrgId())
+	app, err := resource.GetApplication(appId, this.GetAdminOrgId())
 	feed, err := app.GetFeed(feedId)
 	entryId, err := feed.AddEntry(ob)
 
@@ -170,7 +169,7 @@ func (this *EntryController) Put() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resource.UpdateEntry(feedEntryId, feedId, appId, GetMyOrgId(), ob.Data)
+	err := resource.UpdateEntry(feedEntryId, feedId, appId, this.GetAdminOrgId(), ob.Data)
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
 	} else {
@@ -198,7 +197,7 @@ func (this *EntryController) Delete() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedEntryId := this.Ctx.Input.Params[":feedEntryId"]
 
-	err := resource.DeleteEntry(feedEntryId, feedId, appId, GetMyOrgId())
+	err := resource.DeleteEntry(feedEntryId, feedId, appId, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

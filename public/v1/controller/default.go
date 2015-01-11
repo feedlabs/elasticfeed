@@ -23,6 +23,21 @@ func (this *DefaultController) Get() {
 	this.ServeJson()
 }
 
+func (this *DefaultController) GetAdmin() *resource.Admin {
+	if this.GetCtx().Input.Data["admin"] != nil {
+		return this.GetCtx().Input.Data["admin"].(*resource.Admin)
+	}
+	return nil
+}
+
+func (this *DefaultController) GetAdminOrgId() string {
+	admin := this.GetAdmin()
+	if admin != nil {
+		return admin.Org.Id
+	}
+	return "0"
+}
+
 func SetGlobalResponseHeader() {
 	var FilterUser = func(ctx *context.Context) {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
@@ -30,16 +45,9 @@ func SetGlobalResponseHeader() {
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
 
 	var AuthUser = func(ctx *context.Context) {
-		Admin = helper.Auth(ctx)
+		ctx.Input.Data["admin"] = helper.Auth(ctx)
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
-}
-
-func GetMyOrgId() string {
-	if Admin != nil && Admin.Org != nil {
-		return Admin.Org.Id
-	}
-	return "0"
 }
 
 func AdminChannelID() string {

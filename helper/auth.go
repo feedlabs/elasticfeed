@@ -64,7 +64,8 @@ func AuthDigest(ctx *context.Context) (admin *resource.Admin) {
 		a.RequireAuth(ctx.ResponseWriter, ctx.Request)
 	} else {
 
-		admin, err := resource.FindAdminByUsername(username)
+		var err error
+		admin, err = resource.FindAdminByUsername(username)
 
 		if err != nil {
 			return admin

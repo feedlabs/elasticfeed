@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/token"
 )
 
 type TokenController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**
@@ -130,7 +129,7 @@ func (this *TokenController) GetAdminList() {
 	token.RequestGetList(this.GetInput())
 
 	adminId := this.Ctx.Input.Params[":adminId"]
-	obs, err := resource.GetTokenList(adminId, GetMyOrgId())
+	obs, err := resource.GetTokenList(adminId, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -177,7 +176,7 @@ func (this *TokenController) PostAdmin() {
 	json.Unmarshal(data, &ob)
 
 	adminId := this.Ctx.Input.Params[":adminId"]
-	appid, err := resource.AddToken(ob, adminId, GetMyOrgId())
+	appid, err := resource.AddToken(ob, adminId, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/org"
 )
 
 type OrgController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**

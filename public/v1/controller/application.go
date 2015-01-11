@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/application"
 )
 
 type ApplicationController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**
@@ -25,7 +24,7 @@ type ApplicationController struct {
 func (this *ApplicationController) GetList() {
 	application.RequestGetList(this.GetInput())
 
-	obs, err := resource.GetApplicationList(GetMyOrgId())
+	obs, err := resource.GetApplicationList(this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -51,7 +50,7 @@ func (this *ApplicationController) Get() {
 	application.RequestGet(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	ob, err := resource.GetApplication(appId, GetMyOrgId())
+	ob, err := resource.GetApplication(appId, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -81,7 +80,7 @@ func (this *ApplicationController) Post() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	appid, err := resource.AddApplication(ob, GetMyOrgId())
+	appid, err := resource.AddApplication(ob, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
