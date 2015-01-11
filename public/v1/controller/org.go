@@ -24,8 +24,12 @@ type OrgController struct {
 func (this *OrgController) GetList() {
 	org.RequestGetList(this.GetInput())
 
-	obs := resource.GetOrgList()
-	this.Data["json"] = org.ResponseGetList(obs)
+	obs, err := resource.GetOrgList()
+	if err != nil {
+		this.Data["json"] = org.GetError(err)
+	} else {
+		this.Data["json"] = org.ResponseGetList(obs)
+	}
 
 	this.ServeJson()
 }
@@ -42,7 +46,15 @@ func (this *OrgController) GetList() {
  */
 func (this *OrgController) Get() {
 	org.RequestGet(this.GetInput())
-	org.ResponseGet()
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	ob, err := resource.GetOrg(orgId)
+	if err != nil {
+		this.Data["json"] = org.GetError(err)
+	} else {
+		this.Data["json"] = org.ResponseGet(ob)
+	}
+
 	this.ServeJson()
 }
 

@@ -11,7 +11,7 @@ func (this *Org) AddApplication(app Application) (id string, err error) {
 	return AddApplication(app, this.Id)
 }
 
-func GetOrgList() []*Org {
+func GetOrgList() (orgList []*Org, err error) {
 	nodes, err := storage.FindNodesByLabel(RESOURCE_ORG_LABEL)
 	if err != nil {
 		nodes = nil
@@ -34,7 +34,7 @@ func GetOrgList() []*Org {
 		orgs = append(orgs, org)
 	}
 
-	return orgs
+	return orgs, nil
 }
 
 func GetOrg(id string) (org *Org, err error) {
