@@ -14,10 +14,6 @@ type DefaultController struct {
 	feedify.Controller
 }
 
-var (
-	Admin *resource.Admin
-)
-
 func (this *DefaultController) Get() {
 	this.Data["json"] = map[string]string{"succes": "ok"}
 	this.ServeJson()
