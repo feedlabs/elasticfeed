@@ -43,18 +43,17 @@ func SetGlobalResponseHeader() {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
+}
 
+func SetAuthenticationFilter() {
 	var AuthUser = func(ctx *context.Context) {
 		ctx.Input.Data["admin"] = helper.Auth(ctx)
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
 
-func AdminChannelID() string {
-	return helper.AdminChannelID(Admin)
-}
-
 func init() {
+	SetAuthenticationFilter()
 	SetGlobalResponseHeader()
 	graph, _ := service.NewGraph()
 	graph.Storage.Connect()
