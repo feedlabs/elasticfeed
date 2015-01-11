@@ -5,6 +5,4 @@ import (
 	_ "github.com/feedlabs/api/public/v1/controller"
 )
 
-func init() {
-
-}
+func init() {}
