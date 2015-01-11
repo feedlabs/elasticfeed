@@ -33,6 +33,10 @@ func (this *DefaultController) GetAdminOrgId() string {
 	return "0"
 }
 
+func (this *DefaultController) ServeJson(encoding ...bool) {
+	this.Controller.ServeJson(encoding...)
+}
+
 func SetGlobalResponseHeader() {
 	var FilterUser = func(ctx *context.Context) {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
