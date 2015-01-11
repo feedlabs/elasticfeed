@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/feed"
 )
 
 type FeedController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**
@@ -26,7 +25,7 @@ func (this *FeedController) GetList() {
 	feed.RequestGetList(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	app, err := resource.GetApplication(appId, GetMyOrgId())
+	app, err := resource.GetApplication(appId, this.GetAdminOrgId())
 	obs, err := app.GetFeedList()
 
 	if err != nil {
@@ -54,7 +53,7 @@ func (this *FeedController) Get() {
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
-	ob, err := resource.GetFeed(feedId, appId, GetMyOrgId())
+	ob, err := resource.GetFeed(feedId, appId, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -85,7 +84,7 @@ func (this *FeedController) Post() {
 	json.Unmarshal(data, &ob)
 
 	appId := this.Ctx.Input.Params[":applicationId"]
-	app, err := resource.GetApplication(appId, GetMyOrgId())
+	app, err := resource.GetApplication(appId, this.GetAdminOrgId())
 	feedId, err := app.AddFeed(ob)
 
 	if err != nil {

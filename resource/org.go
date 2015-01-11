@@ -11,7 +11,18 @@ func (this *Org) AddApplication(app Application) (id string, err error) {
 	return AddApplication(app, this.Id)
 }
 
-func GetOrgList() []*Org {
+func (this *Org) AssignAdmin(adminId int) bool {
+	_orgId, _ := strconv.Atoi(this.Id)
+	rel, err := storage.RelateNodes(_orgId, adminId, "admin", nil)
+
+	if err != nil || rel.Type == "" {
+		return false
+	}
+
+	return true
+}
+
+func GetOrgList() (orgList []*Org, err error) {
 	nodes, err := storage.FindNodesByLabel(RESOURCE_ORG_LABEL)
 	if err != nil {
 		nodes = nil
@@ -34,7 +45,11 @@ func GetOrgList() []*Org {
 		orgs = append(orgs, org)
 	}
 
-	return orgs
+	if orgs == nil {
+		orgs = make([]*Org, 0)
+	}
+
+	return orgs, nil
 }
 
 func GetOrg(id string) (org *Org, err error) {
@@ -91,11 +106,17 @@ func init() {
 // TOKEN PART
 
 func GetOrgTokenList(orgId string) (orgList []*Token, err error) {
-	return nil, nil
+	var tokens []*Token
+
+	if tokens == nil {
+		tokens = make([]*Token, 0)
+	}
+
+	return tokens, nil
 }
 
 func GetOrgToken(id string, orgId string) (org *Token, err error) {
-	return nil, nil
+	return nil, errors.New("TokenId not exist")
 }
 
 func AddOrgToken(token Token, orgId string) (id string, err error) {

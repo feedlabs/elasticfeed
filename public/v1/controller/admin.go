@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/admin"
 )
 
 type AdminController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**
@@ -25,7 +24,7 @@ type AdminController struct {
 func (this *AdminController) GetList() {
 	admin.RequestGetList(this.GetInput())
 
-	obs, err := resource.GetAdminList(GetMyOrgId())
+	obs, err := resource.GetAdminList(this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
@@ -49,6 +48,16 @@ func (this *AdminController) GetList() {
  */
 func (this *AdminController) Get() {
 	admin.RequestGet(this.GetInput())
+
+	adminId := this.Ctx.Input.Params[":adminId"]
+	ob, err := resource.GetAdmin(adminId, this.GetAdminOrgId())
+
+	if err != nil {
+		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+	} else {
+		this.Data["json"] = ob
+	}
+
 	admin.ResponseGet()
 	this.ServeJson()
 }
@@ -71,7 +80,7 @@ func (this *AdminController) Post() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	adminid, err := resource.AddAdmin(ob, GetMyOrgId())
+	adminid, err := resource.AddAdmin(ob, this.GetAdminOrgId())
 
 	if err != nil {
 		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}

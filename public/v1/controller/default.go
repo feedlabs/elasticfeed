@@ -7,20 +7,34 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/helper"
-	"github.com/feedlabs/feedify/service"
 )
 
 type DefaultController struct {
 	feedify.Controller
 }
 
-var (
-	Admin *resource.Admin
-)
-
 func (this *DefaultController) Get() {
 	this.Data["json"] = map[string]string{"succes": "ok"}
 	this.ServeJson()
+}
+
+func (this *DefaultController) GetAdmin() *resource.Admin {
+	if this.GetCtx().Input.Data["admin"] != nil {
+		return this.GetCtx().Input.Data["admin"].(*resource.Admin)
+	}
+	return nil
+}
+
+func (this *DefaultController) GetAdminOrgId() string {
+	admin := this.GetAdmin()
+	if admin != nil {
+		return admin.Org.Id
+	}
+	return "0"
+}
+
+func (this *DefaultController) ServeJson(encoding ...bool) {
+	this.Controller.ServeJson(encoding...)
 }
 
 func SetGlobalResponseHeader() {
@@ -28,26 +42,16 @@ func SetGlobalResponseHeader() {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, FilterUser)
+}
 
+func SetAuthenticationFilter() {
 	var AuthUser = func(ctx *context.Context) {
-		Admin = helper.Auth(ctx)
+		ctx.Input.Data["admin"] = helper.Auth(ctx)
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
 
-func GetMyOrgId() string {
-	if Admin != nil && Admin.Org != nil {
-		return Admin.Org.Id
-	}
-	return "0"
-}
-
-func AdminChannelID() string {
-	return helper.AdminChannelID(Admin)
-}
-
 func init() {
+	SetAuthenticationFilter()
 	SetGlobalResponseHeader()
-	graph, _ := service.NewGraph()
-	graph.Storage.Connect()
 }

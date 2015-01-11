@@ -3,13 +3,12 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/api/resource"
 	"github.com/feedlabs/api/public/v1/template/org"
 )
 
 type OrgController struct {
-	feedify.Controller
+	DefaultController
 }
 
 /**
@@ -25,10 +24,13 @@ type OrgController struct {
 func (this *OrgController) GetList() {
 	org.RequestGetList(this.GetInput())
 
-	obs := resource.GetOrgList()
-	this.Data["json"] = obs
+	obs, err := resource.GetOrgList()
+	if err != nil {
+		this.Data["json"] = org.GetError(err)
+	} else {
+		this.Data["json"] = org.ResponseGetList(obs)
+	}
 
-	org.ResponseGetList()
 	this.ServeJson()
 }
 
@@ -44,7 +46,15 @@ func (this *OrgController) GetList() {
  */
 func (this *OrgController) Get() {
 	org.RequestGet(this.GetInput())
-	org.ResponseGet()
+
+	orgId := this.Ctx.Input.Params[":orgId"]
+	ob, err := resource.GetOrg(orgId)
+	if err != nil {
+		this.Data["json"] = org.GetError(err)
+	} else {
+		this.Data["json"] = org.ResponseGet(ob)
+	}
+
 	this.ServeJson()
 }
 

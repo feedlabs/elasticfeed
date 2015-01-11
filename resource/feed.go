@@ -31,8 +31,12 @@ func GetFeedList(ApplicationId string, OrgId string) (feedList []*Feed, err erro
 		id := strconv.Itoa(rel.EndNode.Id)
 		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "entry")
 
-		feed := &Feed{id , app, data, len(rels) - 1}
+		feed := &Feed{id , app, data, len(rels)}
 		feeds = append(feeds, feed)
+	}
+
+	if feeds == nil {
+		feeds = make([]*Feed, 0)
 	}
 
 	return feeds, err
@@ -54,7 +58,7 @@ func GetFeed(id string, applicationId string, orgId string) (feed *Feed, err err
 	if node != nil && Contains(node.Labels, RESOURCE_FEED_LABEL) && app.Id == node.Data["applicationId"].(string) {
 		data := node.Data["data"].(string)
 		rels, _ := storage.RelationshipsNode(node.Id, "entry")
-		return &Feed{strconv.Itoa(node.Id), app, data, len(rels)-1}, nil
+		return &Feed{strconv.Itoa(node.Id), app, data, len(rels)}, nil
 	}
 
 	return nil, errors.New("FeedId not exist for ApplicationId `"+applicationId+"`")

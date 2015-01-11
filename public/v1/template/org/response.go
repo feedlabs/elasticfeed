@@ -1,5 +1,29 @@
 package org
 
+import (
+	"strconv"
+	"github.com/feedlabs/api/resource"
+)
+
+func GetEntry(org *resource.Org) (entry map[string]interface{}) {
+	entry = make(map[string]interface{})
+
+	stats := make(map[string]string)
+	stats["tokens"] = strconv.Itoa(org.Tokens)
+	stats["admins"] = strconv.Itoa(org.Admins)
+	stats["apps"] = strconv.Itoa(org.Applications)
+
+	entry["id"] = org.Id
+	entry["key"] = org.ApiKey
+	entry["stats"] = stats
+
+	return entry
+}
+
+func GetError(err error) map[string]string {
+	return map[string]string{"result": err.Error(), "status": "error"}
+}
+
 /**
  * @apiDefine OrgGetListResponse
  *
@@ -17,8 +41,14 @@ package org
  *     ]
  *   }
  */
-func ResponseGetList() {
+func ResponseGetList(orgList []*resource.Org) []map[string]interface{} {
+	var output []map[string]interface{}
 
+	for _, org := range orgList {
+		output = append(output, GetEntry(org))
+	}
+
+	return output
 }
 
 /**
@@ -35,8 +65,8 @@ func ResponseGetList() {
  *        "createStamp": "1415637736",
  *     }
  */
-func ResponseGet() {
-
+func ResponseGet(org *resource.Org) map[string]interface{} {
+	return GetEntry(org)
 }
 
 /**

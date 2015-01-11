@@ -78,6 +78,10 @@ func GetEntryList(FeedId string, ApplicationId string, OrgId string) (feedEntrie
 		}
 	}
 
+	if entries == nil {
+		entries = make([]*Entry, 0)
+	}
+
 	return entries, nil
 }
 
@@ -110,7 +114,10 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 	}
 
 	// add feed-entry
-	properties := graph.Props{"feedId": FeedId, "data": feedEntry.Data}
+	properties := graph.Props{
+		"feedId": feed.Id,
+		"data": feedEntry.Data,
+	}
 	entry, err := storage.NewNode(properties, RESOURCE_ENTRY_LABEL)
 
 	if err != nil {
