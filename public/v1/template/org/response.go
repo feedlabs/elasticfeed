@@ -1,5 +1,10 @@
 package org
 
+import (
+	"strconv"
+	"github.com/feedlabs/api/resource"
+)
+
 /**
  * @apiDefine OrgGetListResponse
  *
@@ -17,8 +22,26 @@ package org
  *     ]
  *   }
  */
-func ResponseGetList() {
+func ResponseGetList(orgList []*resource.Org) []map[string]interface {} {
 
+	var output []map[string]interface {}
+
+	for _, value := range orgList {
+		m := make(map[string]interface {})
+
+		stats := make(map[string]string)
+		stats["tokens"] = strconv.Itoa(value.Tokens)
+		stats["admins"] = strconv.Itoa(value.Admins)
+		stats["apps"] = strconv.Itoa(value.Applications)
+
+		m["id"] = value.Id
+		m["key"] = value.ApiKey
+		m["rel"] = stats
+
+		output = append(output, m)
+	}
+
+	return output
 }
 
 /**

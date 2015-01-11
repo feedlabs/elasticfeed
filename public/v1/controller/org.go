@@ -25,9 +25,8 @@ func (this *OrgController) GetList() {
 	org.RequestGetList(this.GetInput())
 
 	obs := resource.GetOrgList()
-	this.Data["json"] = obs
+	this.Data["json"] = org.ResponseGetList(obs)
 
-	org.ResponseGetList()
 	this.ServeJson()
 }
 
