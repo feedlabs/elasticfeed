@@ -36,7 +36,7 @@ func ResponseGetList(orgList []*resource.Org) []map[string]interface {} {
 
 		m["id"] = value.Id
 		m["key"] = value.ApiKey
-		m["rel"] = stats
+		m["stats"] = stats
 
 		output = append(output, m)
 	}
