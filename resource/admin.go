@@ -41,8 +41,21 @@ func GetAdminList(OrgId string) (adminList []*Admin, err error) {
 		tokens, _ := storage.RelationshipsNode(rel.EndNode.Id, "token")
 		whitelist := ConvertInterfaceToStringArray(rel.EndNode.Data["whitelist"])
 
-		admin := &Admin{id, org, rel.EndNode.Data["username"].(string), rel.EndNode.Data["maintainer"].(bool), whitelist, data, len(tokens)}
+		admin := &Admin{
+			id,
+			org,
+			rel.EndNode.Data["username"].(string),
+			rel.EndNode.Data["maintainer"].(bool),
+			whitelist,
+			data,
+			len(tokens),
+		}
+
 		admins = append(admins, admin)
+	}
+
+	if admins == nil {
+		admins = make([]*Admin, 0)
 	}
 
 	return admins, nil
@@ -66,7 +79,15 @@ func GetAdmin(id string, OrgId string) (admin *Admin, err error) {
 		tokens, _ := storage.RelationshipsNode(node.Id, "token")
 		whitelist := ConvertInterfaceToStringArray(node.Data["whitelist"])
 
-		return &Admin{strconv.Itoa(node.Id), org, node.Data["username"].(string), node.Data["maintainer"].(bool), whitelist, data, len(tokens)}, nil
+		return &Admin{
+			strconv.Itoa(node.Id),
+			org,
+			node.Data["username"].(string),
+			node.Data["maintainer"].(bool),
+			whitelist,
+			data,
+			len(tokens),
+		}, nil
 	}
 
 	return nil, errors.New("AdminId not exist")
@@ -82,7 +103,12 @@ func AddAdmin(admin Admin, orgId string) (id string, err error) {
 	// check if admin with e-mail/username already exists?
 
 	// add admin
-	properties := graph.Props{"username": admin.Username, "maintainer": admin.Maintainer, "whitelist": admin.Whitelist, "data": admin.Data}
+	properties := graph.Props{
+		"username": admin.Username,
+		"maintainer": admin.Maintainer,
+		"whitelist": admin.Whitelist,
+		"data": admin.Data,
+	}
 	_admin, err := storage.NewNode(properties, RESOURCE_ADMIN_LABEL)
 
 	if err != nil {

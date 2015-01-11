@@ -39,6 +39,10 @@ func GetApplicationList(orgId string) (appList []*Application, err error) {
 		applications = append(applications, application)
 	}
 
+	if applications == nil {
+		applications = make([]*Application, 0)
+	}
+
 	return applications, nil
 }
 
@@ -72,7 +76,9 @@ func AddApplication(application Application, orgId string) (id string, err error
 	}
 
 	// add app
-	properties := graph.Props{"data": application.Data}
+	properties := graph.Props{
+		"data": application.Data,
+	}
 	_application, err := storage.NewNode(properties, RESOURCE_APPLICATION_LABEL)
 
 	if err != nil {

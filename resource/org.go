@@ -45,6 +45,10 @@ func GetOrgList() (orgList []*Org, err error) {
 		orgs = append(orgs, org)
 	}
 
+	if orgs == nil {
+		orgs = make([]*Org, 0)
+	}
+
 	return orgs, nil
 }
 
@@ -102,11 +106,17 @@ func init() {
 // TOKEN PART
 
 func GetOrgTokenList(orgId string) (orgList []*Token, err error) {
-	return nil, nil
+	var tokens []*Token
+
+	if tokens == nil {
+		tokens = make([]*Token, 0)
+	}
+
+	return tokens, nil
 }
 
 func GetOrgToken(id string, orgId string) (org *Token, err error) {
-	return nil, nil
+	return nil, errors.New("TokenId not exist")
 }
 
 func AddOrgToken(token Token, orgId string) (id string, err error) {

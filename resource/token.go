@@ -30,6 +30,10 @@ func GetTokenList(AdminId string, OrgId string) (tokenLinst []*Token, err error)
 		tokens = append(tokens, token)
 	}
 
+	if tokens == nil {
+		tokens = make([]*Token, 0)
+	}
+
 	return tokens, nil
 }
 
