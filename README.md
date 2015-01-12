@@ -1,5 +1,5 @@
-api
-===
+elasticfeed
+===========
 
 what should be done
 -------------------
