@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego/context"
 
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/resource"
-	"github.com/feedlabs/api/helper"
+	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/helper"
 )
 
 type DefaultController struct {

@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/api/public/v1/controller"
+	"github.com/feedlabs/elasticfeed/public/v1/controller"
 )
 
 func init() {

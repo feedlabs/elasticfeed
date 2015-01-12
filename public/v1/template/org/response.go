@@ -2,7 +2,7 @@ package org
 
 import (
 	"strconv"
-	"github.com/feedlabs/api/resource"
+	"github.com/feedlabs/elasticfeed/resource"
 )
 
 func GetEntry(org *resource.Org) (entry map[string]interface{}) {

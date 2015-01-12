@@ -3,8 +3,8 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/feedlabs/api/resource"
-	"github.com/feedlabs/api/public/v1/template/feed"
+	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/public/v1/template/feed"
 )
 
 type FeedController struct {
