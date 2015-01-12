@@ -3,8 +3,8 @@ package helper
 import (
 	auth "github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
-	"github.com/feedlabs/api/resource"
-	"github.com/feedlabs/api/helper/config"
+	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/helper/config"
 )
 
 var (

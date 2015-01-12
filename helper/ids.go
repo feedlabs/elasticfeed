@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/feedlabs/api/resource"
+	"github.com/feedlabs/elasticfeed/resource"
 )
 
 func AdminChannelID(admin *resource.Admin) string {
