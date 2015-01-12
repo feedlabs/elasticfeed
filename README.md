@@ -10,7 +10,7 @@ Create symbolic link from you directory to `GOPATH`
 ```
 cd to-your-project
 mkdir -p $GOPATH/src/github.com/feedlabs
-ln -s $(pwd) $GOPATH/src/github.com/feedlabs/api
+ln -s $(pwd) $GOPATH/src/github.com/feedlabs/elasticfeed
 ```
 
 #### Run
