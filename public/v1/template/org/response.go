@@ -22,7 +22,7 @@ func GetEntry(org *resource.Org) (entry map[string]interface{}) {
 }
 
 func GetError(err error) (entry map[string]string, code int) {
-	return map[string]string{"result": err.Error(), "status": "error"}, template.ENTITY_NOEXIST
+	return map[string]string{"result": err.Error(), "status": "error"}, template.HTTP_CODE_ENTITY_NOEXIST
 }
 
 /**
@@ -49,7 +49,7 @@ func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{
 		output = append(output, GetEntry(org))
 	}
 
-	return output, template.VALID_REQUEST
+	return output, template.HTTP_CODE_VALID_REQUEST
 }
 
 /**
@@ -67,7 +67,7 @@ func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{
  *     }
  */
 func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
-	return GetEntry(org), template.VALID_REQUEST
+	return GetEntry(org), template.HTTP_CODE_VALID_REQUEST
 }
 
 /**
@@ -84,7 +84,7 @@ func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
  *     }
  */
 func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
-	return GetEntry(org), template.ENTITY_CREATED
+	return GetEntry(org), template.HTTP_CODE_ENTITY_CREATED
 }
 
 /**
@@ -101,7 +101,7 @@ func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
  *     }
  */
 func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
-	return GetEntry(org), template.ENTITY_CREATED
+	return GetEntry(org), template.HTTP_CODE_ENTITY_CREATED
 }
 
 /**
@@ -111,5 +111,5 @@ func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
  * HTTP/1.1 200 OK
  */
 func ResponseDelete() int {
-	return template.VALID_REQUEST
+	return template.HTTP_CODE_VALID_REQUEST
 }
