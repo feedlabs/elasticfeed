@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/public/v1/template/org"
+	template "github.com/feedlabs/elasticfeed/public/v1/template/org"
 )
 
 type OrgController struct {
@@ -22,14 +22,18 @@ type OrgController struct {
  * @apiUse OrgGetListResponse
  */
 func (this *OrgController) GetList() {
-	org.RequestGetList(this.GetInput())
+	template.RequestGetList(this.GetInput())
 
 	obs, err := resource.GetOrgList()
+
+	status := 0
 	if err != nil {
-		this.Data["json"] = org.GetError(err)
+		this.Data["json"], status = template.GetError(err)
 	} else {
-		this.Data["json"] = org.ResponseGetList(obs)
+		this.Data["json"], status = template.ResponseGetList(obs)
 	}
+
+	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
 
 	this.ServeJson()
 }
@@ -45,15 +49,19 @@ func (this *OrgController) GetList() {
  * @apiUse OrgGetResponse
  */
 func (this *OrgController) Get() {
-	org.RequestGet(this.GetInput())
+	template.RequestGet(this.GetInput())
 
 	orgId := this.Ctx.Input.Params[":orgId"]
 	ob, err := resource.GetOrg(orgId)
+
+	status := 0
 	if err != nil {
-		this.Data["json"] = org.GetError(err)
+		this.Data["json"], status = template.GetError(err)
 	} else {
-		this.Data["json"] = org.ResponseGet(ob)
+		this.Data["json"], status = template.ResponseGet(ob)
 	}
+
+	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
 
 	this.ServeJson()
 }
@@ -69,22 +77,24 @@ func (this *OrgController) Get() {
  * @apiUse OrgPostResponse
  */
 func (this *OrgController) Post() {
-	org.RequestPost(this.GetInput())
+	template.RequestPost(this.GetInput())
 
-	var ob resource.Org
+	var org resource.Org
 
 	data := this.Ctx.Input.CopyBody()
-	json.Unmarshal(data, &ob)
+	json.Unmarshal(data, &org)
 
-	orgid, err := resource.AddOrg(ob)
+	err := resource.AddOrg(&org)
 
+	status := 0
 	if err != nil {
-		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		this.Data["json"], status = template.GetError(err)
 	} else {
-		this.Data["json"] = map[string]string{"id": orgid}
+		this.Data["json"], status = template.ResponsePost(&org)
 	}
 
-	org.ResponsePost()
+	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
+
 	this.ServeJson()
 }
 
@@ -100,22 +110,25 @@ func (this *OrgController) Post() {
  */
 
 func (this *OrgController) Put() {
-	org.RequestPut(this.GetInput())
+	template.RequestPut(this.GetInput())
 
-	orgId := this.Ctx.Input.Params[":orgId"]
-	var ob resource.Org
+	var org resource.Org
+	org.Id = this.Ctx.Input.Params[":orgId"]
 
 	data := this.Ctx.Input.CopyBody()
-	json.Unmarshal(data, &ob)
+	json.Unmarshal(data, &org)
 
-	err := resource.UpdateOrg(orgId, ob.Data)
+	err := resource.UpdateOrg(&org)
+
+	status := 0
 	if err != nil {
-		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		this.Data["json"], status = template.GetError(err)
 	} else {
-		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
+		this.Data["json"], status = template.ResponsePut(&org)
 	}
 
-	org.ResponsePut()
+	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
+
 	this.ServeJson()
 }
 
@@ -130,7 +143,7 @@ func (this *OrgController) Put() {
  * @apiUse OrgDeleteResponse
  */
 func (this *OrgController) Delete() {
-	org.RequestDelete(this.GetInput())
-	org.ResponseDelete()
+	template.RequestDelete(this.GetInput())
+	this.DefaultController.Controller.Ctx.Output.SetStatus(template.ResponseDelete())
 	this.ServeJson()
 }

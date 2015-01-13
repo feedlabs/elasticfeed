@@ -3,6 +3,7 @@ package org
 import (
 	"strconv"
 	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/public/v1/template"
 )
 
 func GetEntry(org *resource.Org) (entry map[string]interface{}) {
@@ -14,14 +15,14 @@ func GetEntry(org *resource.Org) (entry map[string]interface{}) {
 	stats["apps"] = strconv.Itoa(org.Applications)
 
 	entry["id"] = org.Id
-	entry["key"] = org.ApiKey
+	entry["name"] = org.Name
 	entry["stats"] = stats
 
 	return entry
 }
 
-func GetError(err error) map[string]string {
-	return map[string]string{"result": err.Error(), "status": "error"}
+func GetError(err error) (entry map[string]string, code int) {
+	return map[string]string{"result": err.Error(), "status": "error"}, template.ENTITY_NOEXIST
 }
 
 /**
@@ -41,14 +42,14 @@ func GetError(err error) map[string]string {
  *     ]
  *   }
  */
-func ResponseGetList(orgList []*resource.Org) []map[string]interface{} {
+func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{}, code int) {
 	var output []map[string]interface{}
 
 	for _, org := range orgList {
 		output = append(output, GetEntry(org))
 	}
 
-	return output
+	return output, template.VALID_REQUEST
 }
 
 /**
@@ -65,8 +66,8 @@ func ResponseGetList(orgList []*resource.Org) []map[string]interface{} {
  *        "createStamp": "1415637736",
  *     }
  */
-func ResponseGet(org *resource.Org) map[string]interface{} {
-	return GetEntry(org)
+func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
+	return GetEntry(org), template.VALID_REQUEST
 }
 
 /**
@@ -82,8 +83,8 @@ func ResponseGet(org *resource.Org) map[string]interface{} {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponsePost() {
-
+func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
+	return GetEntry(org), template.ENTITY_CREATED
 }
 
 /**
@@ -99,8 +100,8 @@ func ResponsePost() {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponsePut() {
-
+func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
+	return GetEntry(org), template.ENTITY_CREATED
 }
 
 /**
@@ -109,6 +110,6 @@ func ResponsePut() {
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
  */
-func ResponseDelete() {
-
+func ResponseDelete() int {
+	return template.VALID_REQUEST
 }
