@@ -22,7 +22,7 @@ func GetEntry(org *resource.Org) (entry map[string]interface{}) {
 }
 
 func GetError(err error) (entry map[string]string, code int) {
-	return template.GetError(err)
+	return template.Error(err)
 }
 
 /**
@@ -49,7 +49,7 @@ func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{
 		output = append(output, GetEntry(org))
 	}
 
-	return output, template.HTTP_CODE_VALID_REQUEST
+	return output, template.GetOK()
 }
 
 /**
@@ -67,7 +67,7 @@ func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{
  *     }
  */
 func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
-	return GetEntry(org), template.HTTP_CODE_VALID_REQUEST
+	return GetEntry(org), template.GetOK()
 }
 
 /**
@@ -84,7 +84,7 @@ func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
  *     }
  */
 func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
-	return GetEntry(org), template.HTTP_CODE_ENTITY_CREATED
+	return GetEntry(org), template.PostOK()
 }
 
 /**
@@ -101,7 +101,7 @@ func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
  *     }
  */
 func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
-	return GetEntry(org), template.HTTP_CODE_ENTITY_CREATED
+	return GetEntry(org), template.PutOK()
 }
 
 /**
@@ -111,5 +111,5 @@ func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
  * HTTP/1.1 200 OK
  */
 func ResponseDelete() int {
-	return template.HTTP_CODE_VALID_REQUEST
+	return template.DeleteOK()
 }
