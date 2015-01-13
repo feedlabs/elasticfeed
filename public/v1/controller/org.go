@@ -33,7 +33,7 @@ func (this *OrgController) GetList() {
 		this.Data["json"], status = template.ResponseGetList(obs)
 	}
 
-	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
+	this.SetResponseStatusCode(status)
 
 	this.ServeJson()
 }
@@ -61,7 +61,7 @@ func (this *OrgController) Get() {
 		this.Data["json"], status = template.ResponseGet(ob)
 	}
 
-	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
+	this.SetResponseStatusCode(status)
 
 	this.ServeJson()
 }
@@ -93,7 +93,7 @@ func (this *OrgController) Post() {
 		this.Data["json"], status = template.ResponsePost(&org)
 	}
 
-	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
+	this.SetResponseStatusCode(status)
 
 	this.ServeJson()
 }
@@ -127,7 +127,7 @@ func (this *OrgController) Put() {
 		this.Data["json"], status = template.ResponsePut(&org)
 	}
 
-	this.DefaultController.Controller.Ctx.Output.SetStatus(status)
+	this.SetResponseStatusCode(status)
 
 	this.ServeJson()
 }
@@ -144,6 +144,8 @@ func (this *OrgController) Put() {
  */
 func (this *OrgController) Delete() {
 	template.RequestDelete(this.GetInput())
-	this.DefaultController.Controller.Ctx.Output.SetStatus(template.ResponseDelete())
+
+	this.SetResponseStatusCode(template.ResponseDelete())
+
 	this.ServeJson()
 }

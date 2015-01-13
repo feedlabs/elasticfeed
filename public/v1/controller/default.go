@@ -37,6 +37,10 @@ func (this *DefaultController) ServeJson(encoding ...bool) {
 	this.Controller.ServeJson(encoding...)
 }
 
+func (this *DefaultController) SetResponseStatusCode(code int) {
+	this.Controller.Ctx.Output.SetStatus(code)
+}
+
 func SetGlobalResponseHeader() {
 	var FilterUser = func(ctx *context.Context) {
 		ctx.Output.Header("Access-Control-Allow-Origin", "*")
