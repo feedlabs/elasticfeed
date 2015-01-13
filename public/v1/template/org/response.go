@@ -22,7 +22,7 @@ func GetEntry(org *resource.Org) (entry map[string]interface{}) {
 }
 
 func GetError(err error) (entry map[string]string, code int) {
-	return map[string]string{"result": err.Error(), "status": "error"}, template.HTTP_CODE_ENTITY_NOEXIST
+	return template.GetError(err)
 }
 
 /**
