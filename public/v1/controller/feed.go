@@ -35,7 +35,7 @@ func (this *FeedController) GetList() {
 	}
 
 	feed.ResponseGetList()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -62,7 +62,7 @@ func (this *FeedController) Get() {
 	}
 
 	feed.ResponseGet()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -94,7 +94,7 @@ func (this *FeedController) Post() {
 	}
 
 	feed.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -124,7 +124,7 @@ func (this *FeedController) Put() {
 	}
 
 	feed.ResponsePut()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -150,5 +150,5 @@ func (this *FeedController) Delete() {
 	}
 
 	feed.ResponseDelete()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }

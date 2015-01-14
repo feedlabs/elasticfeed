@@ -1,6 +1,8 @@
 package org
 
 import (
+//	"fmt"
+//	"errors"
 	"github.com/feedlabs/feedify/context"
 )
 
@@ -9,8 +11,8 @@ import (
  * @apiDefine OrgGetListRequest
  *
  */
-func RequestGetList(input *context.Input) {
-
+func RequestGetList(input *context.Input) (err error) {
+	return nil //errors.New("worng request")
 }
 
 /**

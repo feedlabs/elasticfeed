@@ -15,7 +15,7 @@ type DefaultController struct {
 
 func (this *DefaultController) Get() {
 	this.Data["json"] = map[string]string{"succes": "ok"}
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 func (this *DefaultController) GetAdmin() *resource.Admin {
@@ -33,8 +33,10 @@ func (this *DefaultController) GetAdminOrgId() string {
 	return "0"
 }
 
-func (this *DefaultController) ServeJson(encoding ...bool) {
-	this.Controller.ServeJson(encoding...)
+func (this *DefaultController) ServeJson(data interface {}, status int) {
+	this.Data["json"] = data
+	this.SetResponseStatusCode(status)
+	this.Controller.ServeJson()
 }
 
 func (this *DefaultController) SetResponseStatusCode(code int) {

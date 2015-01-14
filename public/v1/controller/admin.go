@@ -33,7 +33,7 @@ func (this *AdminController) GetList() {
 	}
 
 	admin.ResponseGetList()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -59,7 +59,7 @@ func (this *AdminController) Get() {
 	}
 
 	admin.ResponseGet()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -89,7 +89,7 @@ func (this *AdminController) Post() {
 	}
 
 	admin.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -105,7 +105,7 @@ func (this *AdminController) Post() {
 func (this *AdminController) Put() {
 	admin.RequestPut(this.GetInput())
 	admin.ResponsePut()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -121,5 +121,5 @@ func (this *AdminController) Put() {
 func (this *AdminController) Delete() {
 	admin.RequestDelete(this.GetInput())
 	admin.ResponseDelete()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }

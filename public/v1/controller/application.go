@@ -33,7 +33,7 @@ func (this *ApplicationController) GetList() {
 	}
 
 	application.ResponseGetList()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -59,7 +59,7 @@ func (this *ApplicationController) Get() {
 	}
 
 	application.ResponseGet()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -89,7 +89,7 @@ func (this *ApplicationController) Post() {
 	}
 
 	application.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -120,7 +120,7 @@ func (this *ApplicationController) Put() {
 	}
 
 	application.ResponsePut()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -146,5 +146,5 @@ func (this *ApplicationController) Delete() {
 	}
 
 	application.ResponseDelete()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }

@@ -22,20 +22,18 @@ type OrgController struct {
  * @apiUse OrgGetListResponse
  */
 func (this *OrgController) GetList() {
-	template.RequestGetList(this.GetInput())
-
-	obs, err := resource.GetOrgList()
-
-	status := 0
+	err := template.RequestGetList(this.GetInput())
 	if err != nil {
-		this.Data["json"], status = template.GetError(err)
-	} else {
-		this.Data["json"], status = template.ResponseGetList(obs)
+		this.ServeJson(template.GetError(err))
+		return
 	}
 
-	this.SetResponseStatusCode(status)
-
-	this.ServeJson()
+	obs, err := resource.GetOrgList()
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+	} else {
+		this.ServeJson(template.ResponseGetList(obs))
+	}
 }
 
 /**
@@ -63,7 +61,7 @@ func (this *OrgController) Get() {
 
 	this.SetResponseStatusCode(status)
 
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -95,7 +93,7 @@ func (this *OrgController) Post() {
 
 	this.SetResponseStatusCode(status)
 
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -129,7 +127,7 @@ func (this *OrgController) Put() {
 
 	this.SetResponseStatusCode(status)
 
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -147,5 +145,5 @@ func (this *OrgController) Delete() {
 
 	this.SetResponseStatusCode(template.ResponseDelete())
 
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
