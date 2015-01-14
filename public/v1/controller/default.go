@@ -7,6 +7,7 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/elasticfeed/resource"
 	"github.com/feedlabs/elasticfeed/helper"
+	"github.com/feedlabs/elasticfeed/public/v1/template"
 )
 
 type DefaultController struct {
@@ -33,7 +34,7 @@ func (this *DefaultController) GetAdminOrgId() string {
 	return "0"
 }
 
-func (this *DefaultController) ServeJson(data interface {}, status int) {
+func (this *DefaultController) ServeJson(data interface{}, status int) {
 	this.Data["json"] = data
 	this.SetResponseStatusCode(status)
 	this.Controller.ServeJson()
@@ -57,7 +58,17 @@ func SetAuthenticationFilter() {
 	beego.InsertFilter("/*", beego.BeforeRouter, AuthUser)
 }
 
+func NoRoutes() {
+	var router = func(ctx *context.Context) {
+		if ctx.Output.Status == 0 {
+			ctx.Output.SetStatus(template.HTTP_CODE_INVALID_REQUEST)
+		}
+	}
+	beego.InsertFilter("/*", beego.AfterStatic, router)
+}
+
 func init() {
 	SetAuthenticationFilter()
 	SetGlobalResponseHeader()
+	NoRoutes()
 }
