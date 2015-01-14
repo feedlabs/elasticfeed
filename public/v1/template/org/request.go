@@ -1,18 +1,20 @@
 package org
 
 import (
-//	"fmt"
-//	"errors"
+	"errors"
 	"github.com/feedlabs/feedify/context"
+	"github.com/feedlabs/elasticfeed/public/v1/template"
 )
-
 
 /**
  * @apiDefine OrgGetListRequest
  *
  */
 func RequestGetList(input *context.Input) (err error) {
-	return nil //errors.New("worng request")
+	if template.HasQueryParams(input.Request.URL) {
+		return errors.New("Too many params in URI query")
+	}
+	return nil
 }
 
 /**
