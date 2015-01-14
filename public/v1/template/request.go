@@ -4,6 +4,6 @@ import (
 	net "net/url"
 )
 
-func HasQueryParams(url *net.URL) bool {
-	return len(url.Query()) != 0
+func QueryParamsCount(url *net.URL) int {
+	return len(url.Query())
 }

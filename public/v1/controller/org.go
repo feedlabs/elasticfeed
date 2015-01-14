@@ -47,21 +47,20 @@ func (this *OrgController) GetList() {
  * @apiUse OrgGetResponse
  */
 func (this *OrgController) Get() {
-	template.RequestGet(this.GetInput())
-
-	orgId := this.Ctx.Input.Params[":orgId"]
-	ob, err := resource.GetOrg(orgId)
-
-	status := 0
+	err := template.RequestGet(this.GetInput())
 	if err != nil {
-		this.Data["json"], status = template.GetError(err)
-	} else {
-		this.Data["json"], status = template.ResponseGet(ob)
+		this.ServeJson(template.GetError(err))
+		return
 	}
 
-	this.SetResponseStatusCode(status)
+	orgId := this.Ctx.Input.Params[":orgId"]
 
-	this.Controller.ServeJson()
+	ob, err := resource.GetOrg(orgId)
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+	} else {
+		this.ServeJson(template.ResponseGet(ob))
+	}
 }
 
 /**
@@ -75,25 +74,23 @@ func (this *OrgController) Get() {
  * @apiUse OrgPostResponse
  */
 func (this *OrgController) Post() {
-	template.RequestPost(this.GetInput())
+	err := template.RequestPost(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
 	var org resource.Org
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &org)
 
-	err := resource.AddOrg(&org)
-
-	status := 0
+	err = resource.AddOrg(&org)
 	if err != nil {
-		this.Data["json"], status = template.GetError(err)
+		this.ServeJson(template.GetError(err))
 	} else {
-		this.Data["json"], status = template.ResponsePost(&org)
+		this.ServeJson(template.ResponsePost(&org))
 	}
-
-	this.SetResponseStatusCode(status)
-
-	this.Controller.ServeJson()
 }
 
 /**
@@ -108,7 +105,11 @@ func (this *OrgController) Post() {
  */
 
 func (this *OrgController) Put() {
-	template.RequestPut(this.GetInput())
+	err := template.RequestPut(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
 	var org resource.Org
 	org.Id = this.Ctx.Input.Params[":orgId"]
@@ -116,18 +117,12 @@ func (this *OrgController) Put() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &org)
 
-	err := resource.UpdateOrg(&org)
-
-	status := 0
+	err = resource.UpdateOrg(&org)
 	if err != nil {
-		this.Data["json"], status = template.GetError(err)
+		this.ServeJson(template.GetError(err))
 	} else {
-		this.Data["json"], status = template.ResponsePut(&org)
+		this.ServeJson(template.ResponsePut(&org))
 	}
-
-	this.SetResponseStatusCode(status)
-
-	this.Controller.ServeJson()
 }
 
 /**
@@ -141,9 +136,11 @@ func (this *OrgController) Put() {
  * @apiUse OrgDeleteResponse
  */
 func (this *OrgController) Delete() {
-	template.RequestDelete(this.GetInput())
+	err := template.RequestDelete(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
-	this.SetResponseStatusCode(template.ResponseDelete())
-
-	this.Controller.ServeJson()
+	this.ServeJson(template.ResponseDelete("Org has been deleted"))
 }

@@ -25,6 +25,10 @@ func GetError(err error) (entry map[string]string, code int) {
 	return template.Error(err)
 }
 
+func GetSuccess(msg string) (entry map[string]string, code int) {
+	return template.Success(msg)
+}
+
 /**
  * @apiDefine OrgGetListResponse
  *
@@ -110,6 +114,6 @@ func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
  */
-func ResponseDelete() int {
-	return template.DeleteOK()
+func ResponseDelete(msg string) (entry map[string]string, code int) {
+	return GetSuccess(msg)
 }
