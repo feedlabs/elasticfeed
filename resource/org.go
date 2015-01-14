@@ -37,11 +37,11 @@ func GetOrgList() (orgList []*Org, err error) {
 		app_rels, _ := storage.RelationshipsNode(node.Id, "app")
 		token_rels, _ := storage.RelationshipsNode(node.Id, "token")
 
-		if node.Data["apiKey"] == nil {
-			node.Data["apiKey"] = ""
+		if node.Data["name"] == nil {
+			node.Data["name"] = ""
 		}
 
-		org := &Org{id , node.Data["apiKey"].(string), data, len(token_rels), len(admin_rels), len(app_rels)}
+		org := &Org{id , node.Data["name"].(string), data, len(token_rels), len(admin_rels), len(app_rels)}
 		orgs = append(orgs, org)
 	}
 
@@ -66,32 +66,36 @@ func GetOrg(id string) (org *Org, err error) {
 		app_rels, _ := storage.RelationshipsNode(node.Id, "app")
 		token_rels, _ := storage.RelationshipsNode(node.Id, "token")
 
-		if node.Data["apiKey"] == nil {
-			node.Data["apiKey"] = ""
+		if node.Data["name"] == nil {
+			node.Data["name"] = ""
 		}
 
-		return &Org{strconv.Itoa(node.Id), node.Data["apiKey"].(string), data, len(token_rels), len(admin_rels), len(app_rels)}, nil
+		return &Org{strconv.Itoa(node.Id), node.Data["name"].(string), data, len(token_rels), len(admin_rels), len(app_rels)}, nil
 	}
 
 	return nil, errors.New("OrgId `"+id+"` not exist")
 }
 
-func AddOrg(org Org) (id string, err error) {
-	properties := graph.Props{"data": org.Data}
+func AddOrg(org *Org) (err error) {
+	properties := graph.Props{
+		"name": org.Name,
+		"data": org.Data,
+	}
+
 	_org, err := storage.NewNode(properties, RESOURCE_ORG_LABEL)
 
 	if err != nil {
-		return "0", err
+		return err
 	}
 
 	org.Id = strconv.Itoa(_org.Id)
 
-	return org.Id, nil
+	return nil
 }
 
-func UpdateOrg(id string, data string) (err error) {
-	_id, _ := strconv.Atoi(id)
-	return storage.SetPropertyNode(_id, "data", data)
+func UpdateOrg(org *Org) (err error) {
+	_id, _ := strconv.Atoi(org.Id)
+	return storage.SetPropertyNode(_id, "name", org.Name)
 }
 
 func DeleteOrg(id string) (error) {
@@ -127,7 +131,9 @@ func AddOrgToken(token Token, orgId string) (id string, err error) {
 	}
 
 	// add token
-	properties := graph.Props{"data": token.Data}
+	properties := graph.Props{
+		"data": token.Data,
+	}
 	_token, err := storage.NewNode(properties, RESOURCE_TOKEN_LABEL)
 
 	if err != nil {

@@ -36,7 +36,7 @@ func (this *EntryController) GetListByFeed() {
 	}
 
 	entry.ResponseGetListByFeed()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -78,7 +78,7 @@ func (this *EntryController) Get() {
 	}
 
 	entry.ResponseGet()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -95,7 +95,7 @@ func (this *EntryController) Post() {
 	// global entry; should be added to APP no to the FEED
 	entry.RequestPost(this.GetInput())
 	entry.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -144,7 +144,7 @@ func (this *EntryController) PostToFeed() {
 	}
 
 	entry.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -177,7 +177,7 @@ func (this *EntryController) Put() {
 	}
 
 	entry.ResponsePut()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -206,7 +206,7 @@ func (this *EntryController) Delete() {
 	}
 
 	entry.ResponseDelete()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -222,5 +222,5 @@ func (this *EntryController) Delete() {
 func (this *EntryController) Remove() {
 	entry.RequestRemove(this.GetInput())
 	entry.ResponseRemove()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }

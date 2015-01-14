@@ -34,7 +34,7 @@ func (this *TokenController) GetOrgList() {
 	}
 
 	token.ResponseGetList()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -61,7 +61,7 @@ func (this *TokenController) GetOrg() {
 	}
 
 	token.ResponseGet()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -92,7 +92,7 @@ func (this *TokenController) PostOrg() {
 	}
 
 	token.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -112,7 +112,7 @@ func (this *TokenController) DeleteOrg() {
 //	tokenId := this.Ctx.Input.Params[":tokenId"]
 
 	token.ResponseDelete()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -138,7 +138,7 @@ func (this *TokenController) GetAdminList() {
 	}
 
 	token.ResponseGetList()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -154,7 +154,7 @@ func (this *TokenController) GetAdminList() {
 func (this *TokenController) GetAdmin() {
 	token.RequestGet(this.GetInput())
 	token.ResponseGet()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -185,7 +185,7 @@ func (this *TokenController) PostAdmin() {
 	}
 
 	token.ResponsePost()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }
 
 /**
@@ -201,5 +201,5 @@ func (this *TokenController) PostAdmin() {
 func (this *TokenController) DeleteAdmin() {
 	token.RequestDelete(this.GetInput())
 	token.ResponseDelete()
-	this.ServeJson()
+	this.Controller.ServeJson()
 }

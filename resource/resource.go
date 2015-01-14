@@ -29,7 +29,7 @@ var (
 
 type Org struct {
 	Id               string
-	ApiKey           string
+	Name             string
 	Data             string
 
 	Tokens            int

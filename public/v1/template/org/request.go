@@ -1,16 +1,24 @@
 package org
 
 import (
+	"errors"
 	"github.com/feedlabs/feedify/context"
+	"github.com/feedlabs/elasticfeed/public/v1/template"
 )
 
+func CheckRequiredParams() {
+	// orgId
+}
 
 /**
  * @apiDefine OrgGetListRequest
  *
  */
-func RequestGetList(input *context.Input) {
-
+func RequestGetList(input *context.Input) (err error) {
+	if template.QueryParamsCount(input.Request.URL) != 0 {
+		return errors.New("Too many params in URI query")
+	}
+	return nil
 }
 
 /**
@@ -18,15 +26,21 @@ func RequestGetList(input *context.Input) {
  *
  * @apiParam {String} orgId  The org id
  */
-func RequestGet(input *context.Input) {
-
+func RequestGet(input *context.Input) (err error) {
+	if template.QueryParamsCount(input.Request.URL) != 1 {
+		return errors.New("Too many params in URI query")
+	}
+	return nil
 }
 
 /**
  * @apiDefine OrgPostRequest
  */
-func RequestPost(input *context.Input) {
-
+func RequestPost(input *context.Input) (err error) {
+	if template.QueryParamsCount(input.Request.URL) != 0 {
+		return errors.New("Too many params in URI query")
+	}
+	return nil
 }
 
 /**
@@ -34,8 +48,11 @@ func RequestPost(input *context.Input) {
  *
  * @apiParam {String}    orgId        The org id
  */
-func RequestPut(input *context.Input) {
-
+func RequestPut(input *context.Input) (err error) {
+	if template.QueryParamsCount(input.Request.URL) != 1 {
+		return errors.New("Too many params in URI query")
+	}
+	return nil
 }
 
 /**
@@ -43,6 +60,9 @@ func RequestPut(input *context.Input) {
  *
  * @apiParam {String}  orgId  The org id
  */
-func RequestDelete(input *context.Input) {
-
+func RequestDelete(input *context.Input) (err error) {
+	if template.QueryParamsCount(input.Request.URL) != 1 {
+		return errors.New("Too many params in URI query")
+	}
+	return nil
 }
