@@ -70,5 +70,5 @@ func NoRoutes() {
 func init() {
 	SetAuthenticationFilter()
 	SetGlobalResponseHeader()
-	NoRoutes()
+//	NoRoutes()
 }

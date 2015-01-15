@@ -1,7 +1,11 @@
 package template
 
-func Error(err error) (entry map[string]string, code int) {
-	return map[string]string{"result": err.Error(), "status": "error"}, HTTP_CODE_ENTITY_NOEXIST
+func Error(err error) (entry map[string]interface{}, code int) {
+	entry = make(map[string]interface{})
+	entry["result"] = err.Error()
+	entry["status"] = "error"
+
+	return entry, HTTP_CODE_ENTITY_NOEXIST
 }
 
 func Success(msg string) (entry map[string]string, code int) {

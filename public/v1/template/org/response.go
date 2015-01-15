@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"github.com/feedlabs/elasticfeed/resource"
 	"github.com/feedlabs/elasticfeed/public/v1/template"
+	"errors"
 )
 
 func GetEntry(org *resource.Org) (entry map[string]interface{}) {
@@ -21,7 +22,7 @@ func GetEntry(org *resource.Org) (entry map[string]interface{}) {
 	return entry
 }
 
-func GetError(err error) (entry map[string]string, code int) {
+func GetError(err error) (entry map[string]interface {}, code int) {
 	return template.Error(err)
 }
 
@@ -46,10 +47,24 @@ func GetSuccess(msg string) (entry map[string]string, code int) {
  *     ]
  *   }
  */
-func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{}, code int) {
+func ResponseGetList(orgList []*resource.Org, formatter *template.ResponseDefinition) (entryList []map[string]interface{}, code int) {
 	var output []map[string]interface{}
 
-	for _, org := range orgList {
+	start := formatter.GetPage() * formatter.GetLimit()
+	end := start + formatter.GetLimit()
+	if len(orgList) < end {
+		end = len(orgList)
+	}
+
+	if start > end {
+		errMsg, code := GetError(errors.New("Paging is out of range"))
+		output = append(output, errMsg)
+		return output, code
+	}
+
+	orgListPaging := orgList[start:end]
+
+	for _, org := range orgListPaging {
 		output = append(output, GetEntry(org))
 	}
 
@@ -70,7 +85,7 @@ func ResponseGetList(orgList []*resource.Org) (entryList []map[string]interface{
  *        "createStamp": "1415637736",
  *     }
  */
-func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
+func ResponseGet(org *resource.Org, formatter *template.ResponseDefinition) (entry map[string]interface{}, code int) {
 	return GetEntry(org), template.GetOK()
 }
 
@@ -87,7 +102,7 @@ func ResponseGet(org *resource.Org) (entry map[string]interface{}, code int) {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
+func ResponsePost(org *resource.Org, formatter *template.ResponseDefinition) (entry map[string]interface{}, code int) {
 	return GetEntry(org), template.PostOK()
 }
 
@@ -104,7 +119,7 @@ func ResponsePost(org *resource.Org) (entry map[string]interface{}, code int) {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
+func ResponsePut(org *resource.Org, formatter *template.ResponseDefinition) (entry map[string]interface{}, code int) {
 	return GetEntry(org), template.PutOK()
 }
 
@@ -114,6 +129,6 @@ func ResponsePut(org *resource.Org) (entry map[string]interface{}, code int) {
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
  */
-func ResponseDelete(msg string) (entry map[string]string, code int) {
+func ResponseDelete(msg string, formatter *template.ResponseDefinition) (entry map[string]string, code int) {
 	return GetSuccess(msg)
 }
