@@ -10,15 +10,19 @@ func CheckRequiredParams() {
 	// orgId
 }
 
+func GetResponseDefinition(input *context.Input) (*template.ResponseDefinition) {
+	return template.NewResponseDefinition(input)
+}
+
 /**
  * @apiDefine OrgGetListRequest
  *
  */
-func RequestGetList(input *context.Input) (err error) {
-	if template.QueryParamsCount(input.Request.URL) != 0 {
-		return errors.New("Too many params in URI query")
+func RequestGetList(input *context.Input) (formatter *template.ResponseDefinition, err error) {
+	if template.QueryParamsCount(input.Request.URL) > 4 {
+		return nil, errors.New("Too many params in URI query")
 	}
-	return nil
+	return GetResponseDefinition(input), nil
 }
 
 /**
@@ -26,21 +30,21 @@ func RequestGetList(input *context.Input) (err error) {
  *
  * @apiParam {String} orgId  The org id
  */
-func RequestGet(input *context.Input) (err error) {
+func RequestGet(input *context.Input) (formatter *template.ResponseDefinition, err error) {
 	if template.QueryParamsCount(input.Request.URL) != 1 {
-		return errors.New("Too many params in URI query")
+		return nil, errors.New("Too many params in URI query")
 	}
-	return nil
+	return GetResponseDefinition(input), nil
 }
 
 /**
  * @apiDefine OrgPostRequest
  */
-func RequestPost(input *context.Input) (err error) {
+func RequestPost(input *context.Input) (formatter *template.ResponseDefinition, err error) {
 	if template.QueryParamsCount(input.Request.URL) != 0 {
-		return errors.New("Too many params in URI query")
+		return nil, errors.New("Too many params in URI query")
 	}
-	return nil
+	return GetResponseDefinition(input), nil
 }
 
 /**
@@ -48,11 +52,11 @@ func RequestPost(input *context.Input) (err error) {
  *
  * @apiParam {String}    orgId        The org id
  */
-func RequestPut(input *context.Input) (err error) {
+func RequestPut(input *context.Input) (formatter *template.ResponseDefinition, err error) {
 	if template.QueryParamsCount(input.Request.URL) != 1 {
-		return errors.New("Too many params in URI query")
+		return nil, errors.New("Too many params in URI query")
 	}
-	return nil
+	return GetResponseDefinition(input), nil
 }
 
 /**
@@ -60,9 +64,9 @@ func RequestPut(input *context.Input) (err error) {
  *
  * @apiParam {String}  orgId  The org id
  */
-func RequestDelete(input *context.Input) (err error) {
+func RequestDelete(input *context.Input) (formatter *template.ResponseDefinition, err error) {
 	if template.QueryParamsCount(input.Request.URL) != 1 {
-		return errors.New("Too many params in URI query")
+		return nil, errors.New("Too many params in URI query")
 	}
-	return nil
+	return GetResponseDefinition(input), nil
 }

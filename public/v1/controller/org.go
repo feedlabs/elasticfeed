@@ -22,7 +22,7 @@ type OrgController struct {
  * @apiUse OrgGetListResponse
  */
 func (this *OrgController) GetList() {
-	err := template.RequestGetList(this.GetInput())
+	formatter, err := template.RequestGetList(this.GetInput())
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return
@@ -32,7 +32,7 @@ func (this *OrgController) GetList() {
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 	} else {
-		this.ServeJson(template.ResponseGetList(obs))
+		this.ServeJson(template.ResponseGetList(obs, formatter))
 	}
 }
 
@@ -47,7 +47,7 @@ func (this *OrgController) GetList() {
  * @apiUse OrgGetResponse
  */
 func (this *OrgController) Get() {
-	err := template.RequestGet(this.GetInput())
+	formatter, err := template.RequestGet(this.GetInput())
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return
@@ -59,7 +59,7 @@ func (this *OrgController) Get() {
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 	} else {
-		this.ServeJson(template.ResponseGet(ob))
+		this.ServeJson(template.ResponseGet(ob, formatter))
 	}
 }
 
@@ -74,7 +74,7 @@ func (this *OrgController) Get() {
  * @apiUse OrgPostResponse
  */
 func (this *OrgController) Post() {
-	err := template.RequestPost(this.GetInput())
+	formatter, err := template.RequestPost(this.GetInput())
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return
@@ -89,7 +89,7 @@ func (this *OrgController) Post() {
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 	} else {
-		this.ServeJson(template.ResponsePost(&org))
+		this.ServeJson(template.ResponsePost(&org, formatter))
 	}
 }
 
@@ -105,7 +105,7 @@ func (this *OrgController) Post() {
  */
 
 func (this *OrgController) Put() {
-	err := template.RequestPut(this.GetInput())
+	formatter, err := template.RequestPut(this.GetInput())
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return
@@ -121,7 +121,7 @@ func (this *OrgController) Put() {
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 	} else {
-		this.ServeJson(template.ResponsePut(&org))
+		this.ServeJson(template.ResponsePut(&org, formatter))
 	}
 }
 
@@ -136,11 +136,11 @@ func (this *OrgController) Put() {
  * @apiUse OrgDeleteResponse
  */
 func (this *OrgController) Delete() {
-	err := template.RequestDelete(this.GetInput())
+	formatter, err := template.RequestDelete(this.GetInput())
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return
+	} else {
+		this.ServeJson(template.ResponseDelete("Org has been deleted", formatter))
 	}
-
-	this.ServeJson(template.ResponseDelete("Org has been deleted"))
 }
