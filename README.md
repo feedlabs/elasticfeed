@@ -3,7 +3,7 @@ elasticfeed
 
 what should be done
 -------------------
-![feed-overview - api](https://cloud.githubusercontent.com/assets/1843523/5789061/0f01c5f4-9e5b-11e4-8bf6-113bd73d4457.png)
+![feed-overview - api 1](https://cloud.githubusercontent.com/assets/1843523/5789062/2c0d6ca2-9e5b-11e4-89fd-5d636ece1ed6.png)
 
 #### Development
 Create symbolic link from you directory to `GOPATH`
