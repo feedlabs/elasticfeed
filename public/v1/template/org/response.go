@@ -5,6 +5,7 @@ import (
 	"github.com/feedlabs/elasticfeed/resource"
 	"github.com/feedlabs/elasticfeed/public/v1/template"
 	"errors"
+	"sort"
 )
 
 func GetEntry(org *resource.Org) (entry map[string]interface{}) {
@@ -22,12 +23,39 @@ func GetEntry(org *resource.Org) (entry map[string]interface{}) {
 	return entry
 }
 
-func GetError(err error) (entry map[string]interface {}, code int) {
+func GetError(err error) (entry map[string]interface{}, code int) {
 	return template.Error(err)
 }
 
 func GetSuccess(msg string) (entry map[string]string, code int) {
 	return template.Success(msg)
+}
+
+type By func(p1, p2 *resource.Org) bool
+
+func (by By) Sort(orgs []*resource.Org) {
+	ps := &OrgSorter{
+		orgs: orgs,
+		by:      by,
+	}
+	sort.Sort(ps)
+}
+
+type OrgSorter struct {
+	orgs []*resource.Org
+	by      func(p1, p2 *resource.Org) bool
+}
+
+func (s *OrgSorter) Len() int {
+	return len(s.orgs)
+}
+
+func (s *OrgSorter) Swap(i, j int) {
+	s.orgs[i], s.orgs[j] = s.orgs[j], s.orgs[i]
+}
+
+func (s *OrgSorter) Less(i, j int) bool {
+	return s.by(s.orgs[i], s.orgs[j])
 }
 
 /**
@@ -49,6 +77,34 @@ func GetSuccess(msg string) (entry map[string]string, code int) {
  */
 func ResponseGetList(orgList []*resource.Org, formatter *template.ResponseDefinition) (entryList []map[string]interface{}, code int) {
 	var output []map[string]interface{}
+
+	orderby := formatter.GetOrderBy()
+	orderdir := formatter.GetOrderDir()
+	if orderby == "id" {
+
+		idasc := func(p1, p2 *resource.Org) bool {
+			return p1.Id < p2.Id
+		}
+
+		iddesc := func(p1, p2 *resource.Org) bool {
+			return p1.Id > p2.Id
+		}
+
+		if orderdir == "asc" {
+			By(idasc).Sort(orgList)
+		} else if orderdir == "desc" {
+			By(iddesc).Sort(orgList)
+		} else {
+			errMsg, _ := GetError(errors.New("Unknown ordering direction `" + orderdir + "`"))
+			output = append(output, errMsg)
+			return output, template.HTTP_CODE_ACCESS_FORBIDDEN
+		}
+
+	} else {
+		errMsg, _ := GetError(errors.New("Unknown ordering field `" + orderby + "`"))
+		output = append(output, errMsg)
+		return output, template.HTTP_CODE_ACCESS_FORBIDDEN
+	}
 
 	start := formatter.GetPage() * formatter.GetLimit()
 	end := start + formatter.GetLimit()

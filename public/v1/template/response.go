@@ -7,12 +7,17 @@ import (
 
 type ResponseDefinition struct {
 	orderby     string
+	orderdir    string
 	page        int
 	limit       int
 }
 
-func (this *ResponseDefinition) GetOrder() string {
+func (this *ResponseDefinition) GetOrderBy() string {
 	return this.orderby
+}
+
+func (this *ResponseDefinition) GetOrderDir() string {
+	return this.orderdir
 }
 
 func (this *ResponseDefinition) GetPage() int {
@@ -24,9 +29,14 @@ func (this *ResponseDefinition) GetLimit() int {
 }
 
 func NewResponseDefinition(input *context.Input) *ResponseDefinition {
-	order := input.Request.URL.Query().Get("orderby")
-	if order == "" {
-		order = "id"
+	orderby := input.Request.URL.Query().Get("orderby")
+	if orderby == "" {
+		orderby = "id"
+	}
+
+	orderdir := input.Request.URL.Query().Get("orderdir")
+	if orderdir == "" {
+		orderdir = "asc"
 	}
 
 	page := input.Request.URL.Query().Get("page")
@@ -42,5 +52,5 @@ func NewResponseDefinition(input *context.Input) *ResponseDefinition {
 	pageInt, _ := strconv.Atoi(page)
 	limitInt, _ := strconv.Atoi(limit)
 
-	return &ResponseDefinition{order, pageInt, limitInt}
+	return &ResponseDefinition{orderby, orderdir, pageInt, limitInt}
 }

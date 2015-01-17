@@ -19,7 +19,7 @@ func GetResponseDefinition(input *context.Input) (*template.ResponseDefinition) 
  *
  */
 func RequestGetList(input *context.Input) (formatter *template.ResponseDefinition, err error) {
-	if template.QueryParamsCount(input.Request.URL) > 3 {
+	if template.QueryParamsCount(input.Request.URL) > 4 {
 		return nil, errors.New("Too many params in URI query")
 	}
 	return GetResponseDefinition(input), nil
