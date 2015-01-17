@@ -140,7 +140,7 @@ func (this *OrgController) Delete() {
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return
+	} else {
+		this.ServeJson(template.ResponseDelete("Org has been deleted", formatter))
 	}
-
-	this.ServeJson(template.ResponseDelete("Org has been deleted", formatter))
 }

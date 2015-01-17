@@ -57,9 +57,9 @@ func ResponseGetList(orgList []*resource.Org, formatter *template.ResponseDefini
 	}
 
 	if start > end {
-		errMsg, code := GetError(errors.New("Paging is out of range"))
+		errMsg, _ := GetError(errors.New("Paging is out of range"))
 		output = append(output, errMsg)
-		return output, code
+		return output, template.HTTP_CODE_ACCESS_FORBIDDEN
 	}
 
 	orgListPaging := orgList[start:end]
