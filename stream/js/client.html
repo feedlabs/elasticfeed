@@ -2,10 +2,10 @@
   <body>
     <script>
 
-      var username = 'markrisian'
+      var username = 'man'
 
       socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + username);
-      // Message received on the socket
+
       socket.onmessage = function (event) {
         var data = JSON.parse(event.data);
         console.log(data);

@@ -21,10 +21,8 @@ type Event struct {
 
 const archiveSize = 20
 
-// Event archives.
 var archive = list.New()
 
-// NewArchive saves new event to archive list.
 func NewArchive(event Event) {
 	if archive.Len() >= archiveSize {
 		archive.Remove(archive.Front())
@@ -32,7 +30,6 @@ func NewArchive(event Event) {
 	archive.PushBack(event)
 }
 
-// GetEvents returns all events after lastReceived.
 func GetEvents(lastReceived int) []Event {
 	events := make([]Event, 0, archive.Len())
 	for event := archive.Front(); event != nil; event = event.Next() {

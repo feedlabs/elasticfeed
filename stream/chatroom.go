@@ -45,18 +45,13 @@ type Subscriber struct {
 }
 
 var (
-	// Channel for new join users.
 	subscribe = make(chan Subscriber, 10)
-	// Channel for exit users.
 	unsubscribe = make(chan string, 10)
-	// Send events here to publish them.
 	publish = make(chan Event, 10)
-	// Long polling waiting list.
 	waitingList = list.New()
 	subscribers = list.New()
 )
 
-// This function handles all incoming chan messages.
 func chatroom() {
 	for {
 		select {
