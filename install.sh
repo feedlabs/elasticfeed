@@ -37,3 +37,6 @@ go get github.com/robertkrimen/otto
 
 # memcache
 go get github.com/bradfitz/gomemcache/memcache
+
+# websoscket
+go get github.com/gorilla/websocket
