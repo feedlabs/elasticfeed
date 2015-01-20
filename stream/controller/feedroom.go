@@ -1,4 +1,4 @@
-package stream
+package controller
 
 import (
 	"container/list"
@@ -6,15 +6,17 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
+
+	"github.com/feedlabs/elasticfeed/stream/model"
 )
 
 type Subscription struct {
-	Archive []Event      // All the events from the archive.
-	New     <-chan Event // New events coming in.
+	Archive []model.Event      // All the events from the archive.
+	New     <-chan model.Event // New events coming in.
 }
 
-func newEvent(ep EventType, user, msg string) Event {
-	return Event{ep, user, int(time.Now().Unix()), msg}
+func newEvent(ep model.EventType, user, msg string) model.Event {
+	return model.Event{ep, user, int(time.Now().Unix()), msg}
 }
 
 func Join(user string, ws *websocket.Conn) {
@@ -33,7 +35,7 @@ type Subscriber struct {
 var (
 	subscribe = make(chan Subscriber, 10)
 	unsubscribe = make(chan string, 10)
-	publish = make(chan Event, 10)
+	publish = make(chan model.Event, 10)
 	waitingList = list.New()
 	subscribers = list.New()
 )
@@ -45,7 +47,7 @@ func chatroom() {
 			if !isUserExist(subscribers, sub.Name) {
 				subscribers.PushBack(sub) // Add user to the end of list.
 				// Publish a JOIN event.
-				publish <- newEvent(EVENT_JOIN, sub.Name, "")
+				publish <- newEvent(model.EVENT_JOIN, sub.Name, "")
 				beego.Info("New user:", sub.Name, ";WebSocket:", sub.Conn != nil)
 			} else {
 				beego.Info("Old user:", sub.Name, ";WebSocket:", sub.Conn != nil)
@@ -58,9 +60,9 @@ func chatroom() {
 			}
 
 			broadcastWebSocket(event)
-			NewArchive(event)
+			model.NewArchive(event)
 
-			if event.Type == EVENT_MESSAGE {
+			if event.Type == model.EVENT_MESSAGE {
 				beego.Info("Message from", event.User, ";Content:", event.Content)
 			}
 		case unsub := <-unsubscribe:
@@ -73,7 +75,7 @@ func chatroom() {
 						ws.Close()
 						beego.Error("WebSocket closed:", unsub)
 					}
-					publish <- newEvent(EVENT_LEAVE, unsub, "") // Publish a LEAVE event.
+					publish <- newEvent(model.EVENT_LEAVE, unsub, "") // Publish a LEAVE event.
 					break
 				}
 			}

@@ -1,4 +1,4 @@
-package stream
+package controller
 
 import (
 	"encoding/json"
@@ -7,6 +7,8 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/astaxie/beego"
 	"github.com/gorilla/websocket"
+
+	"github.com/feedlabs/elasticfeed/stream/model"
 )
 
 type WebSocketController struct {
@@ -49,11 +51,11 @@ func (this *WebSocketController) Join() {
 		if err != nil {
 			return
 		}
-		publish <- newEvent(EVENT_MESSAGE, uname, string(p))
+		publish <- newEvent(model.EVENT_MESSAGE, uname, string(p))
 	}
 }
 
-func broadcastWebSocket(event Event) {
+func broadcastWebSocket(event model.Event) {
 	data, err := json.Marshal(event)
 	if err != nil {
 		beego.Error("Fail to marshal event:", err)

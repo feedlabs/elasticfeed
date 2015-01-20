@@ -1,8 +1,8 @@
-package stream
+package controller
 
 import (
-	"fmt"
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/elasticfeed/stream/model"
 )
 
 // LongPollingController handles long polling requests.
@@ -19,8 +19,6 @@ func (this *LongPollingController) Join() {
 		return
 	}
 
-	fmt.Println(uname)
-
 	// Join chat room.
 	Join(uname, nil)
 }
@@ -33,7 +31,7 @@ func (this *LongPollingController) Post() {
 		return
 	}
 
-	publish <- newEvent(EVENT_MESSAGE, uname, content)
+	publish <- newEvent(model.EVENT_MESSAGE, uname, content)
 }
 
 // Fetch method handles fetch archives requests for LongPollingController.
@@ -43,7 +41,7 @@ func (this *LongPollingController) Fetch() {
 		return
 	}
 
-	events := GetEvents(int(lastReceived))
+	events := model.GetEvents(int(lastReceived))
 	if len(events) > 0 {
 		this.Data["json"] = events
 		this.ServeJson()
@@ -55,6 +53,6 @@ func (this *LongPollingController) Fetch() {
 	waitingList.PushBack(ch)
 	<-ch
 
-	this.Data["json"] = GetEvents(int(lastReceived))
+	this.Data["json"] = model.GetEvents(int(lastReceived))
 	this.ServeJson()
 }

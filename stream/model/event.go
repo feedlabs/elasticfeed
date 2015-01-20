@@ -1,4 +1,4 @@
-package stream
+package model
 
 import (
 	"container/list"
