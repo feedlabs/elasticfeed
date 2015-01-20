@@ -79,14 +79,11 @@
         });
       }
 
-      // join to the room
-      $.getJSON('http://localhost:10100/lp?uname=' + uname, function(){})
+      $.getJSON('http://localhost:10100/lp/join?uname=' + uname, function(){})
 
-      // fetch new events
       setInterval(fetch, 3000);
       fetch()
 
-      // post message
 //      $.post("/lp/post?uname=" + uname + "&content=" + content, {}, function(status) { console.log(status) });
 
     </script>

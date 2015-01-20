@@ -5,25 +5,19 @@ import (
 	"github.com/feedlabs/elasticfeed/stream/model"
 )
 
-// LongPollingController handles long polling requests.
 type LongPollingController struct {
 	feedify.Controller
 }
 
-// Join method handles GET requests for LongPollingController.
 func (this *LongPollingController) Join() {
-	// Safe check.
 	uname := this.GetString("uname")
 	if len(uname) == 0 {
-		this.Redirect("/", 302)
 		return
 	}
 
-	// Join chat room.
 	Join(uname, nil)
 }
 
-// Post method handles receive messages requests for LongPollingController.
 func (this *LongPollingController) Post() {
 	uname := this.GetString("uname")
 	content := this.GetString("content")
@@ -34,7 +28,6 @@ func (this *LongPollingController) Post() {
 	publish <- newEvent(model.EVENT_MESSAGE, uname, content)
 }
 
-// Fetch method handles fetch archives requests for LongPollingController.
 func (this *LongPollingController) Fetch() {
 	lastReceived, err := this.GetInt("lastReceived")
 	if err != nil {

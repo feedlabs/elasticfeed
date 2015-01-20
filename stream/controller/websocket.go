@@ -15,22 +15,9 @@ type WebSocketController struct {
 	feedify.Controller
 }
 
-func (this *WebSocketController) Get() {
-	uname := this.GetString("uname")
-	if len(uname) == 0 {
-		this.Redirect("/", 302)
-		return
-	}
-
-	this.TplNames = "websocket.html"
-	this.Data["IsWebSocket"] = true
-	this.Data["UserName"] = uname
-}
-
 func (this *WebSocketController) Join() {
 	uname := this.GetString("uname")
 	if len(uname) == 0 {
-		this.Redirect("/", 302)
 		return
 	}
 

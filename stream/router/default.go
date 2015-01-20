@@ -8,10 +8,9 @@ import (
 func init() {
 	feedify.SetStaticPath("/static", "stream/static")
 
-	feedify.Router("/ws", &controller.WebSocketController{})
-	feedify.Router("/ws/join", &controller.WebSocketController{}, "get:Join")
-
-	feedify.Router("/lp", &controller.LongPollingController{}, "get:Join")
+	feedify.Router("/lp/join", &controller.LongPollingController{}, "get:Join")
 	feedify.Router("/lp/post", &controller.LongPollingController{})
 	feedify.Router("/lp/fetch", &controller.LongPollingController{}, "get:Fetch")
+
+	feedify.Router("/ws/join", &controller.WebSocketController{}, "get:Join")
 }
