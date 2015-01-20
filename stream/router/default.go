@@ -1,4 +1,4 @@
-package stream
+package router
 
 import (
 	"github.com/feedlabs/feedify"
@@ -6,6 +6,8 @@ import (
 )
 
 func init() {
+	feedify.SetStaticPath("/static", "stream/static")
+
 	feedify.Router("/ws", &controller.WebSocketController{})
 	feedify.Router("/ws/join", &controller.WebSocketController{}, "get:Join")
 
