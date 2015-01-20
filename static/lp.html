@@ -1,0 +1,92 @@
+<html>
+  <body>
+    <script>
+
+      var uname = 'marian'
+      var content = 'hello world!'
+
+      var lastReceived = 0;
+      var isWait = false;
+
+      var $ = {
+        getJSON: function(url, callback) {
+          xhr = new XMLHttpRequest;
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+              if (xhr.responseText != "") {
+                data = JSON.parse(xhr.responseText);
+                callback.call(this, data)
+              }
+            }
+          }
+          xhr.open("GET", url)
+          xhr.send();
+        },
+
+        each: function(obj, callback) {
+          for (i = 0; i < obj.length; i++) {
+            value = callback.call(obj[i], i, obj[i]);
+
+            if (value === false) {
+              break;
+            }
+          }
+        },
+
+        post: function(url, data, callback) {
+          xhr = new XMLHttpRequest;
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+              callback.call(this, xhr.responseText)
+            }
+          }
+          xhr.open("POST", url, true);
+          xhr.send("uname=marian&content=hello");
+        }
+      }
+
+      var fetch = function() {
+        if (isWait) {
+          return;
+        }
+        isWait = true;
+        $.getJSON("http://localhost:10100/lp/fetch?lastReceived=" + lastReceived, function(data) {
+          if (data == null) {
+            return;
+          }
+          $.each(data, function(i, event) {
+            switch (event.Type) {
+              case 0: // JOIN
+                if (event.User == uname) {
+                  console.log('joined the room');
+                } else {
+                  console.log(event.User + " joined the chat room");
+                }
+                break;
+              case 1: // LEAVE
+                console.log(event.User + " left the chat room");
+                break;
+              case 2: // MESSAGE
+                console.log(event.User + ", " + event.Content);
+                break;
+            }
+
+            lastReceived = event.Timestamp;
+          });
+          isWait = false;
+        });
+      }
+
+      // join to the room
+      $.getJSON('http://localhost:10100/lp?uname=' + uname, function(){})
+
+      // fetch new events
+      setInterval(fetch, 3000);
+      fetch()
+
+      // post message
+//      $.post("/lp/post?uname=" + uname + "&content=" + content, {}, function(status) { console.log(status) });
+
+    </script>
+  </body>
+</html>
