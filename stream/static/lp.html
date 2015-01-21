@@ -1,88 +1,11 @@
 <html>
   <body>
+    <script src="elasticfeed.js"></script>
     <script>
 
-      var uname = 'marian'
-      var content = 'hello world!'
+      $.getJSON('http://localhost:10100/lp/join?uname=kris', function(){})
 
-      var lastReceived = 0;
-      var isWait = false;
-
-      var $ = {
-        getJSON: function(url, callback) {
-          xhr = new XMLHttpRequest;
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-              if (xhr.responseText != "") {
-                data = JSON.parse(xhr.responseText);
-                callback.call(this, data)
-              } else {
-                callback.call(this, null)
-              }
-            }
-          }
-          xhr.open("GET", url)
-          xhr.send();
-        },
-
-        each: function(obj, callback) {
-          for (i = 0; i < obj.length; i++) {
-            value = callback.call(obj[i], i, obj[i]);
-
-            if (value === false) {
-              break;
-            }
-          }
-        },
-
-        post: function(url, data, callback) {
-          xhr1 = new XMLHttpRequest;
-          xhr1.onreadystatechange = function() {
-            if (xhr1.readyState == 4 && xhr1.status == 200) {
-              callback.call(this, xhr1.responseText)
-            }
-          }
-          xhr1.open("POST", url, true);
-          xhr1.send("uname=marian&content=hello");
-        }
-      }
-
-      var fetch = function() {
-        if (isWait) {
-          return;
-        }
-        isWait = true;
-        $.getJSON("http://localhost:10100/lp/fetch?lastReceived=" + lastReceived, function(data) {
-          if (data == null) {
-            return;
-          }
-          $.each(data, function(i, event) {
-            switch (event.Type) {
-              case 0: // JOIN
-                if (event.User == uname) {
-                  console.log('joined the room');
-                } else {
-                  console.log(event.User + " joined the chat room");
-                }
-                break;
-              case 1: // LEAVE
-                console.log(event.User + " left the chat room");
-                break;
-              case 2: // MESSAGE
-                console.log(event.User + ", " + event.Content);
-                break;
-            }
-
-            lastReceived = event.Timestamp;
-          });
-          isWait = false;
-        });
-      }
-
-      $.getJSON('http://localhost:10100/lp/join?uname=' + uname, function(){})
-
-      setInterval(fetch, 3000);
-      fetch()
+      ef.lp('kris')
 
 //      $.post("/lp/post?uname=" + uname + "&content=" + content, {}, function(status) { console.log(status) });
 
