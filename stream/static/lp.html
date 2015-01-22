@@ -4,16 +4,7 @@
     <script>
 
       window.onload = function() {
-
-        var channel = new Channel()
-
-        channel.getJSON('http://localhost:10100/lp/join?uname=kris', function() {})
-
-        channel.getLongPoolingConnection('kris')
-
-        window['socket'] = channel
-
-        //        socket.post("/lp/post", {uname: "uname", content: "content"}, function(status) { console.log(status) });
+        window['socket'] = (new Channel()).getLongPoolingConnection('kris')
       }
 
     </script>

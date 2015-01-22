@@ -4,8 +4,7 @@
     <script>
 
       window.onload = function() {
-        channel = new Channel();
-        window['socket'] = channel.getWebSocketConnection('marian');
+        window['socket'] = (new Channel()).getWebSocketConnection('marian');
       }
 
     </script>

@@ -68,8 +68,9 @@ var Channel = (function() {
     var lastReceived = 0;
     var isWait = false;
 
-    self = this;
+    this.getJSON('http://localhost:10100/lp/join?uname=' + username, function() {})
 
+    self = this;
     var fetch = function() {
       if (isWait) {
         return;
@@ -111,7 +112,11 @@ var Channel = (function() {
     setInterval(fetch, 3000);
     fetch()
 
-    return fetch;
+    return {
+      send: function(data) {
+        self.post("/lp/post", data, function(status) { });
+      }
+    };
   }
 
   // HTTP
