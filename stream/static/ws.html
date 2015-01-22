@@ -1,10 +1,12 @@
 <html>
   <body>
     <script src="elasticfeed.js"></script>
-    <script src="__elasticfeed.js"></script>
     <script>
 
-      ef.ws('marian')
+      window.onload = function() {
+        channel = new Channel();
+        window['socket'] = channel.getWebSocketConnection('marian');
+      }
 
     </script>
   </body>

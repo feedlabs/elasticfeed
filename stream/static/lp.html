@@ -1,13 +1,20 @@
 <html>
   <body>
-    <script src="__elasticfeed.js"></script>
+    <script src="elasticfeed.js"></script>
     <script>
 
-      $.getJSON('http://localhost:10100/lp/join?uname=kris', function(){})
+      window.onload = function() {
 
-      ef.lp('kris')
+        var channel = new Channel()
 
-//      $.post("/lp/post", {uname: "uname", content: "content"}, function(status) { console.log(status) });
+        channel.getJSON('http://localhost:10100/lp/join?uname=kris', function() {})
+
+        channel.getLongPoolingConnection('kris')
+
+        window['socket'] = channel
+
+        //        socket.post("/lp/post", {uname: "uname", content: "content"}, function(status) { console.log(status) });
+      }
 
     </script>
   </body>
