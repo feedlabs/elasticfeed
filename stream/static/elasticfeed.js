@@ -1,123 +1,202 @@
-var $ = {
-  getJSON: function(url, callback) {
-    xhr = new XMLHttpRequest;
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        if (xhr.responseText != "") {
-          data = JSON.parse(xhr.responseText);
-          callback.call(this, data, xhr.readyState)
-        } else {
-          callback.call(this, null, xhr.readyState)
-        }
-      } else {
-        callback.call(this, null, xhr.readyState)
-      }
+/*
+ * Author: Feed Labs
+ */
+
+(function(window) {
+
+  var Feed = {
+
+    /** @type {String} */
+    id: null,
+
+    /** @type {String} */
+    channelId: null,
+
+    /** @type {Object} */
+    entryList: {},
+
+    /** @type {Array} */
+    defaultEntryIds: [],
+
+    /** @type {Object} */
+    options: {
+      feedId: '',
+      outputContainerId: 'defaultContainerId',
+      defaultElementLayout: '',
+      defaultElementCount: 0
+    },
+
+    init: function(options, stylerFunction) {
+      this.options = this._extend(this.options, options);
+      this._stylerFunction = stylerFunction || this._stylerFunction;
+      this.outputContainer = document.getElementById(this.options.outputContainerId);
+      this._addDefaultEntries();
+
+      var _this = this;
+      setTimeout(function() {
+        elasticfeed.load('http://www.feed.dev:10111/v1/feed/' + _this.options.feedId + '/entry', function(httpRequest) {
+          _this._loadFirstEntries(JSON.parse(httpRequest.responseText));
+        });
+      }, 1500);
+    },
+
+    addEntry: function() {
+
+    },
+
+    findEntry: function(id) {
+
+    },
+
+    _stylerFunction: function(data) {
+      return JSON.stringify(data.Data);
     }
-    xhr.open("GET", url)
-    xhr.send();
-  },
-
-  each: function(obj, callback) {
-    for (i = 0; i < obj.length; i++) {
-      value = callback.call(obj[i], i, obj[i]);
-
-      if (value === false) {
-        break;
-      }
-    }
-  },
-
-  queryString: function (obj) {
-    return Object.keys(obj).map(function(key){
-      return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
-    }).join('&');
-  },
-
-  post: function(url, data, callback) {
-    xhr1 = new XMLHttpRequest;
-    xhr1.onreadystatechange = function() {
-      if (xhr1.readyState == 4 && xhr1.status == 200) {
-        callback.call(this, xhr1.responseText)
-      }
-    }
-    dataString = this.queryString(data)
-    xhr1.open("POST", url + "?" + dataString, true);
-    xhr1.send(dataString);
   }
-}
 
-var ef = {
-  ws: function(username) {
-    socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + username);
+  var Entry = {
 
-    socket.onmessage = function(event) {
-      var data = JSON.parse(event.data);
-      console.log(data);
-      switch (data.Type) {
-        case 0: // JOIN
-          if (data.User == username) {
-            console.log('joined the room');
-          } else {
-            console.log(data.User + " joined the chat room");
-          }
-          break;
-        case 1: // LEAVE
-          console.log(data.User + " left the chat room");
-          break;
-        case 2: // MESSAGE
-          console.log(data.User + ", " + data.Content);
-          break;
-      }
-    };
+    /** @type {String} */
+    id: null,
 
-    return socket;
-  },
+    init: function() {
+    },
 
-  lp: function(username) {
-    var lastReceived = 0;
-    var isWait = false;
+    update: function() {
+    },
 
-    var fetch = function() {
-      if (isWait) {
-        return;
-      }
-      isWait = true;
-      $.getJSON("http://localhost:10100/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
+    remove: function() {
+    }
+  }
 
-        if (code == 4) {
-          isWait = false
+  var Channel = {
+
+    /** @type {String} */
+    id: null,
+
+    init: function() {
+    }
+  }
+
+  var MetricEvent = {
+
+    /** @type {String} */
+    id: null,
+
+    init: function() {
+    }
+  }
+
+  var StreamEvent = {
+
+    /** @type {String} */
+    id: null,
+
+    init: function() {
+    }
+  }
+
+  var elasticfeed = {
+
+    /** @type {Object} */
+    channelList: {},
+
+    getFeed: function(id) {
+
+    },
+
+    getChannel: function(id) {
+
+    },
+
+    newFeed: function(options) {
+
+    },
+
+    newChannel: function(options) {
+
+    },
+
+    /**
+     * @param {Object} a
+     * @param {Object} b
+     * @returns {Object}
+     */
+    _extend: function(a, b) {
+      var c = {}, prop;
+      for (prop in a) {
+        if (a.hasOwnProperty(prop)) {
+          c[prop] = a[prop];
         }
+      }
+      for (prop in b) {
+        if (b.hasOwnProperty(prop)) {
+          c[prop] = b[prop];
+        }
+      }
+      return c;
+    },
 
-        if (data == null) {
+    _uniqueId: function() {
+      return '_' + Math.random().toString(36).substr(2, 9);
+    },
+
+
+    load: function(url, callback) {
+      var xhr;
+      if (typeof XMLHttpRequest !== 'undefined') {
+        xhr = new XMLHttpRequest();
+      } else {
+        var versions = ["MSXML2.XmlHttp.5.0", "MSXML2.XmlHttp.4.0", "MSXML2.XmlHttp.3.0", "MSXML2.XmlHttp.2.0", "Microsoft.XmlHttp"];
+        for (var i = 0, len = versions.length; i < len; i++) {
+          try {
+            xhr = new ActiveXObject(versions[i]);
+            break;
+          }
+          catch (e) {
+          }
+        }
+      }
+      xhr.onreadystatechange = ensureReadiness;
+      function ensureReadiness() {
+        if (xhr.readyState < 4) {
           return;
         }
+        if (xhr.status !== 200) {
+          return;
+        }
+        if (xhr.readyState === 4) {
+          callback(xhr);
+        }
+      }
 
-        $.each(data, function(i, event) {
-          switch (event.Type) {
-            case 0: // JOIN
-              if (event.User == username) {
-                console.log('joined the room');
-              } else {
-                console.log(event.User + " joined the chat room");
-              }
-              break;
-            case 1: // LEAVE
-              console.log(event.User + " left the chat room");
-              break;
-            case 2: // MESSAGE
-              console.log(event.User + ", " + event.Content);
-              break;
-          }
-
-          lastReceived = event.Timestamp;
-        });
-        isWait = false;
-      });
+      xhr.open('GET', url, true);
+      xhr.send('');
     }
 
-    setInterval(fetch, 3000);
-    fetch()
+  }; // elasticfeed
 
-    return fetch;
+  // ===========================================================================
+
+  if ("function" === typeof define) {
+    define(function(require) {
+      return elasticfeed;
+    });
+  } else {
+    window.elasticfeed = elasticfeed;
   }
-}
+}(window));
+
+
+// Helpers
+// =======
+
+Element.prototype.remove = function() {
+  this.parentElement.removeChild(this);
+};
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+  for (var i = 0, len = this.length; i < len; i++) {
+    if (this[i] && this[i].parentElement) {
+      this[i].parentElement.removeChild(this[i]);
+    }
+  }
+};
