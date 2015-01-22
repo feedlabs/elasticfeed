@@ -65,6 +65,12 @@ var Feed = (function() {
   Feed.prototype.findEntry = function(id) {
   }
 
+  // Handlers
+
+  Feed.prototype.registerHandlers = function() {
+    // bind to channel data
+  }
+
   // Channel management
 
   Feed.prototype.getChannel = function() {

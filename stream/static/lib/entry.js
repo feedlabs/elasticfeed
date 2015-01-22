@@ -25,6 +25,17 @@ var Entry = (function() {
   Entry.prototype.show = function() {
   }
 
+  // Events callbacks
+
+  Entry.prototype.onData = function(callback) {
+  }
+
+  // Handlers
+
+  Entry.prototype.registerHandlers = function() {
+    // bind to feed events
+  }
+
   // Helpers
 
   Entry.prototype.getParent = function() {
