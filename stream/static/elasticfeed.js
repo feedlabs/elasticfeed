@@ -21,14 +21,18 @@ includeJs('lib/event.js');
   var elasticfeed = {
 
     /** @type {Object} */
-    channelList: [],
+    channel: null,
 
     getFeed: function(id) {
       return Feed;
     },
 
     getChannel: function(id) {
-      return Channel;
+      if(this.channel == null) {
+        this.channel = new Channel()
+      }
+
+      return this.channel;
     },
 
     newFeed: function(options) {
