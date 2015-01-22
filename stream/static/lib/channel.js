@@ -39,9 +39,9 @@ var Channel = (function() {
   }
 
   Channel.prototype.getWebSocketConnection = function(username) {
-    socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + username);
+    this._socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + username);
 
-    socket.onmessage = function(event) {
+    this._socket.onmessage = function(event) {
       var data = JSON.parse(event.data);
       console.log(data);
       switch (data.Type) {
@@ -61,7 +61,12 @@ var Channel = (function() {
       }
     };
 
-    return socket;
+    self = this
+    return {
+      send: function(data) {
+        self._socket.send(data)
+      }
+    };
   }
 
   Channel.prototype.getLongPoolingConnection = function(username) {
