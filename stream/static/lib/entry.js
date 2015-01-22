@@ -11,10 +11,23 @@ var Entry = (function() {
     this.parent = null;
   }
 
+  // Management
+
   Entry.prototype.update = function() {
   }
 
   Entry.prototype.remove = function() {
+  }
+
+  Entry.prototype.hide = function() {
+  }
+
+  Entry.prototype.show = function() {
+  }
+
+  // Helpers
+
+  Entry.prototype.getParent = function() {
   }
 
   Entry.prototype.getTimestamp = function() {

@@ -27,21 +27,56 @@ var Feed = (function() {
     this.outputContainer = document.getElementById(this.options.outputContainerId);
   }
 
-  Feed.prototype.addEntry = function() {
-    this.entryList.push(new Entry())
+  // Events callbacks
+
+  Feed.prototype.onReload = function(callback) {
+  }
+
+  Feed.prototype.onReset = function(callback) {
+  }
+
+  Feed.prototype.onEntryAdd = function(callback) {
+  }
+
+  Feed.prototype.onEntryDelete = function(callback) {
+  }
+
+  Feed.prototype.onEntryUpdate = function(callback) {
+  }
+
+  Feed.prototype.onEvent = function(eventName, callback) {
+  }
+
+  Feed.prototype.onData = function(callback) {
+  }
+
+  // Entries management
+
+  Feed.prototype.addEntry = function(data) {
+    this.entryList.push(new Entry(data))
+  }
+
+  Feed.prototype.deleteEntry = function(id) {
+  }
+
+  Feed.prototype.updateEntry = function(id, data) {
   }
 
   Feed.prototype.findEntry = function(id) {
-
   }
+
+  // Channel management
 
   Feed.prototype.getChannel = function() {
-
   }
+
+  // Stylers
 
   Feed.prototype._stylerFunction = function(data) {
     return JSON.stringify(data.Data);
   }
+
+  // Helpers
 
   var _extend = function(a, b) {
     var c = {}, prop;
