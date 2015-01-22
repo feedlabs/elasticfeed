@@ -2,110 +2,33 @@
  * Author: Feed Labs
  */
 
+function includeJs(jsFilePath) {
+  var js = document.createElement("script");
+
+  js.type = "text/javascript";
+  js.src = jsFilePath;
+
+  document.body.appendChild(js);
+}
+
+includeJs('lib/feed.js');
+includeJs('lib/entry.js');
+includeJs('lib/channel.js');
+includeJs('lib/event.js');
+
 (function(window) {
-
-  var Feed = {
-
-    /** @type {String} */
-    id: null,
-
-    /** @type {String} */
-    channelId: null,
-
-    /** @type {Object} */
-    entryList: {},
-
-    /** @type {Array} */
-    defaultEntryIds: [],
-
-    /** @type {Object} */
-    options: {
-      feedId: '',
-      outputContainerId: 'defaultContainerId',
-      defaultElementLayout: '',
-      defaultElementCount: 0
-    },
-
-    init: function(options, stylerFunction) {
-      this.options = this._extend(this.options, options);
-      this._stylerFunction = stylerFunction || this._stylerFunction;
-      this.outputContainer = document.getElementById(this.options.outputContainerId);
-      this._addDefaultEntries();
-
-      var _this = this;
-      setTimeout(function() {
-        elasticfeed.load('http://www.feed.dev:10111/v1/feed/' + _this.options.feedId + '/entry', function(httpRequest) {
-          _this._loadFirstEntries(JSON.parse(httpRequest.responseText));
-        });
-      }, 1500);
-    },
-
-    addEntry: function() {
-
-    },
-
-    findEntry: function(id) {
-
-    },
-
-    _stylerFunction: function(data) {
-      return JSON.stringify(data.Data);
-    }
-  }
-
-  var Entry = {
-
-    /** @type {String} */
-    id: null,
-
-    init: function() {
-    },
-
-    update: function() {
-    },
-
-    remove: function() {
-    }
-  }
-
-  var Channel = {
-
-    /** @type {String} */
-    id: null,
-
-    init: function() {
-    }
-  }
-
-  var MetricEvent = {
-
-    /** @type {String} */
-    id: null,
-
-    init: function() {
-    }
-  }
-
-  var StreamEvent = {
-
-    /** @type {String} */
-    id: null,
-
-    init: function() {
-    }
-  }
 
   var elasticfeed = {
 
     /** @type {Object} */
-    channelList: {},
+    channelList: [],
 
     getFeed: function(id) {
-
+      return Feed;
     },
 
     getChannel: function(id) {
-
+      return Channel;
     },
 
     newFeed: function(options) {
@@ -116,30 +39,9 @@
 
     },
 
-    /**
-     * @param {Object} a
-     * @param {Object} b
-     * @returns {Object}
-     */
-    _extend: function(a, b) {
-      var c = {}, prop;
-      for (prop in a) {
-        if (a.hasOwnProperty(prop)) {
-          c[prop] = a[prop];
-        }
-      }
-      for (prop in b) {
-        if (b.hasOwnProperty(prop)) {
-          c[prop] = b[prop];
-        }
-      }
-      return c;
-    },
-
     _uniqueId: function() {
       return '_' + Math.random().toString(36).substr(2, 9);
     },
-
 
     load: function(url, callback) {
       var xhr;
