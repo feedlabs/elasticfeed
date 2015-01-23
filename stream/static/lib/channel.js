@@ -4,6 +4,11 @@ var Channel = (function() {
   const ACTION_LEAVE = 1
   const ACTION_MESSAGE = 2
 
+  const AUTHENTICATED = 3
+  const AUTHENTICATION_REQUIRED = 4
+  const AUTHENTICATION_FAILED = 5
+  const LOGGED_OUT = 6
+
   var defaultOptions = {
     id: null,
     transport: 'ws',

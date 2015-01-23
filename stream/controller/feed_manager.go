@@ -40,7 +40,7 @@ var (
 	subscribers = list.New()
 )
 
-func chatroom() {
+func FeedManager() {
 	for {
 		select {
 		case sub := <-subscribe:
@@ -82,7 +82,7 @@ func chatroom() {
 }
 
 func init() {
-	go chatroom()
+	go FeedManager()
 }
 
 func isUserExist(subscribers *list.List, user string) bool {
