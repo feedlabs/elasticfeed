@@ -1,5 +1,9 @@
 var Channel = (function() {
 
+  const ACTION_JOIN = 0
+  const ACTION_LEAVE = 1
+  const ACTION_MESSAGE = 2
+
   var defaultOptions = {
     id: null,
     transport: 'ws',
@@ -53,7 +57,7 @@ var Channel = (function() {
       this._handlers[i].cb.call(this, data);
     }
 
-    event.GetType();
+    this.EventToString(event);
   }
 
   Channel.prototype.Authenticate = function(credential) {
@@ -169,6 +173,20 @@ var Channel = (function() {
     dataString = this.queryString(data)
     xhr1.open("POST", url + "?" + dataString, true);
     xhr1.send(dataString);
+  }
+
+  Channel.prototype.EventToString = function(event) {
+    switch (event.Type) {
+      case ACTION_JOIN:
+        console.log(event.User + " joined the chat room");
+        break;
+      case ACTION_LEAVE:
+        console.log(event.User + " left the chat room");
+        break;
+      case ACTION_MESSAGE:
+        console.log(event.User + ", " + event.PrintContent());
+        break;
+    }
   }
 
   // Helpers
