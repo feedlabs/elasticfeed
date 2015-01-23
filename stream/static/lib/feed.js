@@ -1,5 +1,14 @@
 var Feed = (function() {
 
+  const ACTION_GROUP_TYPE = 1
+
+  const ACTION_RELOAD = 1
+  const ACTION_RESET = 2
+  const ACTION_DATA_INIT = 3
+  const ACTION_DATA_MORE = 4
+  const ACTION_HIDE = 5
+  const ACTION_SHOW = 6
+
   /** @type {Feed} */
   var localCache = {}
 

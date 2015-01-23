@@ -1,24 +1,8 @@
 var StreamEvent = (function() {
 
-  const CHANNEL_JOIN = 0
-  const CHANNEL_LEAVE = 1
-  const CHANNEL_MESSAGE = 2
-
-  const ACTION_FEED = 1
-  const ACTION_ENTRY = 2
-
-  const FEED_RELOAD = 1
-  const FEED_RESET = 2
-  const FEED_DATA_INIT = 3
-  const FEED_DATA_MORE = 4
-  const FEED_HIDE = 5
-  const FEED_SHOW = 6
-
-  const ENTRY_ADD = 1
-  const ENTRY_DELETE = 2
-  const ENTRY_UPDATE = 3
-  const ENTRY_HIDE = 4
-  const ENTRY_SHOW = 5
+  const ACTION_CHANNEL_JOIN = 0
+  const ACTION_CHANNEL_LEAVE = 1
+  const ACTION_CHANNEL_MESSAGE = 2
 
   function StreamEvent(event) {
 
@@ -29,6 +13,12 @@ var StreamEvent = (function() {
 
     /** @type {Integer} */
     this.ts = event.Timestamp;
+
+    /** @type {Integer} */
+    this.actionGroup = null
+
+    /** @type {Integer} */
+    this.actionType = null
 
     /** @type {String} */
     this.User = event.User

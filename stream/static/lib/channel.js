@@ -35,8 +35,14 @@ var Channel = (function() {
    * @param {StreamEvent} event
    * @param {Function} callback
    */
-  Channel.prototype.registerFeedHandler = function(feedId, callback) {
-    this._handlers.push({feedId: feedId, cb: callback});
+  Channel.prototype.registerHandler = function(options, callback) {
+    options = {
+      id: null,
+      action_group: "feed|entry",
+      action_type: "add|del|update|*"
+    }
+
+    this._handlers.push({options: options, cb: callback});
   }
 
   /**
