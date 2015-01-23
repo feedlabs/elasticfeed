@@ -27,8 +27,8 @@ includeJs('lib/event.js');
       return Feed;
     },
 
-    getChannel: function(id) {
-      if(this.channel == null) {
+    getChannel: function() {
+      if (this.channel == null) {
         this.channel = new Channel()
       }
 
@@ -41,10 +41,6 @@ includeJs('lib/event.js');
 
     newChannel: function(options) {
 
-    },
-
-    _uniqueId: function() {
-      return '_' + Math.random().toString(36).substr(2, 9);
     },
 
     load: function(url, callback) {

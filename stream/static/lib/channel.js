@@ -1,6 +1,7 @@
 var Channel = (function() {
 
   var defaultOptions = {
+    id: null,
     transport: 'ws',
     connectOnInit: true
   }
@@ -14,10 +15,14 @@ var Channel = (function() {
   function Channel(options, credential) {
 
     /** @type {String} */
-    this.id = null;
+    this.id = _uniqueId();
 
     /** @type {Object} */
     this.options = _extend(defaultOptions, options);
+
+    if (this.options.id != null) {
+      this.id = this.options.id
+    }
 
     /** @type {Object} */
     this.credential = _extend(defaultCredential, credential);
@@ -28,8 +33,6 @@ var Channel = (function() {
   }
 
   Channel.prototype.onData = function(data) {
-    // get handlers
-    event = new StreamEvent(data)
   }
 
   Channel.prototype.Authenticate = function(credential) {
@@ -38,42 +41,29 @@ var Channel = (function() {
   Channel.prototype.getConnection = function() {
   }
 
-  Channel.prototype.getWebSocketConnection = function(username) {
-    this._socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + username);
+  Channel.prototype.getWebSocketConnection = function() {
+    this._socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + this.id);
 
+    self = this
     this._socket.onmessage = function(event) {
-      var data = JSON.parse(event.data);
-      console.log(data);
-      switch (data.Type) {
-        case 0: // JOIN
-          if (data.User == username) {
-            console.log('joined the room');
-          } else {
-            console.log(data.User + " joined the chat room");
-          }
-          break;
-        case 1: // LEAVE
-          console.log(data.User + " left the chat room");
-          break;
-        case 2: // MESSAGE
-          console.log(data.User + ", " + data.Content);
-          break;
-      }
+      event = new StreamEvent(JSON.parse(event.data))
+      event.GetType();
     };
 
     self = this
     return {
       send: function(data) {
-        self._socket.send(data)
+        self._socket.send(JSON.stringify(data))
       }
     };
   }
 
-  Channel.prototype.getLongPoolingConnection = function(username) {
+  Channel.prototype.getLongPoolingConnection = function() {
     var lastReceived = 0;
     var isWait = false;
 
-    this.getJSON('http://localhost:10100/lp/join?uname=' + username, function() {})
+    this.getJSON('http://localhost:10100/lp/join?uname=' + this.id, function() {
+    })
 
     self = this;
     var fetch = function() {
@@ -92,23 +82,10 @@ var Channel = (function() {
         }
 
         self.each(data, function(i, event) {
-          switch (event.Type) {
-            case 0: // JOIN
-              if (event.User == username) {
-                console.log('joined the room');
-              } else {
-                console.log(event.User + " joined the chat room");
-              }
-              break;
-            case 1: // LEAVE
-              console.log(event.User + " left the chat room");
-              break;
-            case 2: // MESSAGE
-              console.log(event.User + ", " + event.Content);
-              break;
-          }
+          event = new StreamEvent(event)
+          event.GetType();
 
-          lastReceived = event.Timestamp;
+          lastReceived = event.GetTimestamp();
         });
         isWait = false;
       });
@@ -119,7 +96,8 @@ var Channel = (function() {
 
     return {
       send: function(data) {
-        self.post("/lp/post", data, function(status) { });
+        self.post("/lp/post", {uname: self.id, content: JSON.stringify(data)}, function(status) {
+        });
       }
     };
   }
@@ -187,6 +165,10 @@ var Channel = (function() {
       }
     }
     return c;
+  }
+
+  var _uniqueId = function() {
+    return '_' + Math.random().toString(36).substr(2, 36);
   }
 
   return Channel;
