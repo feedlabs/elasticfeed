@@ -21,18 +21,33 @@ var Channel = (function() {
     this.options = _extend(defaultOptions, options);
 
     if (this.options.id != null) {
-      this.id = this.options.id
+      this.id = this.options.id;
     }
 
     /** @type {Object} */
     this.credential = _extend(defaultCredential, credential);
+
+    /** @type {Object} */
+    this._handlers = [];
   }
 
-  Channel.prototype.registerFeedHandler = function(feed, callback) {
-
+  /**
+   * @param {StreamEvent} event
+   * @param {Function} callback
+   */
+  Channel.prototype.registerFeedHandler = function(feedId, callback) {
+    this._handlers.push({feedId: feedId, cb: callback});
   }
 
-  Channel.prototype.onData = function(data) {
+  /**
+   * @param {StreamEvent} event
+   */
+  Channel.prototype.onData = function(event) {
+    for (var i in this._handlers) {
+      this._handlers[i].cb.call(this, data);
+    }
+
+    event.GetType();
   }
 
   Channel.prototype.Authenticate = function(credential) {
@@ -47,7 +62,7 @@ var Channel = (function() {
     self = this
     this._socket.onmessage = function(event) {
       event = new StreamEvent(JSON.parse(event.data))
-      event.GetType();
+      self.onData(event)
     };
 
     self = this
@@ -83,7 +98,7 @@ var Channel = (function() {
 
         self.each(data, function(i, event) {
           event = new StreamEvent(event)
-          event.GetType();
+          self.onData(event)
 
           lastReceived = event.GetTimestamp();
         });
