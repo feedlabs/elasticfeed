@@ -7,8 +7,8 @@ import (
 
 	"github.com/feedlabs/feedify/graph"
 
-	"github.com/feedlabs/elasticfeed/stream/controller/room"
-	"github.com/feedlabs/elasticfeed/stream/model"
+	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
 func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {

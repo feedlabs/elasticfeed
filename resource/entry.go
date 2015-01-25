@@ -7,8 +7,8 @@ import (
 
 	"github.com/feedlabs/feedify/graph"
 
-	"github.com/feedlabs/elasticfeed/stream/controller/room"
-	"github.com/feedlabs/elasticfeed/stream/model"
+	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
 // user_feed_token = channel_id + feed_id => e.g aabbccddee + aabbcc
@@ -142,7 +142,7 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 	feedEntry.Id = strconv.Itoa(entry.Id)
 
 	// notify
-	data, _ := json.Marshal(feed)
+	data, _ := json.Marshal(entry)
 	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, "system", string(data))
 
 	return feedEntry.Id, nil

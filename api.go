@@ -1,8 +1,7 @@
 package main
 
 import (
-	_ "github.com/feedlabs/elasticfeed/public/v1"
-	_ "github.com/feedlabs/elasticfeed/stream"
+	_ "github.com/feedlabs/elasticfeed/service"
 	"github.com/feedlabs/feedify"
 )
 
