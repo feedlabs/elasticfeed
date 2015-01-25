@@ -1,0 +1,12 @@
+<html>
+  <body>
+    <script src="elasticfeed.js"></script>
+    <script>
+
+      window.onload = function() {
+        window['socket'] = elasticfeed.getChannel().getWebSocketConnection();
+      }
+
+    </script>
+  </body>
+</html>

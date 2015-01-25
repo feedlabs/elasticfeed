@@ -3,8 +3,12 @@ package resource
 import (
 	"errors"
 	"strconv"
+	"encoding/json"
 
 	"github.com/feedlabs/feedify/graph"
+
+	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
 func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {
@@ -88,6 +92,10 @@ func AddFeed(feed Feed, applicationId string, orgId string) (id string, err erro
 	}
 
 	feed.Id = strconv.Itoa(_feed.Id)
+
+	// notify
+	data, _ := json.Marshal(feed)
+	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, "system", string(data))
 
 	return feed.Id, nil
 }

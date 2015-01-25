@@ -1,0 +1,12 @@
+<html>
+  <body>
+    <script src="elasticfeed.js"></script>
+    <script>
+
+      window.onload = function() {
+        window['socket'] = elasticfeed.getChannel().getLongPoolingConnection()
+      }
+
+    </script>
+  </body>
+</html>
