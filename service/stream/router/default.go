@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	feedify.SetStaticPath("/static", "stream/static")
+	feedify.SetStaticPath("/static", "service/stream/static")
 
 	feedify.Router("/lp/join", &channel.LongPollingController{}, "get:Join")
 	feedify.Router("/lp/post", &channel.LongPollingController{})
