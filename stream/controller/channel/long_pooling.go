@@ -1,8 +1,10 @@
-package controller
+package channel
 
 import (
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/elasticfeed/stream/model"
+
+	"github.com/feedlabs/elasticfeed/stream/controller/room"
 )
 
 type LongPollingController struct {
@@ -15,7 +17,7 @@ func (this *LongPollingController) Join() {
 		return
 	}
 
-	Join(uname, nil)
+	room.Join(uname, nil)
 }
 
 func (this *LongPollingController) Post() {
@@ -25,7 +27,7 @@ func (this *LongPollingController) Post() {
 		return
 	}
 
-	publish <- newEvent(model.EVENT_MESSAGE, uname, content)
+	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, content)
 }
 
 func (this *LongPollingController) Fetch() {
@@ -43,7 +45,7 @@ func (this *LongPollingController) Fetch() {
 
 	// Wait for new message(s).
 	ch := make(chan bool)
-	waitingList.PushBack(ch)
+	room.WaitingList.PushBack(ch)
 	<-ch
 
 	this.Data["json"] = model.GetEvents(int(lastReceived))

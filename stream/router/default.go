@@ -2,15 +2,15 @@ package router
 
 import (
 	"github.com/feedlabs/feedify"
-	"github.com/feedlabs/elasticfeed/stream/controller"
+	"github.com/feedlabs/elasticfeed/stream/controller/channel"
 )
 
 func init() {
 	feedify.SetStaticPath("/static", "stream/static")
 
-	feedify.Router("/lp/join", &controller.LongPollingController{}, "get:Join")
-	feedify.Router("/lp/post", &controller.LongPollingController{})
-	feedify.Router("/lp/fetch", &controller.LongPollingController{}, "get:Fetch")
+	feedify.Router("/lp/join", &channel.LongPollingController{}, "get:Join")
+	feedify.Router("/lp/post", &channel.LongPollingController{})
+	feedify.Router("/lp/fetch", &channel.LongPollingController{}, "get:Fetch")
 
-	feedify.Router("/ws/join", &controller.WebSocketController{}, "get:Join")
+	feedify.Router("/ws/join", &channel.WebSocketController{}, "get:Join")
 }

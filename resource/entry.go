@@ -3,8 +3,12 @@ package resource
 import (
 	"errors"
 	"strconv"
+	"encoding/json"
 
 	"github.com/feedlabs/feedify/graph"
+
+	"github.com/feedlabs/elasticfeed/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/stream/model"
 )
 
 // user_feed_token = channel_id + feed_id => e.g aabbccddee + aabbcc
@@ -132,10 +136,14 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 		return "0", err
 	}
 
-	_data := BODY_HEADER + `"Id": "` + feedEntry.Id + `", "Action": "add", "Tag": {}, "Data": ` + strconv.Quote(feedEntry.Data) + BODY_BOTTOM
-	message.Publish(_data)
+//	_data := BODY_HEADER + `"Id": "` + feedEntry.Id + `", "Action": "add", "Tag": {}, "Data": ` + strconv.Quote(feedEntry.Data) + BODY_BOTTOM
+//	message.Publish(_data)
 
 	feedEntry.Id = strconv.Itoa(entry.Id)
+
+	// notify
+	data, _ := json.Marshal(feed)
+	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, "system", string(data))
 
 	return feedEntry.Id, nil
 }

@@ -2,8 +2,6 @@ var StreamEvent = (function() {
 
   function StreamEvent(event) {
 
-    console.log(event)
-
     /** @type {String} */
     this.id = null;
 

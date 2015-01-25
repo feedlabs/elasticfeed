@@ -1,7 +1,6 @@
-package controller
+package channel
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/feedlabs/feedify"
@@ -9,6 +8,8 @@ import (
 	"github.com/gorilla/websocket"
 
 	"github.com/feedlabs/elasticfeed/stream/model"
+
+	"github.com/feedlabs/elasticfeed/stream/controller/room"
 )
 
 type WebSocketController struct {
@@ -30,31 +31,16 @@ func (this *WebSocketController) Join() {
 		return
 	}
 
-	Join(uname, ws)
-	defer Leave(uname)
+	room.Join(uname, ws)
+	defer room.Leave(uname)
 
 	for {
 		_, p, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
-		publish <- newEvent(model.EVENT_MESSAGE, uname, string(p))
-	}
-}
+		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, string(p))
 
-func broadcastWebSocket(event model.Event) {
-	data, err := json.Marshal(event)
-	if err != nil {
-		beego.Error("Fail to marshal event:", err)
-		return
-	}
-
-	for sub := subscribers.Front(); sub != nil; sub = sub.Next() {
-		ws := sub.Value.(Subscriber).Conn
-		if ws != nil {
-			if ws.WriteMessage(websocket.TextMessage, data) != nil {
-				unsubscribe <- sub.Value.(Subscriber).Name
-			}
-		}
+		room.System_rpc <- ws
 	}
 }
