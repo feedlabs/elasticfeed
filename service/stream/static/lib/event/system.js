@@ -1,6 +1,6 @@
-var StreamEvent = (function() {
+var SystemEvent = (function() {
 
-  function StreamEvent(event) {
+  function SystemEvent(event) {
 
     /** @type {String} */
     this.id = null;
@@ -32,17 +32,17 @@ var StreamEvent = (function() {
     }
   }
 
-  StreamEvent.prototype.GetTimestamp = function() {
+  SystemEvent.prototype.GetTimestamp = function() {
     return this.ts;
   }
 
-  StreamEvent.prototype.PrintContent = function() {
+  SystemEvent.prototype.PrintContent = function() {
     if (this.ContentType == 'string') {
       return this.Content
     }
     return JSON.stringify(this.Content)
   }
 
-  return StreamEvent;
+  return SystemEvent;
 
 })();

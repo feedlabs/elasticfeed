@@ -48,7 +48,7 @@ var Channel = (function() {
   }
 
   /**
-   * @param {StreamEvent} event
+   * @param {ChannelEvent} event
    * @param {Function} callback
    */
   Channel.prototype.registerHandler = function(options, callback) {
@@ -62,7 +62,7 @@ var Channel = (function() {
   }
 
   /**
-   * @param {StreamEvent} event
+   * @param {ChannelEvent} event
    */
   Channel.prototype.onData = function(event) {
     for (var i in this._handlers) {
@@ -83,7 +83,7 @@ var Channel = (function() {
 
     self = this
     this._socket.onmessage = function(event) {
-      event = new StreamEvent(JSON.parse(event.data))
+      event = new ChannelEvent(JSON.parse(event.data))
       self.onData(event)
     };
 
@@ -119,7 +119,7 @@ var Channel = (function() {
         }
 
         self.each(data, function(i, event) {
-          event = new StreamEvent(event)
+          event = new ChannelEvent(event)
           self.onData(event)
 
           lastReceived = event.GetTimestamp();

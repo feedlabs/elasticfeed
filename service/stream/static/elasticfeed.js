@@ -14,7 +14,8 @@ function includeJs(jsFilePath) {
 includeJs('lib/feed.js');
 includeJs('lib/entry.js');
 includeJs('lib/channel.js');
-includeJs('lib/event.js');
+includeJs('lib/event/channel.js');
+includeJs('lib/event/system.js');
 
 (function(window) {
 
