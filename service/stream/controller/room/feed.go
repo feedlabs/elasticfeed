@@ -17,7 +17,7 @@ type Subscription struct {
 }
 
 func NewEvent(ep model.EventType, user, msg string) model.Event {
-	return model.Event{ep, user, int(time.Now().Unix()), msg}
+	return model.Event{ep, user, time.Now().UnixNano(), msg}
 }
 
 func Join(user string, ws *websocket.Conn) {
@@ -53,7 +53,7 @@ func FeedManager() {
 			Publish <- NewEvent(model.EVENT_JOIN, sub.Name, "")
 
 		case client := <-System_rpc:
-			data, _ := json.Marshal(&model.Event{model.EVENT_MESSAGE, "system", int(time.Now().Unix()), "ok"})
+			data, _ := json.Marshal(&model.Event{model.EVENT_MESSAGE, "system", time.Now().UnixNano(), "ok"})
 			client.WriteMessage(websocket.TextMessage, data)
 
 		case event := <-Publish:
