@@ -37,8 +37,7 @@ var (
 	Subscribe   = make(chan Subscriber, 10)
 	Unsubscribe = make(chan string, 10)
 	Publish     = make(chan model.Event, 10)
-
-	System_rpc = make(chan *websocket.Conn, 10)
+	P2P = make(chan *websocket.Conn, 10)
 
 	WaitingList = list.New()
 	Subscribers = list.New()
@@ -52,7 +51,7 @@ func FeedManager() {
 			Subscribers.PushBack(sub)
 			Publish <- NewEvent(model.EVENT_JOIN, sub.Name, "")
 
-		case client := <-System_rpc:
+		case client := <-P2P:
 			data, _ := json.Marshal(&model.Event{model.EVENT_MESSAGE, "system", time.Now().UnixNano(), "ok"})
 			client.WriteMessage(websocket.TextMessage, data)
 

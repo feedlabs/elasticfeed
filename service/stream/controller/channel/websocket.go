@@ -39,6 +39,6 @@ func (this *WebSocketController) Join() {
 		}
 		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, string(p))
 
-		room.System_rpc <- ws
+		room.P2P <- ws
 	}
 }
