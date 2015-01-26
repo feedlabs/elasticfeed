@@ -27,6 +27,11 @@ func (this *LongPollingController) Post() {
 		return
 	}
 
+	// Feature:
+	// or specific request for this client;
+	// should be executed and returned directly to user
+	// lastReceived time should not be changed in that case
+
 	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, content)
 }
 

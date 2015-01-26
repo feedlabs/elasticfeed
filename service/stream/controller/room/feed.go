@@ -37,7 +37,7 @@ var (
 	Subscribe   = make(chan Subscriber, 10)
 	Unsubscribe = make(chan string, 10)
 	Publish     = make(chan model.Event, 10)
-	P2P = make(chan *websocket.Conn, 10)
+	P2P         = make(chan *websocket.Conn, 10)
 
 	WaitingList = list.New()
 	Subscribers = list.New()

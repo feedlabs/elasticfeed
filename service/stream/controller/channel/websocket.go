@@ -33,12 +33,12 @@ func (this *WebSocketController) Join() {
 	defer room.Leave(uname)
 
 	for {
-		_, p, err := ws.ReadMessage()
+		_, p, err := ws.ReadMessage()a
 		if err != nil {
 			return
 		}
-		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, string(p))
 
+		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, string(p))
 		room.P2P <- ws
 	}
 }
