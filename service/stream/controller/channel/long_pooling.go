@@ -12,18 +12,18 @@ type LongPollingController struct {
 }
 
 func (this *LongPollingController) Join() {
-	uname := this.GetString("uname")
-	if len(uname) == 0 {
+	chid := this.GetString("chid")
+	if len(chid) == 0 {
 		return
 	}
 
-	room.Join(uname, nil)
+	room.Join(chid, nil)
 }
 
 func (this *LongPollingController) Post() {
-	uname := this.GetString("uname")
-	content := this.GetString("content")
-	if len(uname) == 0 || len(content) == 0 {
+	chid := this.GetString("chid")
+	data := this.GetString("data")
+	if len(chid) == 0 || len(data) == 0 {
 		return
 	}
 
@@ -32,7 +32,7 @@ func (this *LongPollingController) Post() {
 	// should be executed and returned directly to user
 	// lastReceived time should not be changed in that case
 
-	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, content)
+	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, chid, data)
 }
 
 func (this *LongPollingController) Fetch() {

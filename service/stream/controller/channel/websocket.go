@@ -15,8 +15,8 @@ type WebSocketController struct {
 }
 
 func (this *WebSocketController) Join() {
-	uname := this.GetString("uname")
-	if len(uname) == 0 {
+	chid := this.GetString("chid")
+	if len(chid) == 0 {
 		return
 	}
 
@@ -29,16 +29,16 @@ func (this *WebSocketController) Join() {
 		return
 	}
 
-	room.Join(uname, ws)
-	defer room.Leave(uname)
+	room.Join(chid, ws)
+	defer room.Leave(chid)
 
 	for {
-		_, p, err := ws.ReadMessage()a
+		_, p, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
 
-		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, string(p))
+		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, chid, string(p))
 		room.P2P <- ws
 	}
 }

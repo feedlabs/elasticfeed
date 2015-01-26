@@ -36,6 +36,10 @@ var Channel = (function() {
       this.id = this.options.id;
     }
 
+    if (this.options.url != null) {
+      this.url = this.options.url;
+    }
+
     /** @type {Object} */
     this.credential = _extend(defaultCredential, credential);
 
@@ -75,7 +79,7 @@ var Channel = (function() {
   }
 
   Channel.prototype.getWebSocketConnection = function() {
-    this._socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + this.id);
+    this._socket = new WebSocket('ws://localhost:10100/ws/join?chid=' + this.id);
 
     self = this
     this._socket.onmessage = function(event) {
@@ -95,7 +99,7 @@ var Channel = (function() {
     var lastReceived = 0;
     var isWait = false;
 
-    this.getJSON('http://localhost:10100/lp/join?uname=' + this.id, function() {
+    this.getJSON('http://localhost:10100/lp/join?chid=' + this.id, function() {
     })
 
     self = this;
@@ -129,7 +133,7 @@ var Channel = (function() {
 
     return {
       send: function(data) {
-        self.post("/lp/post", {uname: self.id, content: JSON.stringify(data)}, function(status) {
+        self.post("/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
         });
       }
     };

@@ -11,9 +11,24 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
+var (
+	Subscribe   = make(chan Subscriber, 10)
+	Unsubscribe = make(chan string, 10)
+	Publish     = make(chan model.Event, 10)
+	P2P         = make(chan *websocket.Conn, 10)
+
+	WaitingList = list.New()
+	Subscribers = list.New()
+)
+
 type Subscription struct {
 	Archive []model.Event
 	New     <-chan model.Event
+}
+
+type Subscriber struct {
+	Name string
+	Conn *websocket.Conn
 }
 
 func NewEvent(ep model.EventType, user, msg string) model.Event {
@@ -27,21 +42,6 @@ func Join(user string, ws *websocket.Conn) {
 func Leave(user string) {
 	Unsubscribe <- user
 }
-
-type Subscriber struct {
-	Name string
-	Conn *websocket.Conn
-}
-
-var (
-	Subscribe   = make(chan Subscriber, 10)
-	Unsubscribe = make(chan string, 10)
-	Publish     = make(chan model.Event, 10)
-	P2P         = make(chan *websocket.Conn, 10)
-
-	WaitingList = list.New()
-	Subscribers = list.New()
-)
 
 func FeedManager() {
 	for {
@@ -82,7 +82,6 @@ func FeedManager() {
 		}
 	}
 }
-
 
 func broadcastWebSocket(event model.Event) {
 	data, err := json.Marshal(event)
