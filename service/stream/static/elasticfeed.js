@@ -21,63 +21,55 @@ includeJs('lib/event.js');
   var elasticfeed = {
 
     /** @type {Object} */
-    channel: null,
+    channelList: {},
 
-    getFeed: function(id) {
-      return Feed;
-    },
+    /** @type {Object} */
+    feedList: {},
 
-    getChannel: function() {
-      if (this.channel == null) {
-        this.channel = new Channel()
+    /**
+     * Returns Feed object
+     * @param options
+     * @returns {*}
+     */
+    getFeed: function(options) {
+      if (options.id == undefined) {
+        return null;
       }
 
-      return this.channel;
-    },
-
-    newFeed: function(options) {
-
-    },
-
-    newChannel: function(options) {
-
-    },
-
-    load: function(url, callback) {
-      var xhr;
-      if (typeof XMLHttpRequest !== 'undefined') {
-        xhr = new XMLHttpRequest();
-      } else {
-        var versions = ["MSXML2.XmlHttp.5.0", "MSXML2.XmlHttp.4.0", "MSXML2.XmlHttp.3.0", "MSXML2.XmlHttp.2.0", "Microsoft.XmlHttp"];
-        for (var i = 0, len = versions.length; i < len; i++) {
-          try {
-            xhr = new ActiveXObject(versions[i]);
-            break;
-          }
-          catch (e) {
-          }
-        }
-      }
-      xhr.onreadystatechange = ensureReadiness;
-      function ensureReadiness() {
-        if (xhr.readyState < 4) {
-          return;
-        }
-        if (xhr.status !== 200) {
-          return;
-        }
-        if (xhr.readyState === 4) {
-          callback(xhr);
-        }
+      if (this.feedList[id] == undefined) {
+        this.feedList[id] = new Feed(options)
       }
 
-      xhr.open('GET', url, true);
-      xhr.send('');
+      return this.feedList[options.id];
+    },
+
+    /**
+     * Returns Channel defined per API url
+     * @param options
+     * @param credential
+     * @returns {*}
+     */
+    getChannel: function(options, credential) {
+      if (options.url == undefined) {
+        return null;
+      }
+
+      if (this.channelList[options.url] == undefined) {
+        this.channelList[options.url] = new Channel(options, credential)
+      }
+
+      return this.channelList[options.url];
+    },
+
+    findFeed: function(id) {
+      return this.getFeed({id: id});
+    },
+
+    findChannel: function(url) {
+      return this.getChannel({url: url});
     }
 
-  }; // elasticfeed
-
-  // ===========================================================================
+  };
 
   if ("function" === typeof define) {
     define(function(require) {
@@ -86,15 +78,15 @@ includeJs('lib/event.js');
   } else {
     window.elasticfeed = elasticfeed;
   }
+
 }(window));
 
-
 // Helpers
-// =======
 
 Element.prototype.remove = function() {
   this.parentElement.removeChild(this);
 };
+
 NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
   for (var i = 0, len = this.length; i < len; i++) {
     if (this[i] && this[i].parentElement) {
