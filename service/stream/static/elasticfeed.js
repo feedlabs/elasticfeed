@@ -1,7 +1,3 @@
-/*
- * Author: Feed Labs
- */
-
 function includeJs(jsFilePath) {
   var js = document.createElement("script");
 

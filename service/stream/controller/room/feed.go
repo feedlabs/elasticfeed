@@ -11,6 +11,19 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
+const (
+	FEED_ADD = iota
+	FEED_DELETE
+	FEED_UPDATE
+	FEED_RESET
+	FEED_RELOAD
+
+	ENTRY_ADD
+	ENTRY_DELETE
+	ENTRY_UPDATE
+	ENTRY_RELOAD
+)
+
 var (
 	Subscribe   = make(chan Subscriber, 10)
 	Unsubscribe = make(chan string, 10)
@@ -35,6 +48,14 @@ func NewEvent(ep model.EventType, user, msg string) model.Event {
 	return model.Event{ep, user, time.Now().UnixNano(), msg}
 }
 
+func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
+	return NewEvent(ep, user, msg)
+}
+
+func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
+	return NewChannelEvent(ep, user, msg)
+}
+
 func Join(user string, ws *websocket.Conn) {
 	Subscribe <- Subscriber{Name: user, Conn: ws}
 }
@@ -49,7 +70,7 @@ func FeedManager() {
 
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
-			Publish <- NewEvent(model.EVENT_JOIN, sub.Name, "")
+		Publish <- NewEvent(model.EVENT_JOIN, sub.Name, "")
 
 		case client := <-P2P:
 			data, _ := json.Marshal(&model.Event{model.EVENT_MESSAGE, "system", time.Now().UnixNano(), "ok"})

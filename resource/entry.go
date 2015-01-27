@@ -143,7 +143,7 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 
 	// notify
 	data, _ := json.Marshal(entry)
-	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, "system", string(data))
+	room.Publish <- room.NewSystemEvent(model.EVENT_MESSAGE, "system", string(data))
 
 	return feedEntry.Id, nil
 }
