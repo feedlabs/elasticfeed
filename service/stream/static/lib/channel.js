@@ -10,13 +10,7 @@ var Channel = (function() {
     connectOnInit: true
   }
 
-  var defaultCredential = {
-    username: null,
-    token: null,
-    method: 'basic'
-  }
-
-  function Channel(options, credential) {
+  function Channel(options) {
 
     /** @type {String} */
     this.id = _uniqueId();
@@ -34,9 +28,6 @@ var Channel = (function() {
     if (this.options.url != null) {
       this.url = this.options.url;
     }
-
-    /** @type {Object} */
-    this.credential = _extend(defaultCredential, credential);
 
     /** @type {Object} */
     this._handlers = {};

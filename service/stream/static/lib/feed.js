@@ -25,6 +25,12 @@ var Feed = (function() {
     defaultElementCount: 0
   };
 
+  var globalCredential = {
+    username: null,
+    token: null,
+    method: 'basic'
+  }
+
   function Feed(options, stylerFunction) {
 
     /** @type {String} */
