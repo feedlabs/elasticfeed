@@ -78,10 +78,10 @@ func FeedManager() {
 
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
-		Publish <- NewEvent(model.EVENT_JOIN, sub.Name, "")
+		Publish <- NewChannelEvent(model.EVENT_JOIN, sub.Name, "")
 
 		case client := <-P2P:
-			data, _ := json.Marshal(&model.Event{model.EVENT_MESSAGE, "system", time.Now().UnixNano(), "ok"})
+			data, _ := json.Marshal(NewSystemEvent(model.EVENT_MESSAGE, "system", "ok"))
 			client.WriteMessage(websocket.TextMessage, data)
 
 		case event := <-Publish:
@@ -104,7 +104,7 @@ func FeedManager() {
 						ws.Close()
 						feedify.Error("WebSocket closed:", unsub)
 					}
-					Publish <- NewEvent(model.EVENT_LEAVE, unsub, "")
+					Publish <- NewChannelEvent(model.EVENT_LEAVE, unsub, "")
 					break
 				}
 			}
