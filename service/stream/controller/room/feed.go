@@ -56,6 +56,14 @@ func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
 	return NewChannelEvent(ep, user, msg)
 }
 
+func NewFeedEvent(ep model.EventType, user, msg string) model.Event {
+	return NewSystemEvent(ep, user, msg)
+}
+
+func NewEntryEvent(ep model.EventType, user, msg string) model.Event {
+	return NewSystemEvent(ep, user, msg)
+}
+
 func Join(user string, ws *websocket.Conn) {
 	Subscribe <- Subscriber{Name: user, Conn: ws}
 }

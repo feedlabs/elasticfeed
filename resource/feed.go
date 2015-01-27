@@ -95,7 +95,7 @@ func AddFeed(feed Feed, applicationId string, orgId string) (id string, err erro
 
 	// notify
 	data, _ := json.Marshal(feed)
-	room.Publish <- room.NewSystemEvent(model.EVENT_MESSAGE, "system", string(data))
+	room.Publish <- room.NewFeedEvent(model.EVENT_MESSAGE, "system", string(data))
 
 	return feed.Id, nil
 }
