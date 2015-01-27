@@ -9,6 +9,11 @@ var Feed = (function() {
   const ACTION_HIDE = 5
   const ACTION_SHOW = 6
 
+  const AUTHENTICATED = 100
+  const AUTHENTICATION_REQUIRED = 101
+  const AUTHENTICATION_FAILED = 102
+  const LOGGED_OUT = 103
+
   /** @type {Feed} */
   var localCache = {}
 

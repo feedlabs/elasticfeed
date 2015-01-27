@@ -4,11 +4,6 @@ var Channel = (function() {
   const LEAVE = 1
   const MESSAGE = 2
 
-  const AUTHENTICATED = 3
-  const AUTHENTICATION_REQUIRED = 4
-  const AUTHENTICATION_FAILED = 5
-  const LOGGED_OUT = 6
-
   var defaultOptions = {
     id: null,
     transport: 'ws',
@@ -110,11 +105,6 @@ var Channel = (function() {
     for (var i in this._handlers[MESSAGE]) {
       this._handlers[MESSAGE][i].call(this, chid, timestamp, data);
     }
-  }
-
-  // Auth
-
-  Channel.prototype.Authenticate = function(data) {
   }
 
   // Connection
