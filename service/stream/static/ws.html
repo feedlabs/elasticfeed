@@ -4,22 +4,22 @@
     <script>
 
       window.onload = function() {
-        channel = elasticfeed.getChannel({url: 'ws://localhost'})
 
-        channel.on('join', function(chid, ts) {
+        feed = elasticfeed.initFeed({transport: 'ws'});
+
+        feed.channel.on('join', function(chid, ts) {
           console.log(chid + " joined the chat room");
         });
 
-        channel.on('leave', function(chid, ts) {
+        feed.channel.on('leave', function(chid, ts) {
           console.log(chid + " left the chat room");
         });
 
-        channel.on('message', function(chid, ts, data) {
+        feed.channel.on('message', function(chid, ts, data) {
           console.log(chid + " " + JSON.stringify(data));
         });
 
-        window['socket'] = channel.getWebSocketConnection();
-
+        window['socket'] = feed.socket
       }
 
     </script>

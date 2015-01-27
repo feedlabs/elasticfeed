@@ -32,20 +32,33 @@ var Feed = (function() {
     method: 'basic'
   };
 
-  function Feed(options, stylerFunction) {
+  function Feed(options, channel) {
 
     /** @type {String} */
     this.id = null;
 
-    /** @type {String} */
-    this.channelId = null;
+    /** @type {Channel} */
+    this.channel = channel;
 
     /** @type {Array} */
     this.entryList = [];
 
+    /** @type {Object} */
+    if (this.channel.options.transport == 'ws') {
+      this.socket = this.channel.getWebSocketConnection();
+    } else if (this.channel.options.transport == 'lp') {
+      this.socket = this.channel.getLongPoolingConnection();
+    }
+
     this.options = _extend(globalOptions, options);
-    this._stylerFunction = stylerFunction || this._stylerFunction;
+    this._stylerFunction = options.styler || this._stylerFunction;
     this.outputContainer = document.getElementById(this.options.outputContainerId);
+
+    this.bindChannel(this.channel);
+  }
+
+  Feed.prototype.on = function(type, callback) {
+
   }
 
   // Events callbacks
@@ -88,13 +101,12 @@ var Feed = (function() {
 
   // Handlers
 
-  Feed.prototype.registerHandlers = function() {
-    // bind to channel data
-  }
-
-  // Channel management
-
-  Feed.prototype.getChannel = function() {
+  Feed.prototype.bindChannel = function(channel) {
+    channel.on('message', function(chid, ts, data) {
+      // should detect type of message
+      // if feed addressed then check id
+      // trigger action if needed
+    });
   }
 
   // Stylers

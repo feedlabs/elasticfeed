@@ -23,6 +23,23 @@ includeJs('lib/event/system.js');
     /** @type {Object} */
     feedList: {},
 
+    initFeed: function(options) {
+      options = _extend({
+        channel: {
+          url: 'ws://localhost:80/ws',
+          transport: 'ws'
+        },
+        styler: function(data) {
+        }
+      }, options);
+
+      console.log(options)
+
+      channel = this.getChannel(options.channel);
+
+      return new Feed(options, channel);
+    },
+
     /**
      * Returns Feed object
      * @param options
@@ -67,6 +84,23 @@ includeJs('lib/event/system.js');
     }
 
   };
+
+  // Helpers
+
+  var _extend = function(a, b) {
+    var c = {}, prop;
+    for (prop in a) {
+      if (a.hasOwnProperty(prop)) {
+        c[prop] = a[prop];
+      }
+    }
+    for (prop in b) {
+      if (b.hasOwnProperty(prop)) {
+        c[prop] = b[prop];
+      }
+    }
+    return c;
+  }
 
   if ("function" === typeof define) {
     define(function(require) {
