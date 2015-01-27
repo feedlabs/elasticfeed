@@ -1,8 +1,8 @@
 var Channel = (function() {
 
-  const ACTION_JOIN = 0
-  const ACTION_LEAVE = 1
-  const ACTION_MESSAGE = 2
+  const JOIN = 0
+  const LEAVE = 1
+  const MESSAGE = 2
 
   const AUTHENTICATED = 3
   const AUTHENTICATION_REQUIRED = 4
@@ -44,36 +44,80 @@ var Channel = (function() {
     this.credential = _extend(defaultCredential, credential);
 
     /** @type {Object} */
-    this._handlers = [];
+    this._handlers = {};
   }
+
+  // Handlers
 
   /**
    * @param {ChannelEvent} event
    * @param {Function} callback
    */
-  Channel.prototype.registerHandler = function(options, callback) {
-    options = {
-      id: null,
-      action_group: "feed|entry",
-      action_type: "add|del|update|*"
+  Channel.prototype.on = function(name, callback) {
+    switch (name) {
+      case 'join':
+        type = JOIN
+        break;
+      case 'leave':
+        type = LEAVE
+        break;
+      case 'message':
+        type = MESSAGE
+        break;
+      default:
+        return false;
+        break;
     }
-
-    this._handlers.push({options: options, cb: callback});
+    if (this._handlers[type] == undefined) {
+      this._handlers[type] = []
+    }
+    this._handlers[type].push(callback);
+    return true;
   }
+
+  // Events
 
   /**
    * @param {ChannelEvent} event
    */
   Channel.prototype.onData = function(event) {
-    for (var i in this._handlers) {
-      this._handlers[i].cb.call(this, data);
+    switch (event.Type) {
+      case JOIN:
+        this.onJoin(event.User, event.ts)
+        break;
+      case LEAVE:
+        this.onLeave(event.User, event.ts)
+        break;
+      case MESSAGE:
+        this.onMessage(event.User, event.ts, event.Content)
+        break;
     }
-
-    this.EventToString(event);
   }
 
-  Channel.prototype.Authenticate = function(credential) {
+  Channel.prototype.onJoin = function(chid, timestamp) {
+    for (var i in this._handlers[JOIN]) {
+      this._handlers[JOIN][i].call(this, chid, timestamp);
+    }
   }
+
+  Channel.prototype.onLeave = function(chid, timestamp) {
+    for (var i in this._handlers[LEAVE]) {
+      this._handlers[LEAVE][i].call(this, chid, timestamp);
+    }
+  }
+
+  Channel.prototype.onMessage = function(chid, timestamp, data) {
+    for (var i in this._handlers[MESSAGE]) {
+      this._handlers[MESSAGE][i].call(this, chid, timestamp, data);
+    }
+  }
+
+  // Auth
+
+  Channel.prototype.Authenticate = function(data) {
+  }
+
+  // Connection
 
   Channel.prototype.getConnection = function() {
   }
@@ -221,13 +265,13 @@ var Channel = (function() {
 
   Channel.prototype.EventToString = function(event) {
     switch (event.Type) {
-      case ACTION_JOIN:
+      case JOIN:
         console.log(event.User + " joined the chat room");
         break;
-      case ACTION_LEAVE:
+      case LEAVE:
         console.log(event.User + " left the chat room");
         break;
-      case ACTION_MESSAGE:
+      case MESSAGE:
         console.log(event.User + ", " + event.PrintContent());
         break;
     }

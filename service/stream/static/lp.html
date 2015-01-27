@@ -4,7 +4,22 @@
     <script>
 
       window.onload = function() {
-        window['socket'] = elasticfeed.getChannel({url: 'http://localhost'}).getLongPoolingConnection()
+        channel = elasticfeed.getChannel({url: 'http://localhost'})
+
+        channel.on('join', function(chid, ts) {
+          console.log(chid + " joined the chat room");
+        });
+
+        channel.on('leave', function(chid, ts) {
+          console.log(chid + " left the chat room");
+        });
+
+        channel.on('message', function(chid, ts, data) {
+          console.log(chid + " " + JSON.stringify(data));
+        });
+
+        window['socket'] = channel.getLongPoolingConnection()
+
       }
 
     </script>
