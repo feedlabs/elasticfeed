@@ -7,11 +7,11 @@ import (
 	"github.com/feedlabs/feedify"
 )
 
-type SystemController struct {
+type StatusController struct {
 	feedify.Controller
 }
 
-func (this *SystemController) Get() {
+func (this *StatusController) Get() {
 	var memstats runtime.MemStats;
 
 	runtime.ReadMemStats(&memstats)
