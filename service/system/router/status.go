@@ -6,5 +6,5 @@ import (
 )
 
 func init() {
-	feedify.Router("/status", &controller.StatusController{}, "get:Get")
+	feedify.Router("/system/status", &controller.StatusController{}, "get:Get")
 }

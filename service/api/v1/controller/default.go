@@ -55,7 +55,7 @@ func SetAuthenticationFilter() {
 	var AuthUser = func(ctx *context.Context) {
 		ctx.Input.Data["admin"] = helper.Auth(ctx)
 	}
-	beego.InsertFilter("/v1/*", beego.BeforeRouter, AuthUser)
+	beego.InsertFilter("/service/api/v1/*", beego.BeforeRouter, AuthUser)
 }
 
 func NoRoutes() {

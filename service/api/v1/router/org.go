@@ -6,6 +6,6 @@ import (
 )
 
 func init() {
-	feedify.Router("/v1/org", &controller.OrgController{}, "get:GetList;post:Post")
-	feedify.Router("/v1/org/:orgId:string", &controller.OrgController{}, "get:Get;delete:Delete;put:Put")
+	feedify.Router("/service/api/v1/org", &controller.OrgController{}, "get:GetList;post:Post")
+	feedify.Router("/service/api/v1/org/:orgId:string", &controller.OrgController{}, "get:Get;delete:Delete;put:Put")
 }
