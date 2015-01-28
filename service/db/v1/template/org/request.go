@@ -3,7 +3,7 @@ package org
 import (
 	"errors"
 	"github.com/feedlabs/feedify/context"
-	"github.com/feedlabs/elasticfeed/service/api/v1/template"
+	"github.com/feedlabs/elasticfeed/service/db/v1/template"
 )
 
 func CheckRequiredParams() {

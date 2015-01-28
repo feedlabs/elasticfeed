@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/service/api/v1/template/feed"
+	"github.com/feedlabs/elasticfeed/service/db/v1/template/feed"
 )
 
 type FeedController struct {
