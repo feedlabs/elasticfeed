@@ -1,13 +1,8 @@
 var Channel = (function() {
 
-  const ACTION_JOIN = 0
-  const ACTION_LEAVE = 1
-  const ACTION_MESSAGE = 2
-
-  const AUTHENTICATED = 3
-  const AUTHENTICATION_REQUIRED = 4
-  const AUTHENTICATION_FAILED = 5
-  const LOGGED_OUT = 6
+  const JOIN = 0
+  const LEAVE = 1
+  const MESSAGE = 2
 
   var defaultOptions = {
     id: null,
@@ -15,16 +10,13 @@ var Channel = (function() {
     connectOnInit: true
   }
 
-  var defaultCredential = {
-    username: null,
-    token: null,
-    method: 'basic'
-  }
-
-  function Channel(options, credential) {
+  function Channel(options) {
 
     /** @type {String} */
     this.id = _uniqueId();
+
+    /** @type {String} */
+    this.url = null
 
     /** @type {Object} */
     this.options = _extend(defaultOptions, options);
@@ -33,50 +25,90 @@ var Channel = (function() {
       this.id = this.options.id;
     }
 
-    /** @type {Object} */
-    this.credential = _extend(defaultCredential, credential);
+    if (this.options.url != null) {
+      this.url = this.options.url;
+    }
 
     /** @type {Object} */
-    this._handlers = [];
+    this._handlers = {};
   }
 
+  // Handlers
+
   /**
-   * @param {StreamEvent} event
+   * @param {ChannelEvent} event
    * @param {Function} callback
    */
-  Channel.prototype.registerHandler = function(options, callback) {
-    options = {
-      id: null,
-      action_group: "feed|entry",
-      action_type: "add|del|update|*"
+  Channel.prototype.on = function(name, callback) {
+    switch (name) {
+      case 'join':
+        type = JOIN
+        break;
+      case 'leave':
+        type = LEAVE
+        break;
+      case 'message':
+        type = MESSAGE
+        break;
+      default:
+        return false;
+        break;
     }
-
-    this._handlers.push({options: options, cb: callback});
+    if (this._handlers[type] == undefined) {
+      this._handlers[type] = []
+    }
+    this._handlers[type].push(callback);
+    return true;
   }
+
+  // Events
 
   /**
-   * @param {StreamEvent} event
+   * @param {ChannelEvent} event
    */
   Channel.prototype.onData = function(event) {
-    for (var i in this._handlers) {
-      this._handlers[i].cb.call(this, data);
+    switch (event.Type) {
+      case JOIN:
+        this.onJoin(event.User, event.ts)
+        break;
+      case LEAVE:
+        this.onLeave(event.User, event.ts)
+        break;
+      case MESSAGE:
+        this.onMessage(event.User, event.ts, event.Content)
+        break;
     }
-
-    this.EventToString(event);
   }
 
-  Channel.prototype.Authenticate = function(credential) {
+  Channel.prototype.onJoin = function(chid, timestamp) {
+    for (var i in this._handlers[JOIN]) {
+      this._handlers[JOIN][i].call(this, chid, timestamp);
+    }
   }
+
+  Channel.prototype.onLeave = function(chid, timestamp) {
+    for (var i in this._handlers[LEAVE]) {
+      this._handlers[LEAVE][i].call(this, chid, timestamp);
+    }
+  }
+
+  Channel.prototype.onMessage = function(chid, timestamp, data) {
+    for (var i in this._handlers[MESSAGE]) {
+      this._handlers[MESSAGE][i].call(this, chid, timestamp, data);
+    }
+  }
+
+  // Connection
 
   Channel.prototype.getConnection = function() {
   }
 
   Channel.prototype.getWebSocketConnection = function() {
-    this._socket = new WebSocket('ws://localhost:10100/ws/join?uname=' + this.id);
+    this._socket = new WebSocket('ws://localhost:10100/stream/ws/join?chid=' + this.id);
 
     self = this
     this._socket.onmessage = function(event) {
-      event = new StreamEvent(JSON.parse(event.data))
+      event = new ChannelEvent(JSON.parse(event.data))
       self.onData(event)
     };
 
@@ -92,7 +124,7 @@ var Channel = (function() {
     var lastReceived = 0;
     var isWait = false;
 
-    this.getJSON('http://localhost:10100/lp/join?uname=' + this.id, function() {
+    this.getJSON('http://localhost:10100/stream/lp/join?chid=' + this.id, function() {
     })
 
     self = this;
@@ -101,7 +133,7 @@ var Channel = (function() {
         return;
       }
       isWait = true;
-      self.getJSON("http://localhost:10100/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
+      self.getJSON("http://localhost:10100/stream/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
 
         if (code == 4) {
           isWait = false
@@ -112,7 +144,7 @@ var Channel = (function() {
         }
 
         self.each(data, function(i, event) {
-          event = new StreamEvent(event)
+          event = new ChannelEvent(event)
           self.onData(event)
 
           lastReceived = event.GetTimestamp();
@@ -126,10 +158,42 @@ var Channel = (function() {
 
     return {
       send: function(data) {
-        self.post("/lp/post", {uname: self.id, content: JSON.stringify(data)}, function(status) {
+        self.post("/stream/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
         });
       }
     };
+  }
+
+  Channel.prototype.load = function(url, callback) {
+    var xhr;
+    if (typeof XMLHttpRequest !== 'undefined') {
+      xhr = new XMLHttpRequest();
+    } else {
+      var versions = ["MSXML2.XmlHttp.5.0", "MSXML2.XmlHttp.4.0", "MSXML2.XmlHttp.3.0", "MSXML2.XmlHttp.2.0", "Microsoft.XmlHttp"];
+      for (var i = 0, len = versions.length; i < len; i++) {
+        try {
+          xhr = new ActiveXObject(versions[i]);
+          break;
+        }
+        catch (e) {
+        }
+      }
+    }
+    xhr.onreadystatechange = ensureReadiness;
+    function ensureReadiness() {
+      if (xhr.readyState < 4) {
+        return;
+      }
+      if (xhr.status !== 200) {
+        return;
+      }
+      if (xhr.readyState === 4) {
+        callback(xhr);
+      }
+    }
+
+    xhr.open('GET', url, true);
+    xhr.send('');
   }
 
   // HTTP
@@ -182,13 +246,13 @@ var Channel = (function() {
 
   Channel.prototype.EventToString = function(event) {
     switch (event.Type) {
-      case ACTION_JOIN:
+      case JOIN:
         console.log(event.User + " joined the chat room");
         break;
-      case ACTION_LEAVE:
+      case LEAVE:
         console.log(event.User + " left the chat room");
         break;
-      case ACTION_MESSAGE:
+      case MESSAGE:
         console.log(event.User + ", " + event.PrintContent());
         break;
     }

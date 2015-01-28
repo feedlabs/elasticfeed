@@ -12,22 +12,32 @@ type LongPollingController struct {
 }
 
 func (this *LongPollingController) Join() {
-	uname := this.GetString("uname")
-	if len(uname) == 0 {
+	chid := this.GetString("chid")
+	if len(chid) == 0 {
 		return
 	}
 
-	room.Join(uname, nil)
+	w := this.GetCtx().ResponseWriter
+	r := this.GetCtx().Input.Request
+	sess := room.GlobalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+
+	room.Join(chid, nil)
 }
 
 func (this *LongPollingController) Post() {
-	uname := this.GetString("uname")
-	content := this.GetString("content")
-	if len(uname) == 0 || len(content) == 0 {
+	chid := this.GetString("chid")
+	data := this.GetString("data")
+	if len(chid) == 0 || len(data) == 0 {
 		return
 	}
 
-	room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, content)
+	// Feature:
+	// or specific request for this client;
+	// should be executed and returned directly to user
+	// lastReceived time should not be changed in that case
+
+	room.Publish <- room.NewSystemEvent(model.EVENT_MESSAGE, chid, data)
 }
 
 func (this *LongPollingController) Fetch() {

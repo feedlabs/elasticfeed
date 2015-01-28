@@ -7,7 +7,7 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/elasticfeed/resource"
 	"github.com/feedlabs/elasticfeed/helper"
-	"github.com/feedlabs/elasticfeed/service/api/v1/template"
+	"github.com/feedlabs/elasticfeed/service/db/v1/template"
 )
 
 type DefaultController struct {
@@ -70,5 +70,5 @@ func NoRoutes() {
 func init() {
 	SetAuthenticationFilter()
 	SetGlobalResponseHeader()
-//	NoRoutes()
+	//	NoRoutes()
 }

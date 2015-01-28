@@ -3,7 +3,7 @@ package org
 import (
 	"strconv"
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/service/api/v1/template"
+	"github.com/feedlabs/elasticfeed/service/db/v1/template"
 	"errors"
 	"sort"
 )

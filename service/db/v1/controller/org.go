@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/elasticfeed/resource"
-	template "github.com/feedlabs/elasticfeed/service/api/v1/template/org"
+	template "github.com/feedlabs/elasticfeed/service/db/v1/template/org"
 )
 
 type OrgController struct {

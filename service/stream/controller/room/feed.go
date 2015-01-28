@@ -8,7 +8,34 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
 
+	"github.com/astaxie/beego/session"
+
 	"github.com/feedlabs/elasticfeed/service/stream/model"
+)
+
+const (
+	FEED_ADD = iota
+	FEED_DELETE
+	FEED_UPDATE
+	FEED_RESET
+	FEED_RELOAD
+
+	ENTRY_ADD
+	ENTRY_DELETE
+	ENTRY_UPDATE
+	ENTRY_RELOAD
+)
+
+var (
+	Subscribe   = make(chan Subscriber, 10)
+	Unsubscribe = make(chan string, 10)
+	Publish     = make(chan model.Event, 10)
+	P2P         = make(chan *websocket.Conn, 10)
+
+	WaitingList = list.New()
+	Subscribers = list.New()
+
+	GlobalSessions *session.Manager
 )
 
 type Subscription struct {
@@ -16,8 +43,29 @@ type Subscription struct {
 	New     <-chan model.Event
 }
 
+type Subscriber struct {
+	Name    string
+	Conn    *websocket.Conn
+}
+
 func NewEvent(ep model.EventType, user, msg string) model.Event {
-	return model.Event{ep, user, int(time.Now().Unix()), msg}
+	return model.Event{ep, user, time.Now().UnixNano(), msg}
+}
+
+func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
+	return NewEvent(ep, user, msg)
+}
+
+func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
+	return NewChannelEvent(ep, user, msg)
+}
+
+func NewFeedEvent(ep model.EventType, user, msg string) model.Event {
+	return NewSystemEvent(ep, user, msg)
+}
+
+func NewEntryEvent(ep model.EventType, user, msg string) model.Event {
+	return NewSystemEvent(ep, user, msg)
 }
 
 func Join(user string, ws *websocket.Conn) {
@@ -28,32 +76,16 @@ func Leave(user string) {
 	Unsubscribe <- user
 }
 
-type Subscriber struct {
-	Name string
-	Conn *websocket.Conn
-}
-
-var (
-	Subscribe   = make(chan Subscriber, 10)
-	Unsubscribe = make(chan string, 10)
-	Publish     = make(chan model.Event, 10)
-
-	System_rpc = make(chan *websocket.Conn, 10)
-
-	WaitingList = list.New()
-	Subscribers = list.New()
-)
-
 func FeedManager() {
 	for {
 		select {
 
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
-			Publish <- NewEvent(model.EVENT_JOIN, sub.Name, "")
+		Publish <- NewChannelEvent(model.EVENT_JOIN, sub.Name, "")
 
-		case client := <-System_rpc:
-			data, _ := json.Marshal(&model.Event{model.EVENT_MESSAGE, "system", int(time.Now().Unix()), "ok"})
+		case client := <-P2P:
+			data, _ := json.Marshal(NewSystemEvent(model.EVENT_MESSAGE, "system", "ok"))
 			client.WriteMessage(websocket.TextMessage, data)
 
 		case event := <-Publish:
@@ -76,14 +108,13 @@ func FeedManager() {
 						ws.Close()
 						feedify.Error("WebSocket closed:", unsub)
 					}
-					Publish <- NewEvent(model.EVENT_LEAVE, unsub, "")
+					Publish <- NewChannelEvent(model.EVENT_LEAVE, unsub, "")
 					break
 				}
 			}
 		}
 	}
 }
-
 
 func broadcastWebSocket(event model.Event) {
 	data, err := json.Marshal(event)
@@ -103,5 +134,8 @@ func broadcastWebSocket(event model.Event) {
 }
 
 func init() {
+	GlobalSessions, _ = session.NewManager("memory", `{"cookieName":"elasticfeedsessid","gclifetime":3600}`)
+
 	go FeedManager()
+	go GlobalSessions.GC()
 }

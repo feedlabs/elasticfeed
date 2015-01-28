@@ -15,12 +15,17 @@ type WebSocketController struct {
 }
 
 func (this *WebSocketController) Join() {
-	uname := this.GetString("uname")
-	if len(uname) == 0 {
+	chid := this.GetString("chid")
+	if len(chid) == 0 {
 		return
 	}
 
-	ws, err := websocket.Upgrade(this.Ctx.ResponseWriter, this.Ctx.Request, nil, 1024, 1024)
+	w := this.GetCtx().ResponseWriter
+	r := this.GetCtx().Input.Request
+	sess := room.GlobalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+
+	ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
 	if _, ok := err.(websocket.HandshakeError); ok {
 		http.Error(this.Ctx.ResponseWriter, "Not a websocket handshake", 400)
 		return
@@ -29,16 +34,16 @@ func (this *WebSocketController) Join() {
 		return
 	}
 
-	room.Join(uname, ws)
-	defer room.Leave(uname)
+	room.Join(chid, ws)
+	defer room.Leave(chid)
 
 	for {
 		_, p, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
-		room.Publish <- room.NewEvent(model.EVENT_MESSAGE, uname, string(p))
 
-		room.System_rpc <- ws
+		room.Publish <- room.NewSystemEvent(model.EVENT_MESSAGE, chid, string(p))
+		room.P2P <- ws
 	}
 }
