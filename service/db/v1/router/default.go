@@ -7,6 +7,5 @@ import (
 
 func init() {
 	feedify.Router("/", &controller.DefaultController{}, "get:Get")
-	feedify.Router("/db/", &controller.DefaultController{}, "get:Get")
-	feedify.Router("/db/v1", &controller.DefaultController{}, "get:Get")
+	feedify.Router("/v1", &controller.DefaultController{}, "get:Get")
 }

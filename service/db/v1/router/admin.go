@@ -6,6 +6,6 @@ import (
 )
 
 func init() {
-	feedify.Router("/db/v1/admin", &controller.AdminController{}, "get:GetList;post:Post")
-	feedify.Router("/db/v1/admin/:adminId:string", &controller.AdminController{}, "get:Get;delete:Delete;put:Put")
+	feedify.Router("/v1/admin", &controller.AdminController{}, "get:GetList;post:Post")
+	feedify.Router("/v1/admin/:adminId:string", &controller.AdminController{}, "get:Get;delete:Delete;put:Put")
 }
