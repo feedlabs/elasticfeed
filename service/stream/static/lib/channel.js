@@ -104,7 +104,7 @@ var Channel = (function() {
   }
 
   Channel.prototype.getWebSocketConnection = function() {
-    this._socket = new WebSocket('ws://localhost:10100/service/stream/ws/join?chid=' + this.id);
+    this._socket = new WebSocket('ws://localhost:10100/stream/ws/join?chid=' + this.id);
 
     self = this
     this._socket.onmessage = function(event) {
@@ -124,7 +124,7 @@ var Channel = (function() {
     var lastReceived = 0;
     var isWait = false;
 
-    this.getJSON('http://localhost:10100/service/stream/lp/join?chid=' + this.id, function() {
+    this.getJSON('http://localhost:10100/stream/lp/join?chid=' + this.id, function() {
     })
 
     self = this;
@@ -133,7 +133,7 @@ var Channel = (function() {
         return;
       }
       isWait = true;
-      self.getJSON("http://localhost:10100/service/stream/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
+      self.getJSON("http://localhost:10100/stream/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
 
         if (code == 4) {
           isWait = false
@@ -158,7 +158,7 @@ var Channel = (function() {
 
     return {
       send: function(data) {
-        self.post("/service/stream/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
+        self.post("/stream/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
         });
       }
     };

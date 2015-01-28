@@ -5,6 +5,8 @@ import (
 	"runtime"
 	"strconv"
 	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
 type StatusController struct {
@@ -26,6 +28,9 @@ func (this *StatusController) Get() {
 		"mem_alloc_heap": strconv.Itoa(int(memstats.HeapAlloc)),
 		"mem_alloc_total": strconv.Itoa(int(memstats.TotalAlloc)),
 		"mem_sys": strconv.Itoa(int(memstats.Sys)),
+		"subscribers": strconv.Itoa(room.Subscribers.Len()),
+		"waitinglist": strconv.Itoa(room.WaitingList.Len()),
+		"archived": strconv.Itoa(model.Archive.Len()),
 	}
 
 	this.Controller.ServeJson()

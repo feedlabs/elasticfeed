@@ -21,18 +21,18 @@ type Event struct {
 
 const archiveSize = 100
 
-var archive = list.New()
+var Archive = list.New()
 
 func NewArchive(event Event) {
-	if archive.Len() >= archiveSize {
-		archive.Remove(archive.Front())
+	if Archive.Len() >= archiveSize {
+		Archive.Remove(Archive.Front())
 	}
-	archive.PushBack(event)
+	Archive.PushBack(event)
 }
 
 func GetEvents(lastReceived int) []Event {
-	events := make([]Event, 0, archive.Len())
-	for event := archive.Front(); event != nil; event = event.Next() {
+	events := make([]Event, 0, Archive.Len())
+	for event := Archive.Front(); event != nil; event = event.Next() {
 		e := event.Value.(Event)
 		if e.Timestamp > int64(lastReceived) {
 			events = append(events, e)
