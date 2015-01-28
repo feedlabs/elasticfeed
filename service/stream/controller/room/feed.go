@@ -8,6 +8,8 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
 
+	"github.com/astaxie/beego/session"
+
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
@@ -32,6 +34,8 @@ var (
 
 	WaitingList = list.New()
 	Subscribers = list.New()
+
+	GlobalSessions *session.Manager
 )
 
 type Subscription struct {
@@ -40,8 +44,8 @@ type Subscription struct {
 }
 
 type Subscriber struct {
-	Name string
-	Conn *websocket.Conn
+	Name    string
+	Conn    *websocket.Conn
 }
 
 func NewEvent(ep model.EventType, user, msg string) model.Event {
@@ -130,5 +134,8 @@ func broadcastWebSocket(event model.Event) {
 }
 
 func init() {
+	GlobalSessions, _ = session.NewManager("memory", `{"cookieName":"elasticfeedsessid","gclifetime":3600}`)
+
 	go FeedManager()
+	go GlobalSessions.GC()
 }

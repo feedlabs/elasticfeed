@@ -33,8 +33,6 @@ includeJs('lib/event/system.js');
         }
       }, options);
 
-      console.log(options)
-
       channel = this.getChannel(options.channel);
 
       return new Feed(options, channel);

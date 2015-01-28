@@ -158,7 +158,7 @@ var Channel = (function() {
 
     return {
       send: function(data) {
-        self.post("/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
+        self.post("/service/stream/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
         });
       }
     };

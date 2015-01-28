@@ -13,10 +13,10 @@ const (
 )
 
 type Event struct {
-	Type      EventType
-	User      string
-	Timestamp int64
-	Content   string
+	Type           EventType
+	User           string
+	Timestamp      int64
+	Content        string
 }
 
 const archiveSize = 100

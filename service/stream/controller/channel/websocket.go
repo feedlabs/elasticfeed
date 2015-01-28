@@ -20,7 +20,12 @@ func (this *WebSocketController) Join() {
 		return
 	}
 
-	ws, err := websocket.Upgrade(this.Ctx.ResponseWriter, this.Ctx.Request, nil, 1024, 1024)
+	w := this.GetCtx().ResponseWriter
+	r := this.GetCtx().Input.Request
+	sess := room.GlobalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+
+	ws, err := websocket.Upgrade(w, r, nil, 1024, 1024)
 	if _, ok := err.(websocket.HandshakeError); ok {
 		http.Error(this.Ctx.ResponseWriter, "Not a websocket handshake", 400)
 		return

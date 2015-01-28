@@ -17,6 +17,11 @@ func (this *LongPollingController) Join() {
 		return
 	}
 
+	w := this.GetCtx().ResponseWriter
+	r := this.GetCtx().Input.Request
+	sess := room.GlobalSessions.SessionStart(w, r)
+	defer sess.SessionRelease(w)
+
 	room.Join(chid, nil)
 }
 
