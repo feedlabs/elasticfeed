@@ -19,18 +19,26 @@ func (this *StatusController) Get() {
 	runtime.ReadMemStats(&memstats)
 	hostname, _ := os.Hostname()
 
-	this.Data["json"] = map[string]string{
-		"hostname": hostname,
-		"pid": strconv.Itoa(os.Getpid()),
-		"cpus": strconv.Itoa(runtime.NumCPU()),
-		"goroutines": strconv.Itoa(runtime.NumGoroutine()),
-		"mem_alloc": strconv.Itoa(int(memstats.Alloc)),
-		"mem_alloc_heap": strconv.Itoa(int(memstats.HeapAlloc)),
-		"mem_alloc_total": strconv.Itoa(int(memstats.TotalAlloc)),
-		"mem_sys": strconv.Itoa(int(memstats.Sys)),
-		"subscribers": strconv.Itoa(room.Subscribers.Len()),
-		"waitinglist": strconv.Itoa(room.WaitingList.Len()),
-		"archived": strconv.Itoa(model.Archive.Len()),
+	this.Data["json"] = map[string]interface{}{
+		"system": map[string]interface{} {
+			"hostname": hostname,
+			"pid": strconv.Itoa(os.Getpid()),
+			"cpus": strconv.Itoa(runtime.NumCPU()),
+		},
+		"go": map[string]interface{} {
+			"routines": strconv.Itoa(runtime.NumGoroutine()),
+		},
+		"mem": map[string]interface{} {
+			"mem_alloc": strconv.Itoa(int(memstats.Alloc)),
+			"mem_alloc_heap": strconv.Itoa(int(memstats.HeapAlloc)),
+			"mem_alloc_total": strconv.Itoa(int(memstats.TotalAlloc)),
+			"mem_sys": strconv.Itoa(int(memstats.Sys)),
+		},
+		"stream": map[string]interface{} {
+			"subscribers": strconv.Itoa(room.Subscribers.Len()),
+			"waitinglist": strconv.Itoa(room.WaitingList.Len()),
+			"archived_queue": strconv.Itoa(model.Archive.Len()),
+		},
 	}
 
 	this.Controller.ServeJson()
