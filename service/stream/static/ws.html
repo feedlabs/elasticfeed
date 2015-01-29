@@ -5,9 +5,14 @@
 
       window.onload = function() {
 
-        feed = elasticfeed.initFeed({
-          transport: 'ws'
+        elasticfeed.init({
+          channel: {
+            url: 'ws://localhost:80',
+            transport: 'ws'
+          }
         });
+
+        feed = elasticfeed.initFeed('0000000002');
 
         feed.channel.on('join', function(chid, ts) {
           console.log(chid + " joined the chat room");

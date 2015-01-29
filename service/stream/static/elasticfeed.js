@@ -15,7 +15,20 @@ includeJs('lib/event/system.js');
 
 (function(window) {
 
+  /** @type {Object} */
+  var defaultOptions = {
+    channel: {
+      url: 'localhost',
+      transport: 'ws'
+    },
+    styler: function(data) {
+    }
+  }
+
   var elasticfeed = {
+
+    /** @type {Object} */
+    options: {},
 
     /** @type {Object} */
     channelList: {},
@@ -23,19 +36,15 @@ includeJs('lib/event/system.js');
     /** @type {Object} */
     feedList: {},
 
-    initFeed: function(options) {
-      options = _extend({
-        channel: {
-          url: 'ws://localhost:80/ws',
-          transport: 'ws'
-        },
-        styler: function(data) {
-        }
-      }, options);
+    init: function(options) {
+      this.options = _extend(defaultOptions, options);
+    },
 
-      channel = this.getChannel(options.channel);
+    initFeed: function(id, options) {
+      feed_options = _extend(this.options, options || {});
+      channel = this.getChannel(feed_options.channel);
 
-      return new Feed(options, channel);
+      return new Feed(feed_options, channel);
     },
 
     /**

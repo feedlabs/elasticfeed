@@ -5,7 +5,14 @@
 
       window.onload = function() {
 
-        feed = elasticfeed.initFeed({
+        elasticfeed.init({
+          channel: {
+            url: 'http://localhost:80',
+            transport: 'ws'
+          }
+        });
+
+        feed = elasticfeed.initFeed('0000000001', {
           channel: {
             url: 'http://localhost:80',
             transport: 'lp'
