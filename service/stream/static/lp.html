@@ -12,7 +12,7 @@
           }
         });
 
-        feed = elasticfeed.initFeed('0000000001', {
+        feed = elasticfeed.initFeed('1', {
           channel: {
             url: 'http://localhost:80',
             transport: 'lp'
@@ -23,19 +23,6 @@
           }
         });
 
-        feed.channel.on('join', function(chid, ts) {
-          feed.addEntry(chid + " joined the chat room");
-        });
-
-        feed.channel.on('leave', function(chid, ts) {
-          feed.addEntry(chid + " left the chat room");
-        });
-
-        feed.channel.on('message', function(chid, ts, data) {
-          feed.addEntry(chid + " " + JSON.stringify(data));
-        });
-
-        window['socket'] = feed.socket
       }
 
     </script>

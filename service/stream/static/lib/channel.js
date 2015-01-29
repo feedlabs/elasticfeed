@@ -70,15 +70,15 @@ var Channel = (function() {
    * @param {ChannelEvent} channelEvent
    */
   Channel.prototype.onData = function(channelEvent) {
-    switch (channelEvent.Type) {
+    switch (channelEvent.type) {
       case JOIN:
-        this.onJoin(channelEvent.User, channelEvent.ts)
+        this.onJoin(channelEvent.user, channelEvent.ts)
         break;
       case LEAVE:
-        this.onLeave(channelEvent.User, channelEvent.ts)
+        this.onLeave(channelEvent.user, channelEvent.ts)
         break;
       case MESSAGE:
-        this.onMessage(channelEvent.User, channelEvent.ts, channelEvent.Content)
+        this.onMessage(channelEvent.user, channelEvent.ts, channelEvent.content)
         break;
     }
   }

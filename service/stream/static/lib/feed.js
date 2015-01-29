@@ -105,7 +105,7 @@ var Feed = (function() {
   }
 
   Feed.prototype.onData = function(feedEvent) {
-    switch (feedEvent.Type) {
+    switch (feedEvent.type) {
       case RELOAD:
         this.onReload(feedEvent.ts)
         break;
@@ -113,13 +113,13 @@ var Feed = (function() {
         this.onReset(feedEvent.ts)
         break;
       case ENTRY:
-        this.onEntry(feedEvent.ts, feedEvent.Content)
+        this.onEntry(feedEvent.ts, feedEvent.content)
         break;
       case ENTRY_INIT:
-        this.onEntryInit(feedEvent.ts, feedEvent.Content)
+        this.onEntryInit(feedEvent.ts, feedEvent.content)
         break;
       case ENTRY_MORE:
-        this.onEntryMore(feedEvent.ts, feedEvent.Content)
+        this.onEntryMore(feedEvent.ts, feedEvent.content)
         break;
       case HIDE:
         this.onHide(feedEvent.ts)
@@ -208,8 +208,8 @@ var Feed = (function() {
   Feed.prototype.bindChannel = function(channel) {
     var self = this;
     channel.on('message', function(chid, ts, systemEvent) {
-      if (systemEvent.Type == GROUP_TYPE) {
-        feedEvent = new FeedEvent(systemEvent.Content);
+      if (systemEvent.type == GROUP_TYPE) {
+        feedEvent = new FeedEvent(systemEvent.content);
         if (feedEvent.id == self.id || feedEvent.id == '*') {
           self.onData(feedEvent);
         }
@@ -220,7 +220,7 @@ var Feed = (function() {
   // Stylers
 
   Feed.prototype._stylerFunction = function(data) {
-    return JSON.stringify(data.Data);
+    return JSON.stringify(data);
   }
 
   // Helpers

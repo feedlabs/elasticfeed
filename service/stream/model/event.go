@@ -19,7 +19,7 @@ type Event struct {
 	Content        string
 }
 
-const archiveSize = 100
+const archiveSize = 1
 
 var Archive = list.New()
 

@@ -15,20 +15,20 @@ var ChannelEvent = (function() {
     this.actionType = null
 
     /** @type {String} */
-    this.User = event.User
+    this.user = event.User
 
     /** @type {String} */
-    this.Type = event.Type
+    this.type = event.Type
 
     /** @type {String} */
-    this.ContentType = 'string'
+    this.contentType = 'string'
 
     /** @type {String} */
     try {
-      this.Content = JSON.parse(event.Content)
-      this.ContentType = 'json'
+      this.content = JSON.parse(event.Content)
+      this.contentType = 'json'
     } catch (e) {
-      this.Content = event.Content
+      this.content = event.Content
     }
   }
 
@@ -37,10 +37,10 @@ var ChannelEvent = (function() {
   }
 
   ChannelEvent.prototype.PrintContent = function() {
-    if (this.ContentType == 'string') {
-      return this.Content
+    if (this.contentType == 'string') {
+      return this.content
     }
-    return JSON.stringify(this.Content)
+    return JSON.stringify(this.content)
   }
 
   return ChannelEvent;

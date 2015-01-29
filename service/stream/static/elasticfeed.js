@@ -43,10 +43,10 @@ includeJs('lib/event/entry.js');
     },
 
     initFeed: function(id, options) {
-      feed_options = _extend(this.options, options || {});
-      channel = this.getChannel(feed_options.channel);
+      opts = _extend(this.options, options || {});
+      channel = this.getChannel(opts.channel);
 
-      return new Feed(id, feed_options, channel);
+      return new Feed(id, opts, channel);
     },
 
     /**
