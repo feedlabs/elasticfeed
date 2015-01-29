@@ -50,44 +50,53 @@ var Feed = (function() {
       this.socket = this.channel.getLongPoolingConnection();
     }
 
+    /** @type {Object} */
     this.options = _extend(globalOptions, options);
-    this._stylerFunction = options.styler || this._stylerFunction;
+
+    /** @type {Function} */
+    this.stylerFunction = options.stylerFunction || this._stylerFunction;
+
+    /** @type {DOM} */
     this.outputContainer = document.getElementById(this.options.outputContainerId);
 
     this.bindChannel(this.channel);
   }
 
   Feed.prototype.on = function(type, callback) {
-
   }
 
   // Events callbacks
 
-  Feed.prototype.onReload = function(callback) {
+  Feed.prototype.onReload = function() {
   }
 
-  Feed.prototype.onReset = function(callback) {
+  Feed.prototype.onReset = function() {
   }
 
-  Feed.prototype.onEntryAdd = function(callback) {
+  Feed.prototype.onEntryAdd = function(entry) {
   }
 
-  Feed.prototype.onEntryDelete = function(callback) {
+  Feed.prototype.onEntryDelete = function(entry) {
   }
 
-  Feed.prototype.onEntryUpdate = function(callback) {
+  Feed.prototype.onEntryUpdate = function(entry) {
   }
 
-  Feed.prototype.onEvent = function(eventName, callback) {
+  Feed.prototype.onEvent = function(event) {
   }
 
-  Feed.prototype.onData = function(callback) {
+  Feed.prototype.onData = function(data) {
   }
 
   // Entries management
 
   Feed.prototype.addEntry = function(data) {
-    this.entryList.push(new Entry(data))
+    entry = new Entry(data);
+
+    this.entryList.push(entry);
+    this.onEntryAdd(entry);
+
+    this.outputContainer.innerHTML = this.stylerFunction.call(this, data) + this.outputContainer.innerHTML;
   }
 
   Feed.prototype.deleteEntry = function(id) {
@@ -97,6 +106,11 @@ var Feed = (function() {
   }
 
   Feed.prototype.findEntry = function(id) {
+  }
+
+  // UI
+
+  Feed.prototype.render = function() {
   }
 
   // Handlers

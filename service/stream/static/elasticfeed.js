@@ -21,7 +21,7 @@ includeJs('lib/event/system.js');
       url: 'localhost',
       transport: 'ws'
     },
-    styler: function(data) {
+    stylerFunction: function(data) {
     }
   }
 
