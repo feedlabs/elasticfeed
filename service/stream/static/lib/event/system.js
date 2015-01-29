@@ -1,9 +1,9 @@
 var SystemEvent = (function() {
 
-  function SystemEvent(event) {
+  function SystemEvent(chid, event) {
 
     /** @type {String} */
-    this.id = null;
+    this.chid = chid;
 
     /** @type {Integer} */
     this.ts = event.Timestamp;
@@ -13,9 +13,6 @@ var SystemEvent = (function() {
 
     /** @type {Integer} */
     this.actionType = null
-
-    /** @type {String} */
-    this.User = event.User
 
     /** @type {String} */
     this.Type = event.Type

@@ -31,6 +31,9 @@ var Channel = (function() {
 
     /** @type {Object} */
     this._handlers = {};
+
+    /** @type {WebSocket} */
+    this._socket = null;
   }
 
   // Handlers
@@ -64,18 +67,18 @@ var Channel = (function() {
   // Events
 
   /**
-   * @param {ChannelEvent} event
+   * @param {ChannelEvent} channelEvent
    */
-  Channel.prototype.onData = function(event) {
-    switch (event.Type) {
+  Channel.prototype.onData = function(channelEvent) {
+    switch (channelEvent.Type) {
       case JOIN:
-        this.onJoin(event.User, event.ts)
+        this.onJoin(channelEvent.User, channelEvent.ts)
         break;
       case LEAVE:
-        this.onLeave(event.User, event.ts)
+        this.onLeave(channelEvent.User, channelEvent.ts)
         break;
       case MESSAGE:
-        this.onMessage(event.User, event.ts, event.Content)
+        this.onMessage(channelEvent.User, channelEvent.ts, channelEvent.Content)
         break;
     }
   }
@@ -93,12 +96,18 @@ var Channel = (function() {
   }
 
   Channel.prototype.onMessage = function(chid, timestamp, data) {
+    systemEvent = new SystemEvent(chid, data);
+
     for (var i in this._handlers[MESSAGE]) {
-      this._handlers[MESSAGE][i].call(this, chid, timestamp, data);
+      this._handlers[MESSAGE][i].call(this, chid, timestamp, systemEvent);
     }
   }
 
   // Connection
+
+  Channel.prototype.isWebSocket = function() {
+    return this._socket != undefined;
+  }
 
   Channel.prototype.getConnection = function() {
   }
@@ -242,20 +251,6 @@ var Channel = (function() {
     dataString = this.queryString(data)
     xhr1.open("POST", url + "?" + dataString, true);
     xhr1.send(dataString);
-  }
-
-  Channel.prototype.EventToString = function(event) {
-    switch (event.Type) {
-      case JOIN:
-        console.log(event.User + " joined the chat room");
-        break;
-      case LEAVE:
-        console.log(event.User + " left the chat room");
-        break;
-      case MESSAGE:
-        console.log(event.User + ", " + event.PrintContent());
-        break;
-    }
   }
 
   // Helpers

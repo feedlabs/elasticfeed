@@ -12,6 +12,8 @@ includeJs('lib/entry.js');
 includeJs('lib/channel.js');
 includeJs('lib/event/channel.js');
 includeJs('lib/event/system.js');
+includeJs('lib/event/feed.js');
+includeJs('lib/event/entry.js');
 
 (function(window) {
 
@@ -44,7 +46,7 @@ includeJs('lib/event/system.js');
       feed_options = _extend(this.options, options || {});
       channel = this.getChannel(feed_options.channel);
 
-      return new Feed(feed_options, channel);
+      return new Feed(id, feed_options, channel);
     },
 
     /**

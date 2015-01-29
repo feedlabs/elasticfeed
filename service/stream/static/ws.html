@@ -12,50 +12,42 @@
           }
         });
 
-        feed1 = elasticfeed.initFeed('0000000002', {
-          outputContainerId: 'my-elastic-feed-left',
+        feed1 = elasticfeed.initFeed('1', {
+          outputContainerId: 'my-elastic-feed-1',
           stylerFunction: function(data) {
-            return '<div style="height:50px; border:1px dotted; border-color: blue;">' + data + '</div>';
+            return '<div style="height:50px; border:1px dotted; background-color: blue;">' + data + '</div>';
           }
         });
 
-        feed2 = elasticfeed.initFeed('0000000003', {
-          outputContainerId: 'my-elastic-feed-right',
+        feed2 = elasticfeed.initFeed('2', {
+          outputContainerId: 'my-elastic-feed-2',
           stylerFunction: function(data) {
-            return '<div style="height:50px; border:1px dotted; border-color: yellow;">' + data + '</div>';
+            return '<div style="height:50px; border:1px dotted; background-color: yellow;">' + data + '</div>';
           }
         });
 
-        feed1.channel.on('join', function(chid, ts) {
-          feed1.addEntry(chid + " joined the chat room");
+        feed3 = elasticfeed.initFeed('3', {
+          outputContainerId: 'my-elastic-feed-3',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: green;">' + data + '</div>';
+          }
         });
 
-        feed1.channel.on('leave', function(chid, ts) {
-          feed1.addEntry(chid + " left the chat room");
+        feed4 = elasticfeed.initFeed('4', {
+          outputContainerId: 'my-elastic-feed-4',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: pink;">' + data + '</div>';
+          }
         });
 
-        feed1.channel.on('message', function(chid, ts, data) {
-          feed1.addEntry(chid + " " + JSON.stringify(data));
-        });
-
-        feed2.channel.on('join', function(chid, ts) {
-          feed2.addEntry(chid + " joined the chat room");
-        });
-
-        feed2.channel.on('leave', function(chid, ts) {
-          feed2.addEntry(chid + " left the chat room");
-        });
-
-        feed2.channel.on('message', function(chid, ts, data) {
-          feed2.addEntry(chid + " " + JSON.stringify(data));
-        });
-
-        window['socket'] = feed1.socket
+        window['socket'] = feed1.socket;
       }
 
     </script>
 
-    <div id="my-elastic-feed-left" style="background-color: grey; width:50%; float: left"></div>
-    <div id="my-elastic-feed-right" style="background-color: grey; width:50%; float: right"></div>
+    <div id="my-elastic-feed-1" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-2" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-3" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-4" style="background-color: grey; width:25%; float: left"></div>
   </body>
 </html>

@@ -17,11 +17,8 @@ var Entry = (function() {
     /** @type {String} */
     this.id = null;
 
-    /** @type {Integer} */
-    this.ts = null;
-
-    /** @type {Feed} */
-    this.parent = null;
+    /** @type {String} */
+    this.data = data;
   }
 
   // Management

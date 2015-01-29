@@ -1,13 +1,14 @@
 var Feed = (function() {
 
-  const ACTION_GROUP_TYPE = 1
+  const GROUP_TYPE = 1
 
-  const ACTION_RELOAD = 1
-  const ACTION_RESET = 2
-  const ACTION_DATA_INIT = 3
-  const ACTION_DATA_MORE = 4
-  const ACTION_HIDE = 5
-  const ACTION_SHOW = 6
+  const RELOAD = 1
+  const RESET = 2
+  const ENTRY = 3
+  const ENTRY_INIT = 4
+  const ENTRY_MORE = 5
+  const HIDE = 6
+  const SHOW = 7
 
   const AUTHENTICATED = 100
   const AUTHENTICATION_REQUIRED = 101
@@ -32,10 +33,10 @@ var Feed = (function() {
     method: 'basic'
   };
 
-  function Feed(options, channel) {
+  function Feed(id, options, channel) {
 
     /** @type {String} */
-    this.id = null;
+    this.id = id;
 
     /** @type {Channel} */
     this.channel = channel;
@@ -45,7 +46,11 @@ var Feed = (function() {
 
     /** @type {Object} */
     if (this.channel.options.transport == 'ws') {
-      this.socket = this.channel.getWebSocketConnection();
+      if (this.channel._socket == undefined) {
+        this.socket = this.channel.getWebSocketConnection();
+      } else {
+        this.socket = this.channel._socket;
+      }
     } else if (this.channel.options.transport == 'lp') {
       this.socket = this.channel.getLongPoolingConnection();
     }
@@ -60,43 +65,128 @@ var Feed = (function() {
     this.outputContainer = document.getElementById(this.options.outputContainerId);
 
     this.bindChannel(this.channel);
+
+    /** @type {Object} */
+    this._handlers = {};
   }
 
   Feed.prototype.on = function(type, callback) {
+    switch (name) {
+      case 'reload':
+        type = RELOAD
+        break;
+      case 'reset':
+        type = RESET
+        break;
+      case 'entry':
+        type = ENTRY
+        break;
+      case 'entry-init':
+        type = ENTRY_INIT
+        break;
+      case 'entry-more':
+        type = ENTRY_MORE
+        break;
+      case 'hide':
+        type = HIDE
+        break;
+      case 'show':
+        type = SHOW
+        break;
+      default:
+        return false;
+        break;
+    }
+    if (this._handlers[type] == undefined) {
+      this._handlers[type] = []
+    }
+    this._handlers[type].push(callback);
+    return true;
+  }
+
+  Feed.prototype.onData = function(feedEvent) {
+    switch (feedEvent.Type) {
+      case RELOAD:
+        this.onReload(feedEvent.ts)
+        break;
+      case RESET:
+        this.onReset(feedEvent.ts)
+        break;
+      case ENTRY:
+        this.onEntry(feedEvent.ts, feedEvent.Content)
+        break;
+      case ENTRY_INIT:
+        this.onEntryInit(feedEvent.ts, feedEvent.Content)
+        break;
+      case ENTRY_MORE:
+        this.onEntryMore(feedEvent.ts, feedEvent.Content)
+        break;
+      case HIDE:
+        this.onHide(feedEvent.ts)
+        break;
+      case SHOW:
+        this.onShow(feedEvent.ts)
+        break;
+    }
   }
 
   // Events callbacks
 
-  Feed.prototype.onReload = function() {
+  Feed.prototype.onReload = function(timestamp) {
+    for (var i in this._handlers[RELOAD]) {
+      this._handlers[RELOAD][i].call(this, chid, timestamp);
+    }
   }
 
-  Feed.prototype.onReset = function() {
+  Feed.prototype.onReset = function(timestamp) {
+    for (var i in this._handlers[RESET]) {
+      this._handlers[RESET][i].call(this, chid, timestamp);
+    }
   }
 
-  Feed.prototype.onEntryAdd = function(entry) {
+  Feed.prototype.onEntry = function(timestamp, data) {
+    entry = new Entry(data);
+
+    this.addEntry(entry)
+
+    for (var i in this._handlers[ENTRY]) {
+      this._handlers[ENTRY][i].call(this, timestamp, entry);
+    }
   }
 
-  Feed.prototype.onEntryDelete = function(entry) {
+  Feed.prototype.onEntryInit = function(timestamp, data) {
+    entries = JSON.parse(data);
+
+    for (var i in this._handlers[ENTRY_INIT]) {
+      this._handlers[ENTRY_INIT][i].call(this, timestamp, entries);
+    }
   }
 
-  Feed.prototype.onEntryUpdate = function(entry) {
+  Feed.prototype.onEntryMore = function(timestamp, data) {
+    entries = JSON.parse(data);
+
+    for (var i in this._handlers[ENTRY_MORE]) {
+      this._handlers[ENTRY_MORE][i].call(this, timestamp, entries);
+    }
   }
 
-  Feed.prototype.onEvent = function(event) {
+  Feed.prototype.onHide = function(timestamp) {
+    for (var i in this._handlers[HIDE]) {
+      this._handlers[HIDE][i].call(this, timestamp);
+    }
   }
 
-  Feed.prototype.onData = function(data) {
+  Feed.prototype.onShow = function(timestamp) {
+    for (var i in this._handlers[SHOW]) {
+      this._handlers[SHOW][i].call(this, timestamp);
+    }
   }
 
   // Entries management
 
-  Feed.prototype.addEntry = function(data) {
-    entry = new Entry(data);
-
+  Feed.prototype.addEntry = function(entry) {
     this.entryList.push(entry);
-    this.onEntryAdd(entry);
-
-    this.outputContainer.innerHTML = this.stylerFunction.call(this, data) + this.outputContainer.innerHTML;
+    this.outputContainer.innerHTML = this.stylerFunction.call(this, entry.data) + this.outputContainer.innerHTML;
   }
 
   Feed.prototype.deleteEntry = function(id) {
@@ -116,10 +206,14 @@ var Feed = (function() {
   // Handlers
 
   Feed.prototype.bindChannel = function(channel) {
-    channel.on('message', function(chid, ts, data) {
-      // should detect type of message
-      // if feed addressed then check id
-      // trigger action if needed
+    var self = this;
+    channel.on('message', function(chid, ts, systemEvent) {
+      if (systemEvent.Type == GROUP_TYPE) {
+        feedEvent = new FeedEvent(systemEvent.Content);
+        if (feedEvent.id == self.id || feedEvent.id == '*') {
+          self.onData(feedEvent);
+        }
+      }
     });
   }
 

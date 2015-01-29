@@ -3,7 +3,7 @@ var FeedEvent = (function() {
   function FeedEvent(event) {
 
     /** @type {String} */
-    this.id = null;
+    this.id = event.Id;
 
     /** @type {Integer} */
     this.ts = event.Timestamp;
@@ -13,9 +13,6 @@ var FeedEvent = (function() {
 
     /** @type {Integer} */
     this.actionType = null
-
-    /** @type {String} */
-    this.User = event.User
 
     /** @type {String} */
     this.Type = event.Type
