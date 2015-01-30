@@ -208,10 +208,19 @@ var Feed = (function() {
     entry.render();
   }
 
-  Feed.prototype.deleteEntry = function(id) {
+  Feed.prototype.deleteEntry = function(entry) {
+    entry.delete();
   }
 
-  Feed.prototype.updateEntry = function(id, data) {
+  Feed.prototype.updateEntry = function(entry, data) {
+  }
+
+  Feed.prototype.empty = function() {
+    for (var i in this.entryList) {
+      this.deleteEntry(this.entryList[i]);
+      delete this.entryList[i];
+    }
+    this.entryList = []
   }
 
   Feed.prototype.findEntry = function(id) {

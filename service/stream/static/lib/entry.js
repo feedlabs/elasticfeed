@@ -103,8 +103,7 @@ var Entry = (function() {
   }
 
   Entry.prototype.delete = function() {
-    this.hide();
-    this._feed.deleteEntry(this);
+    document.getElementById(this.viewId).remove();
   }
 
   Entry.prototype.hide = function() {
