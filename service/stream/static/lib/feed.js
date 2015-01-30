@@ -152,7 +152,7 @@ var Feed = (function() {
   }
 
   Feed.prototype.onEntryNew = function(timestamp, data) {
-    entry = new Entry(this, _uniqueId(), data, this.stylerFunction);
+    entry = new Entry(data, {styler: this.stylerFunction});
 
     this.addEntry(entry)
 
@@ -200,9 +200,10 @@ var Feed = (function() {
   // Entries management
 
   Feed.prototype.addEntry = function(entry) {
+    entry.setParent(this);
     this.entryList.push(entry);
 
-    this.outputContainer.innerHTML = '<div id="' + entry.id + '"></div>' + this.outputContainer.innerHTML;
+    this.outputContainer.innerHTML = '<div id="' + entry.getViewId() + '"></div>' + this.outputContainer.innerHTML;
 
     entry.render();
   }
@@ -245,10 +246,6 @@ var Feed = (function() {
   }
 
   // Helpers
-
-  var _uniqueId = function() {
-    return '_' + Math.random().toString(36).substr(2, 36);
-  }
 
   var _extend = function(a, b) {
     var c = {}, prop;

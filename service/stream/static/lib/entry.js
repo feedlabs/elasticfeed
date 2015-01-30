@@ -11,26 +11,38 @@ var Entry = (function() {
   /** @type {Entry} */
   var localCache = {}
 
-  function Entry(feed, id, data, styler) {
+  function Entry(data, options) {
     /** @type {String} */
-    this.id = id;
+    this.id = null;
+
+    /** @type {String} */
+    this.viewId = _uniqueId();
 
     /** @type {String} */
     this.data = data;
 
     /** @type {Object} */
-    this._feed = feed;
+    this._feed = null;
 
     /** @type {Function} */
-    this._styler = styler;
+    this._styler = (options ? options.styler : undefined) || function() {
+      return data;
+    };
+  }
 
+  Entry.prototype.setParent = function(feed) {
+    this._feed = feed;
     this.bindFeedMessages();
+  }
+
+  Entry.prototype.getViewId = function() {
+    return this.viewId;
   }
 
   // UI
 
   Entry.prototype.render = function() {
-    document.getElementById(this.id).innerHTML = this._styler.call(this, this.data);
+    document.getElementById(this.viewId).innerHTML = this._styler.call(this, this.data);
   }
 
   // Events
@@ -152,10 +164,15 @@ var Entry = (function() {
     });
   }
 
-  // Helpers
 
   Entry.prototype.getTimestamp = function() {
     return this.ts;
+  }
+
+  // Helpers
+
+  var _uniqueId = function() {
+    return '_' + Math.random().toString(36).substr(2, 36);
   }
 
   return Entry;
