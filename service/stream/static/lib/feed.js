@@ -4,11 +4,12 @@ var Feed = (function() {
 
   const RELOAD = 1
   const RESET = 2
-  const ENTRY = 3
+  const ENTRY_NEW = 3
   const ENTRY_INIT = 4
   const ENTRY_MORE = 5
   const HIDE = 6
   const SHOW = 7
+  const ENTRY = 8
 
   const AUTHENTICATED = 100
   const AUTHENTICATION_REQUIRED = 101
@@ -79,7 +80,7 @@ var Feed = (function() {
         type = RESET
         break;
       case 'entry':
-        type = ENTRY
+        type = ENTRY_NEW
         break;
       case 'entry-init':
         type = ENTRY_INIT
@@ -92,6 +93,9 @@ var Feed = (function() {
         break;
       case 'show':
         type = SHOW
+        break;
+      case 'entry':
+        type = ENTRY
         break;
       default:
         return false;
@@ -112,8 +116,8 @@ var Feed = (function() {
       case RESET:
         this.onReset(feedEvent.ts)
         break;
-      case ENTRY:
-        this.onEntry(feedEvent.ts, feedEvent.content)
+      case ENTRY_NEW:
+        this.onEntryNew(feedEvent.ts, feedEvent.content)
         break;
       case ENTRY_INIT:
         this.onEntryInit(feedEvent.ts, feedEvent.content)
@@ -126,6 +130,9 @@ var Feed = (function() {
         break;
       case SHOW:
         this.onShow(feedEvent.ts)
+        break;
+      case ENTRY:
+        this.onEntry(feedEvent.ts, feedEvent.content)
         break;
     }
   }
@@ -144,13 +151,13 @@ var Feed = (function() {
     }
   }
 
-  Feed.prototype.onEntry = function(timestamp, data) {
-    entry = new Entry(data);
+  Feed.prototype.onEntryNew = function(timestamp, data) {
+    entry = new Entry(this, _uniqueId(), data, this.stylerFunction);
 
     this.addEntry(entry)
 
-    for (var i in this._handlers[ENTRY]) {
-      this._handlers[ENTRY][i].call(this, timestamp, entry);
+    for (var i in this._handlers[ENTRY_NEW]) {
+      this._handlers[ENTRY_NEW][i].call(this, timestamp, entry);
     }
   }
 
@@ -182,11 +189,22 @@ var Feed = (function() {
     }
   }
 
+  Feed.prototype.onEntry = function(timestamp, content) {
+    entryEvent = new EntryEvent(content);
+
+    for (var i in this._handlers[ENTRY]) {
+      this._handlers[ENTRY][i].call(this, timestamp, entryEvent);
+    }
+  }
+
   // Entries management
 
   Feed.prototype.addEntry = function(entry) {
     this.entryList.push(entry);
-    this.outputContainer.innerHTML = this.stylerFunction.call(this, entry.data) + this.outputContainer.innerHTML;
+
+    this.outputContainer.innerHTML = '<div id="' + entry.id + '"></div>' + this.outputContainer.innerHTML;
+
+    this.render();
   }
 
   Feed.prototype.deleteEntry = function(id) {
@@ -200,7 +218,10 @@ var Feed = (function() {
 
   // UI
 
-  Feed.prototype.render = function() {
+  Feed.prototype.render = function(id) {
+    for (var i in this.entryList) {
+      this.entryList[i].render();
+    }
   }
 
   // Handlers
@@ -224,6 +245,10 @@ var Feed = (function() {
   }
 
   // Helpers
+
+  var _uniqueId = function() {
+    return '_' + Math.random().toString(36).substr(2, 36);
+  }
 
   var _extend = function(a, b) {
     var c = {}, prop;
