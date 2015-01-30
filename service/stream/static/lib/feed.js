@@ -204,7 +204,7 @@ var Feed = (function() {
 
     this.outputContainer.innerHTML = '<div id="' + entry.id + '"></div>' + this.outputContainer.innerHTML;
 
-    this.render();
+    entry.render();
   }
 
   Feed.prototype.deleteEntry = function(id) {

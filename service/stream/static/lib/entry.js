@@ -85,16 +85,28 @@ var Entry = (function() {
 
   // Management
 
-  Entry.prototype.update = function() {
+  Entry.prototype.update = function(data) {
+    this.data = data;
+    this.render();
   }
 
   Entry.prototype.delete = function() {
+    this.hide();
+    this._feed.deleteEntry(this);
   }
 
   Entry.prototype.hide = function() {
   }
 
   Entry.prototype.show = function() {
+  }
+
+  // API
+
+  Entry.prototype.apiEntryUpdate = function(data) {
+  }
+
+  Entry.prototype.apiMetricSave = function(data) {
   }
 
   // Events callbacks
