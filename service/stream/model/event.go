@@ -13,10 +13,11 @@ const (
 )
 
 type Event struct {
-	Type           EventType
-	User           string
-	Timestamp      int64
-	Content        string
+	Type             EventType
+	User             string
+	Ts               int64
+	Timestamp        string
+	Content          string
 }
 
 const archiveSize = 1
@@ -34,7 +35,8 @@ func GetEvents(lastReceived int) []Event {
 	events := make([]Event, 0, Archive.Len())
 	for event := Archive.Front(); event != nil; event = event.Next() {
 		e := event.Value.(Event)
-		if e.Timestamp > int64(lastReceived) {
+		if e.Ts > int64(lastReceived) {
+
 			events = append(events, e)
 		}
 	}

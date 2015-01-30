@@ -1,6 +1,7 @@
 package room
 
 import (
+	"strconv"
 	"time"
 	"container/list"
 	"encoding/json"
@@ -49,7 +50,8 @@ type Subscriber struct {
 }
 
 func NewEvent(ep model.EventType, user, msg string) model.Event {
-	return model.Event{ep, user, time.Now().UnixNano(), msg}
+	ts := time.Now().UnixNano()
+	return model.Event{ep, user, ts, strconv.Itoa(int(ts)), msg}
 }
 
 func NewChannelEvent(ep model.EventType, user, msg string) model.Event {

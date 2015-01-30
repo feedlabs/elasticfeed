@@ -43,27 +43,18 @@ includeJs('lib/event/entry.js');
     },
 
     initFeed: function(id, options) {
-      opts = _extend(this.options, options || {});
-      channel = this.getChannel(opts.channel);
-
-      return new Feed(id, opts, channel);
-    },
-
-    /**
-     * Returns Feed object
-     * @param options
-     * @returns {*}
-     */
-    getFeed: function(options) {
-      if (options.id == undefined) {
-        return null;
+      if (id == undefined) {
+        return false;
       }
 
       if (this.feedList[id] == undefined) {
-        this.feedList[id] = new Feed(options)
+        opts = _extend(this.options, options || {});
+        channel = this.getChannel(opts.channel);
+
+        this.feedList[id] = new Feed(id, opts, channel);
       }
 
-      return this.feedList[options.id];
+      return this.feedList[id];
     },
 
     /**
@@ -74,7 +65,7 @@ includeJs('lib/event/entry.js');
      */
     getChannel: function(options, credential) {
       if (options.url == undefined) {
-        return null;
+        return false;
       }
 
       if (this.channelList[options.url] == undefined) {
@@ -85,11 +76,17 @@ includeJs('lib/event/entry.js');
     },
 
     findFeed: function(id) {
-      return this.getFeed({id: id});
+      if (this.feedList[id] == undefined) {
+        return false;
+      }
+      return this.feedList[id];
     },
 
     findChannel: function(url) {
-      return this.getChannel({url: url});
+      if (this.channelList[url] == undefined) {
+        return false;
+      }
+      return this.channelList[url];
     }
 
   };
