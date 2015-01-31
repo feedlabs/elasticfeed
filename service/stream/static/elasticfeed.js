@@ -10,10 +10,7 @@ function includeJs(jsFilePath) {
 includeJs('lib/feed.js');
 includeJs('lib/entry.js');
 includeJs('lib/channel.js');
-includeJs('lib/event/channel.js');
-includeJs('lib/event/system.js');
-includeJs('lib/event/feed.js');
-includeJs('lib/event/entry.js');
+includeJs('lib/event.js');
 
 (function(window) {
 

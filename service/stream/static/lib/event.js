@@ -1,9 +1,9 @@
-var FeedEvent = (function() {
+var Event = (function() {
 
-  function FeedEvent(event) {
+  function Event(event) {
 
     /** @type {String} */
-    this.id = event.Id;
+    this.id = event.Id || null;
 
     /** @type {Integer} */
     this.ts = event.Timestamp;
@@ -13,6 +13,9 @@ var FeedEvent = (function() {
 
     /** @type {Integer} */
     this.actionType = null
+
+    /** @type {String} */
+    this.user = event.User
 
     /** @type {String} */
     this.type = event.Type
@@ -29,17 +32,17 @@ var FeedEvent = (function() {
     }
   }
 
-  FeedEvent.prototype.GetTimestamp = function() {
+  Event.prototype.GetTimestamp = function() {
     return this.ts;
   }
 
-  FeedEvent.prototype.PrintContent = function() {
+  Event.prototype.PrintContent = function() {
     if (this.contentType == 'string') {
       return this.content
     }
     return JSON.stringify(this.content)
   }
 
-  return FeedEvent;
+  return Event;
 
 })();

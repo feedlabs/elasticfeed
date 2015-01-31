@@ -190,7 +190,7 @@ var Feed = (function() {
   }
 
   Feed.prototype.onEntry = function(timestamp, content) {
-    entryEvent = new EntryEvent(content);
+    entryEvent = new Event(content);
 
     for (var i in this._handlers[ENTRY]) {
       this._handlers[ENTRY][i].call(this, timestamp, entryEvent);
@@ -240,7 +240,7 @@ var Feed = (function() {
     var self = this;
     channel.on('message', function(chid, ts, systemEvent) {
       if (systemEvent.type == GROUP_TYPE) {
-        feedEvent = new FeedEvent(systemEvent.content);
+        feedEvent = new Event(systemEvent.content);
         if (feedEvent.id == self.id || feedEvent.id == '*') {
           self.onData(feedEvent);
         }
