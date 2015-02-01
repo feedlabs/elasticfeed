@@ -41,8 +41,11 @@ var Entry = (function() {
 
   // UI
 
+  // TODO:
+  // should make animations, should be configurable by developer
+  // first level is style function; second level is render function
   Entry.prototype.render = function() {
-    document.getElementById(this.viewId).innerHTML = this._styler.call(this, this.data);
+    document.getElementById(this.viewId).innerHTML = this._styler.call(this, JSON.stringify(this.data));
   }
 
   // Events

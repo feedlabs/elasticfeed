@@ -59,11 +59,17 @@ func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
 }
 
 func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
-	return NewChannelEvent(ep, user, msg)
+	event := NewEvent(ep, user, msg)
+	data, _ := json.Marshal(event)
+
+	return NewChannelEvent(model.EVENT_MESSAGE, user, string(data))
 }
 
 func NewFeedEvent(ep model.EventType, user, msg string) model.Event {
-	return NewSystemEvent(ep, user, msg)
+	event := NewEvent(ep, user, msg)
+	data, _ := json.Marshal(event)
+
+	return NewSystemEvent(1, user, string(data))
 }
 
 func NewEntryEvent(ep model.EventType, user, msg string) model.Event {

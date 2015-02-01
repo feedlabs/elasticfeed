@@ -62,6 +62,9 @@ var Feed = (function() {
     /** @type {Function} */
     this.stylerFunction = options.stylerFunction || this._stylerFunction;
 
+    /** @type {Function} */
+    this.renderFunction = options.renderFunction || this._renderFunction;
+
     /** @type {DOM} */
     this.outputContainer = document.getElementById(this.options.outputContainerId);
 
@@ -200,6 +203,10 @@ var Feed = (function() {
   // Entries management
 
   Feed.prototype.addEntry = function(entry) {
+
+    // types
+    // add by: timestamp up/down; always to top; always to bottom
+
     entry.setParent(this);
     this.entryList.push(entry);
 
@@ -241,7 +248,7 @@ var Feed = (function() {
     channel.on('message', function(chid, ts, systemEvent) {
       if (systemEvent.type == GROUP_TYPE) {
         feedEvent = new Event(systemEvent.content);
-        if (feedEvent.id == self.id || feedEvent.id == '*') {
+        if (feedEvent.user == self.id || feedEvent.user == '*') {
           self.onData(feedEvent);
         }
       }
@@ -251,6 +258,10 @@ var Feed = (function() {
   // Stylers
 
   Feed.prototype._stylerFunction = function(data) {
+    return JSON.stringify(data);
+  }
+
+  Feed.prototype._renderFunction = function(data) {
     return JSON.stringify(data);
   }
 
