@@ -3,7 +3,7 @@ var Feed = (function() {
   const GROUP_TYPE = 1
 
   const RELOAD = 1
-  const RESET = 2
+  const EMPTY = 2
   const ENTRY_NEW = 3
   const ENTRY_INIT = 4
   const ENTRY_MORE = 5
@@ -74,13 +74,13 @@ var Feed = (function() {
     this._handlers = {};
   }
 
-  Feed.prototype.on = function(type, callback) {
+  Feed.prototype.on = function(name, callback) {
     switch (name) {
       case 'reload':
         type = RELOAD
         break;
-      case 'reset':
-        type = RESET
+      case 'empty':
+        type = EMPTY
         break;
       case 'entry':
         type = ENTRY_NEW
@@ -101,13 +101,13 @@ var Feed = (function() {
         type = ENTRY
         break;
       default:
-        return false;
         break;
     }
     if (this._handlers[type] == undefined) {
       this._handlers[type] = []
     }
     this._handlers[type].push(callback);
+
     return true;
   }
 
@@ -116,8 +116,8 @@ var Feed = (function() {
       case RELOAD:
         this.onReload(feedEvent.ts)
         break;
-      case RESET:
-        this.onReset(feedEvent.ts)
+      case EMPTY:
+        this.onEmpty(feedEvent.ts)
         break;
       case ENTRY_NEW:
         this.onEntryNew(feedEvent.ts, feedEvent.content)
@@ -144,13 +144,13 @@ var Feed = (function() {
 
   Feed.prototype.onReload = function(timestamp) {
     for (var i in this._handlers[RELOAD]) {
-      this._handlers[RELOAD][i].call(this, chid, timestamp);
+      this._handlers[RELOAD][i].call(this, timestamp);
     }
   }
 
-  Feed.prototype.onReset = function(timestamp) {
-    for (var i in this._handlers[RESET]) {
-      this._handlers[RESET][i].call(this, chid, timestamp);
+  Feed.prototype.onEmpty = function(timestamp) {
+    for (var i in this._handlers[EMPTY]) {
+      this._handlers[EMPTY][i].call(this, timestamp);
     }
   }
 

@@ -29,3 +29,23 @@ Subscribe
 		}
 	})
 ```
+
+Reload
+------
+```
+curl -u john:hello 127.0.0.1:10100/v1/application/30/feed/89/reload --digest
+{
+  "result": "Feed reloaded",
+  "status": "ok"
+}
+```
+
+Empty
+-----
+```
+curl -u john:hello 127.0.0.1:10100/v1/application/30/feed/86/empty --digest
+{
+  "result": "Feed empty done.",
+  "status": "ok"
+}
+```

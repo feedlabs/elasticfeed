@@ -12,28 +12,37 @@
           }
         });
 
-        feed1 = elasticfeed.initFeed('89', {
+        feed1 = elasticfeed.initFeed('86', {
           outputContainerId: 'my-elastic-feed-1',
           stylerFunction: function(data) {
             return '<div style="height:50px; border:1px dotted; background-color: #00bfff;">' + data + '</div>';
           }
         });
 
-        feed2 = elasticfeed.initFeed('2', {
+        feed1.on('reload', function(ts) {
+          feed1.addEntry(new Entry("reload feed by ts:" + ts))
+        })
+
+        feed1.on('empty', function(ts) {
+          feed1.empty();
+          feed1.addEntry(new Entry("reload feed by ts:" + ts))
+        })
+
+        feed2 = elasticfeed.initFeed('87', {
           outputContainerId: 'my-elastic-feed-2',
           stylerFunction: function(data) {
             return '<div style="height:50px; border:1px dotted; background-color: yellow;">' + data + '</div>';
           }
         });
 
-        feed3 = elasticfeed.initFeed('3', {
+        feed3 = elasticfeed.initFeed('88', {
           outputContainerId: 'my-elastic-feed-3',
           stylerFunction: function(data) {
             return '<div style="height:50px; border:1px dotted; background-color: green;">' + data + '</div>';
           }
         });
 
-        feed4 = elasticfeed.initFeed('4', {
+        feed4 = elasticfeed.initFeed('89', {
           outputContainerId: 'my-elastic-feed-4',
           stylerFunction: function(data) {
             return '<div style="height:50px; border:1px dotted; background-color: pink;">' + data + '</div>';

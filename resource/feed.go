@@ -3,7 +3,6 @@ package resource
 import (
 	"errors"
 	"strconv"
-	"encoding/json"
 
 	"github.com/feedlabs/feedify/graph"
 
@@ -11,6 +10,8 @@ import (
 )
 
 const (
+	RELOAD    = 1
+	EMPTY     = 2
 	ENTRY_NEW = 3
 )
 
@@ -107,6 +108,14 @@ func UpdateFeed(id string, data string) (err error) {
 func DeleteFeed(id string) (error) {
 	_id, _ := strconv.Atoi(id)
 	return storage.DeleteNode(_id)
+}
+
+func ActionReloadFeed(id string) {
+	room.Publish <- room.NewFeedEvent(RELOAD, id, "reload")
+}
+
+func ActionEmptyFeed(id string) {
+	room.Publish <- room.NewFeedEvent(EMPTY, id, "empty")
 }
 
 func init() {
