@@ -16,8 +16,14 @@ import (
 
 const (
 	SYSTEM_FEED_MESSAGE = 1
-	FEED_ENTRY_MESSAGE  = 2
-	ENTRY_MESSAGE = 8
+
+	FEED_RELOAD = 1
+	FEED_EMPTY = 2
+	FEED_ENTRY_NEW = 3
+	FEED_ENTRY_MESSAGE  = 8
+
+	ENTRY_UPDATE = 1
+	ENTRY_DELETE = 2
 )
 
 var (
@@ -73,7 +79,7 @@ func NewEntryEvent(ep model.EventType, user, msg string) model.Event {
 	data, _ := json.Marshal(event)
 
 	// "*" all feeds on client site will receive this message
-	return NewFeedEvent(ENTRY_MESSAGE, "*", string(data))
+	return NewFeedEvent(FEED_ENTRY_MESSAGE, "*", string(data))
 }
 
 func Join(user string, ws *websocket.Conn) {

@@ -10,11 +10,6 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
-const (
-	ENTRY_UPDATE = 1
-	ENTRY_DELETE = 2
-)
-
 func GetEntryList(FeedId string, ApplicationId string, OrgId string) (feedEntries []*Entry, err error) {
 	feed, err := GetFeed(FeedId, ApplicationId, OrgId)
 
@@ -93,7 +88,7 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 
 	// notify
 	d, _ := json.Marshal(feedEntry)
-	room.Publish <- room.NewFeedEvent(ENTRY_NEW, feed.Id, string(d))
+	room.Publish <- room.NewFeedEvent(room.FEED_ENTRY_NEW, feed.Id, string(d))
 
 	return feedEntry.Id, nil
 }
@@ -110,7 +105,7 @@ func UpdateEntry(id string, FeedId string, ApplicationId string, OrgId string, d
 
 	// notify
 	d, _ := json.Marshal(entry)
-	room.Publish <- room.NewEntryEvent(ENTRY_UPDATE, entry.Id, string(d))
+	room.Publish <- room.NewEntryEvent(room.ENTRY_UPDATE, entry.Id, string(d))
 
 	_id, _ := strconv.Atoi(entry.Id)
 	return storage.SetPropertyNode(_id, "data", data)
@@ -132,7 +127,7 @@ func DeleteEntry(id string, FeedId string, ApplicationId string, OrgId string) (
 
 	// notify
 	d, _ := json.Marshal(entry)
-	room.Publish <- room.NewEntryEvent(ENTRY_DELETE, entry.Id, string(d))
+	room.Publish <- room.NewEntryEvent(room.ENTRY_DELETE, entry.Id, string(d))
 
 	return storage.DeleteNode(_id)
 }

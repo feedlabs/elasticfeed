@@ -9,12 +9,6 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
-const (
-	RELOAD    = 1
-	EMPTY     = 2
-	ENTRY_NEW = 3
-)
-
 func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {
 	return AddEntry(entry, this.Id, this.Application.Id, this.Application.Org.Id)
 }
@@ -111,11 +105,11 @@ func DeleteFeed(id string) (error) {
 }
 
 func ActionReloadFeed(id string) {
-	room.Publish <- room.NewFeedEvent(RELOAD, id, "reload")
+	room.Publish <- room.NewFeedEvent(room.FEED_RELOAD, id, "reload")
 }
 
 func ActionEmptyFeed(id string) {
-	room.Publish <- room.NewFeedEvent(EMPTY, id, "empty")
+	room.Publish <- room.NewFeedEvent(room.FEED_EMPTY, id, "empty")
 }
 
 func init() {
