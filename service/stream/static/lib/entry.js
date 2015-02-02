@@ -1,7 +1,5 @@
 var Entry = (function() {
 
-  const GROUP_TYPE = 2
-
   const UPDATE = 1
   const DELETE = 2
   const HIDE = 3

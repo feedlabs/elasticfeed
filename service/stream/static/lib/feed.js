@@ -100,6 +100,18 @@ var Feed = (function() {
       case 'entry-message':
         type = ENTRY_MESSAGE
         break;
+      case 'authenticated':
+        type = AUTHENTICATED
+        break;
+      case 'authentication-required':
+        type = AUTHENTICATION_REQUIRED
+        break;
+      case 'authentication-failed':
+        type = AUTHENTICATION_FAILED
+        break;
+      case 'logout':
+        type = LOGGED_OUT
+        break;
       default:
         break;
     }
@@ -147,6 +159,18 @@ var Feed = (function() {
         break;
       case ENTRY_MESSAGE:
         this.onEntryMessage(feedEvent.ts, feedEvent.content)
+        break;
+      case AUTHENTICATED:
+        this.onAuthenticated(feedEvent.ts, feedEvent.content)
+        break;
+      case AUTHENTICATION_REQUIRED:
+        this.onAuthenticationRequired(feedEvent.ts, feedEvent.content)
+        break;
+      case AUTHENTICATION_FAILED:
+        this.onAuthenticationFailed(feedEvent.ts, feedEvent.content)
+        break;
+      case LOGGED_OUT:
+        this.onLogout(feedEvent.ts, feedEvent.content)
         break;
     }
   }
@@ -208,6 +232,30 @@ var Feed = (function() {
 
     for (var i in this._handlers[ENTRY_MESSAGE]) {
       this._handlers[ENTRY_MESSAGE][i].call(this, timestamp, entryEvent);
+    }
+  }
+
+  Feed.prototype.onAuthenticated = function(timestamp, content) {
+    for (var i in this._handlers[AUTHENTICATED]) {
+      this._handlers[AUTHENTICATED][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onAuthenticationRequired = function(timestamp, content) {
+    for (var i in this._handlers[AUTHENTICATION_REQUIRED]) {
+      this._handlers[AUTHENTICATION_REQUIRED][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onAuthenticationFailed = function(timestamp, content) {
+    for (var i in this._handlers[AUTHENTICATION_FAILED]) {
+      this._handlers[AUTHENTICATION_FAILED][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onLogout = function(timestamp, content) {
+    for (var i in this._handlers[LOGGED_OUT]) {
+      this._handlers[LOGGED_OUT][i].call(this, timestamp);
     }
   }
 

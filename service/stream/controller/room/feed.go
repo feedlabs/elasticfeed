@@ -15,25 +15,29 @@ import (
 )
 
 const (
-	CHANNEL_JOIN = 0
-	CHANNEL_LEAVE = 1
+	CHANNEL_JOIN    = 0
+	CHANNEL_LEAVE   = 1
 	CHANNEL_MESSAGE = 2
 
 	SYSTEM_FEED_MESSAGE = 1
 
-	FEED_RELOAD        = 1
-	FEED_EMPTY         = 2
-	FEED_ENTRY_NEW     = 3
-	FEED_ENTRY_INIT    = 4
-	FEED_ENTRY_MORE    = 5
-	FEED_HIDE          = 6
-	FEED_SHOW          = 7
-	FEED_ENTRY_MESSAGE = 8
+	FEED_RELOAD                  = 1
+	FEED_EMPTY                   = 2
+	FEED_ENTRY_NEW               = 3
+	FEED_ENTRY_INIT              = 4
+	FEED_ENTRY_MORE              = 5
+	FEED_HIDE                    = 6
+	FEED_SHOW                    = 7
+	FEED_ENTRY_MESSAGE           = 8
+	FEED_AUTHENTICATED           = 100
+	FEED_AUTHENTICATION_REQUIRED = 101
+	FEED_AUTHENTICATION_FAILED   = 102
+	FEED_LOGGED_OUT              = 103
 
 	ENTRY_UPDATE = 1
 	ENTRY_DELETE = 2
-	ENTRY_SHOW = 3
-	ENTRY_HIDE = 4
+	ENTRY_SHOW   = 3
+	ENTRY_HIDE   = 4
 )
 
 var (
