@@ -6,12 +6,6 @@ import (
 
 type EventType int
 
-const (
-	EVENT_JOIN = iota
-	EVENT_LEAVE
-	EVENT_MESSAGE
-)
-
 type Event struct {
 	Type             EventType
 	User             string

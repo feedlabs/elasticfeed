@@ -108,7 +108,18 @@ var Feed = (function() {
     }
     this._handlers[type].push(callback);
 
-    return true;
+    return callback;
+  }
+
+  Feed.prototype.off = function(callback) {
+    for (var i in this._handlers) {
+      for (var x in this._handlers[i]) {
+        if (this._handlers[i][x] == callback) {
+          delete this._handlers[i][x];
+          return;
+        }
+      }
+    }
   }
 
   Feed.prototype.onData = function(feedEvent) {

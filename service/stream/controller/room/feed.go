@@ -15,6 +15,10 @@ import (
 )
 
 const (
+	CHANNEL_JOIN = 0
+	CHANNEL_LEAVE = 1
+	CHANNEL_MESSAGE = 2
+
 	SYSTEM_FEED_MESSAGE = 1
 
 	FEED_RELOAD        = 1
@@ -67,7 +71,7 @@ func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
 	event := NewEvent(ep, user, msg)
 	data, _ := json.Marshal(event)
 
-	return NewChannelEvent(model.EVENT_MESSAGE, user, string(data))
+	return NewChannelEvent(CHANNEL_MESSAGE, user, string(data))
 }
 
 func NewFeedEvent(ep model.EventType, user, msg string) model.Event {
@@ -102,10 +106,10 @@ func FeedManager() {
 
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
-		Publish <- NewChannelEvent(model.EVENT_JOIN, sub.Name, "")
+		Publish <- NewChannelEvent(CHANNEL_JOIN, sub.Name, "")
 
 		case client := <-P2P:
-			data, _ := json.Marshal(NewSystemEvent(model.EVENT_MESSAGE, "system", "ok"))
+			data, _ := json.Marshal(NewSystemEvent(CHANNEL_MESSAGE, "system", "ok"))
 			client.WriteMessage(websocket.TextMessage, data)
 
 		case event := <-Publish:
@@ -128,7 +132,7 @@ func FeedManager() {
 						ws.Close()
 						feedify.Error("WebSocket closed:", unsub)
 					}
-					Publish <- NewChannelEvent(model.EVENT_LEAVE, unsub, "")
+					Publish <- NewChannelEvent(CHANNEL_LEAVE, unsub, "")
 					break
 				}
 			}

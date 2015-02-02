@@ -34,7 +34,7 @@ var Entry = (function() {
 
   Entry.prototype.setParent = function(feed) {
     this._feed = feed;
-    this.bindFeedMessages();
+    this.bindMessages();
   }
 
   Entry.prototype.getViewId = function() {
@@ -47,7 +47,11 @@ var Entry = (function() {
   // should make animations, should be configurable by developer
   // first level is style function; second level is render function
   Entry.prototype.render = function() {
-    document.getElementById(this.viewId).innerHTML = this._styler.call(this, JSON.stringify(this.data));
+    try {
+      document.getElementById(this.viewId).innerHTML = this._styler.call(this, JSON.stringify(this.data));
+    } catch (e) {
+      // serious error
+    }
   }
 
   // Events
@@ -102,6 +106,7 @@ var Entry = (function() {
   }
 
   Entry.prototype.delete = function() {
+    this.unbindMessages();
     document.getElementById(this.viewId).remove();
   }
 
@@ -149,15 +154,20 @@ var Entry = (function() {
 
   // Handlers
 
-  Entry.prototype.bindFeedMessages = function() {
+  Entry.prototype.bindMessages = function() {
     var self = this;
-    this._feed.on('entry-message', function(ts, entryEvent) {
+    this.__bindFeed = this._feed.on('entry-message', function(ts, entryEvent) {
       if (entryEvent.id == self.id || entryEvent.id == '*') {
         self.onData(entryEvent);
       }
     });
   }
 
+  Entry.prototype.unbindMessages = function() {
+    this._feed.off(this.__bindFeed);
+  }
+
+  // Getters
 
   Entry.prototype.getTimestamp = function() {
     return this.ts;

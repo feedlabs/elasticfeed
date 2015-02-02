@@ -6,7 +6,6 @@ import (
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
 
-	"github.com/feedlabs/elasticfeed/service/stream/model"
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
@@ -43,7 +42,7 @@ func (this *WebSocketController) Join() {
 			return
 		}
 
-		room.Publish <- room.NewSystemEvent(model.EVENT_MESSAGE, chid, string(p))
+		room.Publish <- room.NewSystemEvent(room.CHANNEL_MESSAGE, chid, string(p))
 		room.P2P <- ws
 	}
 }
