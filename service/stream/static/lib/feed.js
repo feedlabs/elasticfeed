@@ -1,6 +1,6 @@
 var Feed = (function() {
 
-  const GROUP_TYPE = 1
+  const SYSTEM_FEED_MESSAGE = 1
 
   const RELOAD = 1
   const EMPTY = 2
@@ -246,7 +246,7 @@ var Feed = (function() {
   Feed.prototype.bindChannel = function(channel) {
     var self = this;
     channel.on('message', function(chid, ts, systemEvent) {
-      if (systemEvent.type == GROUP_TYPE) {
+      if (systemEvent.type == SYSTEM_FEED_MESSAGE) {
         feedEvent = new Event(systemEvent.content);
         if (feedEvent.user == self.id || feedEvent.user == '*') {
           self.onData(feedEvent);
