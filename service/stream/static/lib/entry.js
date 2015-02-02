@@ -2,11 +2,10 @@ var Entry = (function() {
 
   const GROUP_TYPE = 2
 
-  const ADD = 1
+  const UPDATE = 1
   const DELETE = 2
-  const UPDATE = 3
-  const HIDE = 4
-  const SHOW = 5
+  const HIDE = 3
+  const SHOW = 4
 
   /** @type {Entry} */
   var localCache = {}
@@ -28,6 +27,9 @@ var Entry = (function() {
     this._styler = (options ? options.styler : undefined) || function() {
       return data;
     };
+
+    /** @type {Object} */
+    this._handlers = {};
   }
 
   Entry.prototype.setParent = function(feed) {
@@ -52,9 +54,6 @@ var Entry = (function() {
 
   Entry.prototype.on = function(type, callback) {
     switch (name) {
-      case 'add':
-        type = ADD
-        break;
       case 'delete':
         type = DELETE
         break;
@@ -80,9 +79,6 @@ var Entry = (function() {
 
   Entry.prototype.onData = function(entryEvent) {
     switch (entryEvent.type) {
-      case ADD:
-        this.onAdd(entryEvent.ts, entryEvent.content)
-        break;
       case DELETE:
         this.onDelete(entryEvent.ts)
         break;
@@ -100,7 +96,7 @@ var Entry = (function() {
 
   // Management
 
-  Entry.prototype.update = function(data) {
+  Entry.prototype.update = function(timestamp, data) {
     this.data = data;
     this.render();
   }
@@ -125,13 +121,9 @@ var Entry = (function() {
 
   // Events callbacks
 
-  Entry.prototype.onAdd = function(timestamp, data) {
-    for (var i in this._handlers[ADD]) {
-      this._handlers[ADD][i].call(this, timestamp, data);
-    }
-  }
-
   Entry.prototype.onUpdate = function(timestamp, data) {
+    this.update(timestamp, data);
+
     for (var i in this._handlers[UPDATE]) {
       this._handlers[UPDATE][i].call(this, timestamp, data);
     }
@@ -143,13 +135,13 @@ var Entry = (function() {
     }
   }
 
-  Entry.prototype.onDelete = function(timestamp) {
+  Entry.prototype.onHide = function(timestamp) {
     for (var i in this._handlers[HIDE]) {
       this._handlers[HIDE][i].call(this, timestamp);
     }
   }
 
-  Entry.prototype.onDelete = function(timestamp) {
+  Entry.prototype.onShow = function(timestamp) {
     for (var i in this._handlers[SHOW]) {
       this._handlers[SHOW][i].call(this, timestamp);
     }
@@ -159,7 +151,7 @@ var Entry = (function() {
 
   Entry.prototype.bindFeedMessages = function() {
     var self = this;
-    this._feed.on('entry', function(ts, entryEvent) {
+    this._feed.on('entry-message', function(ts, entryEvent) {
       if (entryEvent.id == self.id || entryEvent.id == '*') {
         self.onData(entryEvent);
       }

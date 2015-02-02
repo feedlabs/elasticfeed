@@ -15,16 +15,9 @@ import (
 )
 
 const (
-	FEED_ADD = iota
-	FEED_DELETE
-	FEED_UPDATE
-	FEED_RESET
-	FEED_RELOAD
-
-	ENTRY_ADD
-	ENTRY_DELETE
-	ENTRY_UPDATE
-	ENTRY_RELOAD
+	SYSTEM_FEED_MESSAGE = 1
+	FEED_ENTRY_MESSAGE  = 2
+	ENTRY_MESSAGE = 8
 )
 
 var (
@@ -66,14 +59,21 @@ func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
 }
 
 func NewFeedEvent(ep model.EventType, user, msg string) model.Event {
+	// "msg" is a feed action; can contain entry specific event
 	event := NewEvent(ep, user, msg)
 	data, _ := json.Marshal(event)
 
-	return NewSystemEvent(1, user, string(data))
+	// "user" is and feed-id; "*" means all feeds on the client site
+	return NewSystemEvent(SYSTEM_FEED_MESSAGE, user, string(data))
 }
 
 func NewEntryEvent(ep model.EventType, user, msg string) model.Event {
-	return NewSystemEvent(ep, user, msg)
+	// "msg" is a feed entry data as a string
+	event := NewEvent(ep, user, msg)
+	data, _ := json.Marshal(event)
+
+	// "*" all feeds on client site will receive this message
+	return NewFeedEvent(ENTRY_MESSAGE, "*", string(data))
 }
 
 func Join(user string, ws *websocket.Conn) {

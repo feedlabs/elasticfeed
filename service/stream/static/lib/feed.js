@@ -9,7 +9,7 @@ var Feed = (function() {
   const ENTRY_MORE = 5
   const HIDE = 6
   const SHOW = 7
-  const ENTRY = 8
+  const ENTRY_MESSAGE = 8
 
   const AUTHENTICATED = 100
   const AUTHENTICATION_REQUIRED = 101
@@ -97,8 +97,8 @@ var Feed = (function() {
       case 'show':
         type = SHOW
         break;
-      case 'entry':
-        type = ENTRY
+      case 'entry-message':
+        type = ENTRY_MESSAGE
         break;
       default:
         break;
@@ -134,8 +134,8 @@ var Feed = (function() {
       case SHOW:
         this.onShow(feedEvent.ts)
         break;
-      case ENTRY:
-        this.onEntry(feedEvent.ts, feedEvent.content)
+      case ENTRY_MESSAGE:
+        this.onEntryMessage(feedEvent.ts, feedEvent.content)
         break;
     }
   }
@@ -192,11 +192,11 @@ var Feed = (function() {
     }
   }
 
-  Feed.prototype.onEntry = function(timestamp, content) {
+  Feed.prototype.onEntryMessage = function(timestamp, content) {
     entryEvent = new Event(content);
 
-    for (var i in this._handlers[ENTRY]) {
-      this._handlers[ENTRY][i].call(this, timestamp, entryEvent);
+    for (var i in this._handlers[ENTRY_MESSAGE]) {
+      this._handlers[ENTRY_MESSAGE][i].call(this, timestamp, entryEvent);
     }
   }
 

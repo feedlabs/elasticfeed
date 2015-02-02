@@ -105,9 +105,12 @@ func UpdateEntry(id string, FeedId string, ApplicationId string, OrgId string, d
 		return err
 	}
 
+	// update entry
+	entry.Data = data
+
 	// notify
 	d, _ := json.Marshal(entry)
-	room.Publish <- room.NewFeedEvent(ENTRY_UPDATE, entry.Id, string(d))
+	room.Publish <- room.NewEntryEvent(ENTRY_UPDATE, entry.Id, string(d))
 
 	_id, _ := strconv.Atoi(entry.Id)
 	return storage.SetPropertyNode(_id, "data", data)
@@ -129,7 +132,7 @@ func DeleteEntry(id string, FeedId string, ApplicationId string, OrgId string) (
 
 	// notify
 	d, _ := json.Marshal(entry)
-	room.Publish <- room.NewFeedEvent(ENTRY_DELETE, entry.Id, string(d))
+	room.Publish <- room.NewEntryEvent(ENTRY_DELETE, entry.Id, string(d))
 
 	return storage.DeleteNode(_id)
 }
