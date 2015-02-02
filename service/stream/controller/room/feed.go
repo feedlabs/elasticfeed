@@ -8,9 +8,7 @@ import (
 
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
-
 	"github.com/astaxie/beego/session"
-
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
