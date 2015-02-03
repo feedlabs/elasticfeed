@@ -8,7 +8,9 @@ import (
 
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
+
 	"github.com/astaxie/beego/session"
+
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
@@ -19,18 +21,14 @@ const (
 
 	SYSTEM_FEED_MESSAGE = 1
 
-	FEED_RELOAD                  = 1
-	FEED_EMPTY                   = 2
-	FEED_ENTRY_NEW               = 3
-	FEED_ENTRY_INIT              = 4
-	FEED_ENTRY_MORE              = 5
-	FEED_HIDE                    = 6
-	FEED_SHOW                    = 7
-	FEED_ENTRY_MESSAGE           = 8
-	FEED_AUTHENTICATED           = 100
-	FEED_AUTHENTICATION_REQUIRED = 101
-	FEED_AUTHENTICATION_FAILED   = 102
-	FEED_LOGGED_OUT              = 103
+	FEED_RELOAD        = 1
+	FEED_EMPTY         = 2
+	FEED_ENTRY_NEW     = 3
+	FEED_ENTRY_INIT    = 4
+	FEED_ENTRY_MORE    = 5
+	FEED_HIDE          = 6
+	FEED_SHOW          = 7
+	FEED_ENTRY_MESSAGE = 8
 
 	ENTRY_UPDATE = 1
 	ENTRY_DELETE = 2
@@ -39,10 +37,12 @@ const (
 )
 
 var (
-	Subscribe   = make(chan Subscriber, 10)
-	Unsubscribe = make(chan string, 10)
-	Publish     = make(chan model.Event, 10)
-	P2P         = make(chan *websocket.Conn, 10)
+	Subscribe     = make(chan Subscriber, 10)
+	Unsubscribe   = make(chan string, 10)
+	Publish       = make(chan model.Event, 10)
+	ResourceEvent = make(chan model.SocketEvent, 10)
+
+	FeedSubscribers = list.New()
 
 	WaitingList = list.New()
 	Subscribers = list.New()
@@ -63,6 +63,14 @@ type Subscriber struct {
 func NewEvent(ep model.EventType, user, msg string) model.Event {
 	ts := time.Now().UnixNano()
 	return model.Event{ep, user, ts, strconv.Itoa(int(ts)), msg}
+}
+
+func NewSocketEvent(msg []byte, ws *websocket.Conn) model.SocketEvent {
+	data := make(map[string]interface{})
+
+	json.Unmarshal(msg, &data)
+
+	return model.SocketEvent{ws, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
 }
 
 func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
@@ -109,10 +117,6 @@ func FeedManager() {
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
 		Publish <- NewChannelEvent(CHANNEL_JOIN, sub.Name, "")
-
-		case client := <-P2P:
-			data, _ := json.Marshal(NewSystemEvent(CHANNEL_MESSAGE, "system", "ok"))
-			client.WriteMessage(websocket.TextMessage, data)
 
 		case event := <-Publish:
 			model.NewArchive(event)

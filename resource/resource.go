@@ -2,10 +2,13 @@ package resource
 
 import (
 	"errors"
+	"encoding/json"
 
 	"github.com/feedlabs/feedify/service"
 	"github.com/feedlabs/feedify/graph"
 	"github.com/feedlabs/feedify/stream"
+
+	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
 const RESOURCE_ORG_LABEL = "org"
@@ -88,6 +91,23 @@ func init() {
 		panic(errors.New("Cannot create graph service"))
 	}
 	storage = graph_service.Storage
+
+	go func() {
+		for {
+			select {
+			case socketEvent := <-room.ResourceEvent:
+				list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+
+				if err == nil {
+					d, _ := json.Marshal(list)
+					event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
+					data, _ := json.Marshal(event)
+
+					socketEvent.Ws.WriteMessage(1, data)
+				}
+			}
+		}
+	}()
 }
 
 func Contains(s []string, e string) bool {

@@ -113,18 +113,20 @@ var Channel = (function() {
   }
 
   Channel.prototype.getWebSocketConnection = function() {
-    this._socket = new WebSocket('ws://localhost:10100/stream/ws/join?chid=' + this.id);
+    var self = this;
 
-    self = this
-    this._socket.onmessage = function(event) {
-      event = new Event(JSON.parse(event.data))
-      self.onData(event)
-    };
+    if (this._socket == null) {
+      this._socket = new WebSocket('ws://localhost:10100/stream/ws/join?chid=' + this.id);
 
-    self = this
+      this._socket.onmessage = function(event) {
+        event = new Event(JSON.parse(event.data))
+        self.onData(event)
+      };
+    }
+
     return {
       send: function(data) {
-        self._socket.send(JSON.stringify(data))
+        self._socket.send(JSON.stringify(data));
       }
     };
   }

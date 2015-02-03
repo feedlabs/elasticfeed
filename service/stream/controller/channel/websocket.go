@@ -42,7 +42,6 @@ func (this *WebSocketController) Join() {
 			return
 		}
 
-		room.Publish <- room.NewSystemEvent(room.CHANNEL_MESSAGE, chid, string(p))
-		room.P2P <- ws
+		room.ResourceEvent <- room.NewSocketEvent(p, ws)
 	}
 }

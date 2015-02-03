@@ -39,19 +39,26 @@ var Feed = (function() {
     /** @type {String} */
     this.id = id;
 
+    /** @type {String} */
+    this.feedId = id.split(/[::]/)[0];
+
+    /** @type {String} */
+    this.appId = id.split(/[::]/)[1];
+
+    /** @type {String} */
+    this.orgId = id.split(/[::]/)[2];
+
     /** @type {Channel} */
     this.channel = channel;
 
     /** @type {Array} */
     this.entryList = [];
 
+    this.initLoad();
+
     /** @type {Object} */
     if (this.channel.options.transport == 'ws') {
-      if (this.channel._socket == undefined) {
-        this.socket = this.channel.getWebSocketConnection();
-      } else {
-        this.socket = this.channel._socket;
-      }
+      this.socket = this.channel.getWebSocketConnection();
     } else if (this.channel.options.transport == 'lp') {
       this.socket = this.channel.getLongPoolingConnection();
     }
@@ -199,8 +206,10 @@ var Feed = (function() {
     }
   }
 
-  Feed.prototype.onEntryInit = function(timestamp, data) {
-    entries = JSON.parse(data);
+  Feed.prototype.onEntryInit = function(timestamp, entries) {
+    for (var i in entries) {
+      this.onEntryNew(timestamp, entries[i]);
+    }
 
     for (var i in this._handlers[ENTRY_INIT]) {
       this._handlers[ENTRY_INIT][i].call(this, timestamp, entries);
@@ -259,6 +268,20 @@ var Feed = (function() {
     }
   }
 
+  // Feed management
+
+  Feed.prototype.reload = function() {
+    this.empty();
+    this.socket.send({action: ENTRY_INIT, feedId: this.feedId, appId: this.appId, orgId: this.orgId});
+  }
+
+  Feed.prototype.initLoad = function() {
+    var self = this;
+    this.channel.on('join', function() {
+      self.socket.send({action: ENTRY_INIT, feedId: self.feedId, appId: self.appId, orgId: self.orgId});
+    });
+  }
+
   // Entries management
 
   Feed.prototype.addEntry = function(entry) {
@@ -307,7 +330,7 @@ var Feed = (function() {
     channel.on('message', function(chid, ts, systemEvent) {
       if (systemEvent.type == SYSTEM_FEED_MESSAGE) {
         feedEvent = new Event(systemEvent.content);
-        if (feedEvent.user == self.id || feedEvent.user == '*') {
+        if (feedEvent.user == self.feedId || feedEvent.user == '*') {
           self.onData(feedEvent);
         }
       }

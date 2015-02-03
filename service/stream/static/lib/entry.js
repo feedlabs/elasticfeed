@@ -28,6 +28,11 @@ var Entry = (function() {
 
     /** @type {Object} */
     this._handlers = {};
+
+    if (this.data.Id != undefined) {
+      this.id = this.data.Id;
+    }
+
   }
 
   Entry.prototype.setParent = function(feed) {
@@ -46,7 +51,7 @@ var Entry = (function() {
   // first level is style function; second level is render function
   Entry.prototype.render = function() {
     try {
-      document.getElementById(this.viewId).innerHTML = this._styler.call(this, JSON.stringify(this.data));
+      document.getElementById(this.viewId).innerHTML = this._styler.call(this, this.data.Id + "<br>" + this.data.Data);
     } catch (e) {
       // serious error
     }
@@ -155,7 +160,7 @@ var Entry = (function() {
   Entry.prototype.bindMessages = function() {
     var self = this;
     this.__bindFeed = this._feed.on('entry-message', function(ts, entryEvent) {
-      if (entryEvent.id == self.id || entryEvent.id == '*') {
+      if (self.id != null && (entryEvent.user == self.id || entryEvent.user == '*')) {
         self.onData(entryEvent);
       }
     });
