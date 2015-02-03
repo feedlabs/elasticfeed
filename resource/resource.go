@@ -103,7 +103,13 @@ func init() {
 					event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
 					data, _ := json.Marshal(event)
 
-					socketEvent.Ws.WriteMessage(1, data)
+					if socketEvent.Ws != nil {
+						socketEvent.Ws.WriteMessage(1, data)
+					}
+
+					if socketEvent.Ch != nil {
+						socketEvent.Ch <- data
+					}
 				}
 			}
 		}

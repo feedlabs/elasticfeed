@@ -79,6 +79,11 @@ var Feed = (function() {
 
     /** @type {Object} */
     this._handlers = {};
+
+    /** @type {Object} */
+    this._state = {
+      initiated: false
+    };
   }
 
   Feed.prototype.on = function(name, callback) {
@@ -278,7 +283,12 @@ var Feed = (function() {
   Feed.prototype.initLoad = function() {
     var self = this;
     this.channel.on('join', function() {
+      if (self._state.initiated == true) {
+        return;
+      }
+
       self.socket.send({action: ENTRY_INIT, feedId: self.feedId, appId: self.appId, orgId: self.orgId});
+      self._state.initiated = true;
     });
   }
 

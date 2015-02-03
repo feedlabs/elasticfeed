@@ -37,12 +37,10 @@ const (
 )
 
 var (
-	Subscribe     = make(chan Subscriber, 10)
-	Unsubscribe   = make(chan string, 10)
-	Publish       = make(chan model.Event, 10)
+	Subscribe   = make(chan Subscriber, 10)
+	Unsubscribe = make(chan string, 10)
+	Publish     = make(chan model.Event, 10)
 	ResourceEvent = make(chan model.SocketEvent, 10)
-
-	FeedSubscribers = list.New()
 
 	WaitingList = list.New()
 	Subscribers = list.New()
@@ -56,8 +54,8 @@ type Subscription struct {
 }
 
 type Subscriber struct {
-	Name    string
-	Conn    *websocket.Conn
+	Name      string
+	Conn      *websocket.Conn
 }
 
 func NewEvent(ep model.EventType, user, msg string) model.Event {
@@ -65,12 +63,12 @@ func NewEvent(ep model.EventType, user, msg string) model.Event {
 	return model.Event{ep, user, ts, strconv.Itoa(int(ts)), msg}
 }
 
-func NewSocketEvent(msg []byte, ws *websocket.Conn) model.SocketEvent {
+func NewSocketEvent(msg []byte, ws *websocket.Conn, ch chan []byte) model.SocketEvent {
 	data := make(map[string]interface{})
 
 	json.Unmarshal(msg, &data)
 
-	return model.SocketEvent{ws, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
+	return model.SocketEvent{ws, ch, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
 }
 
 func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
@@ -116,7 +114,6 @@ func FeedManager() {
 
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
-		Publish <- NewChannelEvent(CHANNEL_JOIN, sub.Name, "")
 
 		case event := <-Publish:
 			model.NewArchive(event)

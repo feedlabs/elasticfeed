@@ -8,25 +8,58 @@
         elasticfeed.init({
           channel: {
             url: 'http://localhost:80',
-            transport: 'ws'
+            transport: 'lp'
           }
         });
 
-        feed = elasticfeed.initFeed('1', {
-          channel: {
-            url: 'http://localhost:80',
-            transport: 'lp'
-          },
-          outputContainerId: 'my-elastic-feed',
+        feedList = {}
+
+        feedList[1] = elasticfeed.initFeed('86:30:26', {
+          outputContainerId: 'my-elastic-feed-1',
           stylerFunction: function(data) {
-            return '<div style="height:50px; border:1px dotted; border-color: green">' + data + '</div>';
+            return '<div style="height:50px; border:1px dotted; background-color: #00bfff;">' + data + '</div>';
           }
         });
+
+        feedList[2] = elasticfeed.initFeed('87:30:26', {
+          outputContainerId: 'my-elastic-feed-2',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: yellow;">' + data + '</div>';
+          }
+        });
+
+        feedList[3] = elasticfeed.initFeed('88:30:26', {
+          outputContainerId: 'my-elastic-feed-3',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: green;">' + data + '</div>';
+          }
+        });
+
+        feedList[4] = elasticfeed.initFeed('89:30:26', {
+          outputContainerId: 'my-elastic-feed-4',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: pink;">' + data + '</div>';
+          }
+        });
+
+        for (var i in feedList) {
+          feedList[i].on('reload', function(ts) {
+            this.addEntry(new Entry("reload feed by ts:" + ts))
+          })
+
+          feedList[i].on('empty', function(ts) {
+            this.empty();
+            this.addEntry(new Entry("empty feed by ts:" + ts))
+          })
+        }
 
       }
 
     </script>
 
-    <div id="my-elastic-feed"></div>
+    <div id="my-elastic-feed-1" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-2" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-3" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-4" style="background-color: grey; width:25%; float: left"></div>
   </body>
 </html>

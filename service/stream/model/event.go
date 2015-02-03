@@ -18,6 +18,7 @@ type Event struct {
 
 type SocketEvent struct {
 	Ws                    *websocket.Conn
+	Ch                    chan []byte
 	FeedId                string
 	AppId                 string
 	OrgId                 string

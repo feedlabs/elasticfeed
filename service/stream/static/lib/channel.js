@@ -34,6 +34,8 @@ var Channel = (function() {
 
     /** @type {WebSocket} */
     this._socket = null;
+
+    this._xhr = []
   }
 
   // Handlers
@@ -132,100 +134,97 @@ var Channel = (function() {
   }
 
   Channel.prototype.getLongPoolingConnection = function() {
-    var lastReceived = 0;
-    var isWait = false;
-
-    this.getJSON('http://localhost:10100/stream/lp/join?chid=' + this.id, function(data) {
-      // should set timestamp to proper one!
-    })
 
     self = this;
-    var fetch = function() {
-      if (isWait) {
-        return;
-      }
-      isWait = true;
-      self.getJSON("http://localhost:10100/stream/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
 
-        if (code == 4) {
-          isWait = false
-        }
+    if (this._socket == null) {
+      var lastReceived = 0;
+      var isWait = false;
 
+      this.getJSON('http://localhost:10100/stream/lp/join?chid=' + this.id, function(data) {
         if (data == null) {
           return;
         }
+        event = new Event(data['response']);
+        self.onData(event);
+      })
 
-        self.each(data, function(i, event) {
-          event = new Event(event)
-          self.onData(event)
+      var fetch = function() {
+        if (isWait) {
+          return;
+        }
+        isWait = true;
+        self.getJSON("http://localhost:10100/stream/lp/fetch?lastReceived=" + lastReceived, function(data, code) {
 
-          lastReceived = event.GetTimestamp();
+          if (code == 4) {
+            isWait = false
+          }
+
+          if (data == null) {
+            return;
+          }
+
+          self.each(data, function(i, event) {
+            event = new Event(event)
+            self.onData(event)
+
+            lastReceived = event.GetTimestamp();
+          });
+          isWait = false;
         });
-        isWait = false;
-      });
-    }
+      }
 
-    setInterval(fetch, 3000);
-    fetch()
+      this._socket = setInterval(fetch, 3000);
+      fetch();
+    }
 
     return {
       send: function(data) {
-        self.post("/stream/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(status) {
+        self.post("/stream/lp/post", {chid: self.id, data: JSON.stringify(data)}, function(data) {
+          response_json = JSON.parse(data);
+          event = new Event(JSON.parse(response_json['response']));
+          self.onData(event);
         });
       }
     };
   }
 
-  Channel.prototype.load = function(url, callback) {
-    var xhr;
-    if (typeof XMLHttpRequest !== 'undefined') {
-      xhr = new XMLHttpRequest();
-    } else {
-      var versions = ["MSXML2.XmlHttp.5.0", "MSXML2.XmlHttp.4.0", "MSXML2.XmlHttp.3.0", "MSXML2.XmlHttp.2.0", "Microsoft.XmlHttp"];
-      for (var i = 0, len = versions.length; i < len; i++) {
-        try {
-          xhr = new ActiveXObject(versions[i]);
-          break;
-        }
-        catch (e) {
-        }
-      }
-    }
-    xhr.onreadystatechange = ensureReadiness;
-    function ensureReadiness() {
-      if (xhr.readyState < 4) {
-        return;
-      }
-      if (xhr.status !== 200) {
-        return;
-      }
-      if (xhr.readyState === 4) {
-        callback(xhr);
-      }
-    }
-
-    xhr.open('GET', url, true);
-    xhr.send('');
-  }
-
   // HTTP
 
-  Channel.prototype.getJSON = function(url, callback) {
-    xhr = new XMLHttpRequest;
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        if (xhr.responseText != "") {
-          data = JSON.parse(xhr.responseText);
-          callback.call(this, data, xhr.readyState)
-        } else {
-          callback.call(this, null, xhr.readyState)
-        }
-      } else {
-        callback.call(this, null, xhr.readyState)
+  Channel.prototype.__cleanup = function() {
+    for (var i in this._xhr) {
+      if (this._xhr[i].xhr.readyState == 4) {
+        delete this._xhr[i];
       }
     }
-    xhr.open("GET", url)
-    xhr.send();
+  }
+
+  Channel.prototype.getJSON = function(url, callback) {
+
+    this.__cleanup();
+
+    var pos = this._xhr.length;
+
+    this._xhr[pos] = {
+      xhr: new XMLHttpRequest(),
+      cb: callback
+    };
+
+    var self = this;
+    this._xhr[pos].xhr.onreadystatechange = function() {
+      if (self._xhr[pos].xhr.readyState == 4 && self._xhr[pos].xhr.status == 200) {
+        if (self._xhr[pos].xhr.responseText != "") {
+          data = JSON.parse(self._xhr[pos].xhr.responseText);
+          self._xhr[pos].cb.call(this, data, self._xhr[pos].xhr.readyState)
+        } else {
+          self._xhr[pos].cb.call(this, null, self._xhr[pos].xhr.readyState)
+        }
+      } else {
+        self._xhr[pos].cb.call(this, null, self._xhr[pos].xhr.readyState)
+      }
+    }
+    this._xhr[pos].xhr.open("GET", url, true)
+    this._xhr[pos].xhr.send('');
   }
 
   Channel.prototype.each = function(obj, callback) {
@@ -245,15 +244,25 @@ var Channel = (function() {
   }
 
   Channel.prototype.post = function(url, data, callback) {
-    xhr1 = new XMLHttpRequest;
-    xhr1.onreadystatechange = function() {
-      if (xhr1.readyState == 4 && xhr1.status == 200) {
-        callback.call(this, xhr1.responseText)
+
+    this.__cleanup();
+
+    var pos = this._xhr.length;
+
+    this._xhr[pos] = {
+      xhr: new XMLHttpRequest(),
+      cb: callback
+    };
+
+    var self = this;
+    this._xhr[pos].xhr.onreadystatechange = function() {
+      if (self._xhr[pos].xhr.readyState == 4 && self._xhr[pos].xhr.status == 200) {
+        self._xhr[pos].cb.call(this, self._xhr[pos].xhr.responseText)
       }
     }
     dataString = this.queryString(data)
-    xhr1.open("POST", url + "?" + dataString, true);
-    xhr1.send(dataString);
+    this._xhr[pos].xhr.open("POST", url + "?" + dataString, true);
+    this._xhr[pos].xhr.send(dataString);
   }
 
   // Helpers
