@@ -8,59 +8,7 @@ import (
 	"github.com/feedlabs/feedify/graph"
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
-	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
-
-// user_feed_token = channel_id + feed_id => e.g aabbccddee + aabbcc
-// for private feeds there will be 1 websocket connection
-// for public company feeds will be 1 websocket connection
-// basically for each channel is 1 websocket connection
-// private and public channel will stream through multiple feed-pages events
-//
-// channel => channel_id
-// event => 'feed:' + feed_id
-// data => [{				// action object
-//		id => string		// entryId
-//		tags => strings...	// array of strings
-//		action => string	// add/delete/update
-//		data => string		// entry data as content; string e.g. json.stringify
-// }, {}, {}]
-
-const BODY_HEADER = `{
-  "channel": "iO5wshd5fFE5YXxJ/hfyKQ==:17",
-  "event": "CM_Action_Abstract:SEND:31",
-  "data": {
-    "action": {
-      "actor": {
-        "_type": 33,
-        "_id": {
-          "id": "1"
-        },
-        "id": 1,
-        "displayName": "user1",
-        "visible": true,
-        "_class": "Feed_Model_User"
-      },
-      "verb": 13,
-      "type": 31,
-      "_class": "Feed_Action_Feed"
-    },
-    "model": {
-      "_type": 33,
-      "_id": {
-        "id": "1"
-      },
-      "id": 1,
-      "displayName": "user1",
-      "visible": true,
-      "_class": "Feed_Model_User"
-    },
-    "data": {`
-
-const BODY_BOTTOM = `
-    }
-  }
-}`
 
 func GetEntryList(FeedId string, ApplicationId string, OrgId string) (feedEntries []*Entry, err error) {
 	feed, err := GetFeed(FeedId, ApplicationId, OrgId)
@@ -136,14 +84,11 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 		return "0", err
 	}
 
-//	_data := BODY_HEADER + `"Id": "` + feedEntry.Id + `", "Action": "add", "Tag": {}, "Data": ` + strconv.Quote(feedEntry.Data) + BODY_BOTTOM
-//	message.Publish(_data)
-
 	feedEntry.Id = strconv.Itoa(entry.Id)
 
 	// notify
-	data, _ := json.Marshal(entry)
-	room.Publish <- room.NewEntryEvent(model.EVENT_MESSAGE, "system", string(data))
+	d, _ := json.Marshal(feedEntry)
+	room.Publish <- room.NewFeedEvent(room.FEED_ENTRY_NEW, feed.Id, string(d))
 
 	return feedEntry.Id, nil
 }
@@ -155,8 +100,12 @@ func UpdateEntry(id string, FeedId string, ApplicationId string, OrgId string, d
 		return err
 	}
 
-	_data := BODY_HEADER + `"Id": "` + entry.Id + `", "Action": "update", "Tag": {}, "Data": ` + strconv.Quote(data) + BODY_BOTTOM
-	message.Publish(_data)
+	// update entry
+	entry.Data = data
+
+	// notify
+	d, _ := json.Marshal(entry)
+	room.Publish <- room.NewEntryEvent(room.ENTRY_UPDATE, entry.Id, string(d))
 
 	_id, _ := strconv.Atoi(entry.Id)
 	return storage.SetPropertyNode(_id, "data", data)
@@ -176,8 +125,9 @@ func DeleteEntry(id string, FeedId string, ApplicationId string, OrgId string) (
 		storage.DeleteRelation(rel.Id)
 	}
 
-	_data := BODY_HEADER + `"Id": "` + entry.Id + `", "Action": "remove"` + BODY_BOTTOM
-	message.Publish(_data)
+	// notify
+	d, _ := json.Marshal(entry)
+	room.Publish <- room.NewEntryEvent(room.ENTRY_DELETE, entry.Id, string(d))
 
 	return storage.DeleteNode(_id)
 }

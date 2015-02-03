@@ -31,12 +31,15 @@ var Channel = (function() {
 
     /** @type {Object} */
     this._handlers = {};
+
+    /** @type {WebSocket} */
+    this._socket = null;
   }
 
   // Handlers
 
   /**
-   * @param {ChannelEvent} event
+   * @param {Event} event
    * @param {Function} callback
    */
   Channel.prototype.on = function(name, callback) {
@@ -64,18 +67,18 @@ var Channel = (function() {
   // Events
 
   /**
-   * @param {ChannelEvent} event
+   * @param {Event} event
    */
   Channel.prototype.onData = function(event) {
-    switch (event.Type) {
+    switch (event.type) {
       case JOIN:
-        this.onJoin(event.User, event.ts)
+        this.onJoin(event.user, event.ts)
         break;
       case LEAVE:
-        this.onLeave(event.User, event.ts)
+        this.onLeave(event.user, event.ts)
         break;
       case MESSAGE:
-        this.onMessage(event.User, event.ts, event.Content)
+        this.onMessage(event.user, event.ts, event.content)
         break;
     }
   }
@@ -93,12 +96,18 @@ var Channel = (function() {
   }
 
   Channel.prototype.onMessage = function(chid, timestamp, data) {
+    systemEvent = new Event(data);
+
     for (var i in this._handlers[MESSAGE]) {
-      this._handlers[MESSAGE][i].call(this, chid, timestamp, data);
+      this._handlers[MESSAGE][i].call(this, chid, timestamp, systemEvent);
     }
   }
 
   // Connection
+
+  Channel.prototype.isWebSocket = function() {
+    return this._socket != undefined;
+  }
 
   Channel.prototype.getConnection = function() {
   }
@@ -108,7 +117,7 @@ var Channel = (function() {
 
     self = this
     this._socket.onmessage = function(event) {
-      event = new ChannelEvent(JSON.parse(event.data))
+      event = new Event(JSON.parse(event.data))
       self.onData(event)
     };
 
@@ -124,7 +133,8 @@ var Channel = (function() {
     var lastReceived = 0;
     var isWait = false;
 
-    this.getJSON('http://localhost:10100/stream/lp/join?chid=' + this.id, function() {
+    this.getJSON('http://localhost:10100/stream/lp/join?chid=' + this.id, function(data) {
+      // should set timestamp to proper one!
     })
 
     self = this;
@@ -144,7 +154,7 @@ var Channel = (function() {
         }
 
         self.each(data, function(i, event) {
-          event = new ChannelEvent(event)
+          event = new Event(event)
           self.onData(event)
 
           lastReceived = event.GetTimestamp();
@@ -242,20 +252,6 @@ var Channel = (function() {
     dataString = this.queryString(data)
     xhr1.open("POST", url + "?" + dataString, true);
     xhr1.send(dataString);
-  }
-
-  Channel.prototype.EventToString = function(event) {
-    switch (event.Type) {
-      case JOIN:
-        console.log(event.User + " joined the chat room");
-        break;
-      case LEAVE:
-        console.log(event.User + " left the chat room");
-        break;
-      case MESSAGE:
-        console.log(event.User + ", " + event.PrintContent());
-        break;
-    }
   }
 
   // Helpers

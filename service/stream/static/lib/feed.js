@@ -1,13 +1,15 @@
 var Feed = (function() {
 
-  const ACTION_GROUP_TYPE = 1
+  const SYSTEM_FEED_MESSAGE = 1
 
-  const ACTION_RELOAD = 1
-  const ACTION_RESET = 2
-  const ACTION_DATA_INIT = 3
-  const ACTION_DATA_MORE = 4
-  const ACTION_HIDE = 5
-  const ACTION_SHOW = 6
+  const RELOAD = 1
+  const EMPTY = 2
+  const ENTRY_NEW = 3
+  const ENTRY_INIT = 4
+  const ENTRY_MORE = 5
+  const HIDE = 6
+  const SHOW = 7
+  const ENTRY_MESSAGE = 8
 
   const AUTHENTICATED = 100
   const AUTHENTICATION_REQUIRED = 101
@@ -32,10 +34,10 @@ var Feed = (function() {
     method: 'basic'
   };
 
-  function Feed(options, channel) {
+  function Feed(id, options, channel) {
 
     /** @type {String} */
-    this.id = null;
+    this.id = id;
 
     /** @type {Channel} */
     this.channel = channel;
@@ -45,74 +47,281 @@ var Feed = (function() {
 
     /** @type {Object} */
     if (this.channel.options.transport == 'ws') {
-      this.socket = this.channel.getWebSocketConnection();
+      if (this.channel._socket == undefined) {
+        this.socket = this.channel.getWebSocketConnection();
+      } else {
+        this.socket = this.channel._socket;
+      }
     } else if (this.channel.options.transport == 'lp') {
       this.socket = this.channel.getLongPoolingConnection();
     }
 
+    /** @type {Object} */
     this.options = _extend(globalOptions, options);
-    this._stylerFunction = options.styler || this._stylerFunction;
+
+    /** @type {Function} */
+    this.stylerFunction = options.stylerFunction || this._stylerFunction;
+
+    /** @type {Function} */
+    this.renderFunction = options.renderFunction || this._renderFunction;
+
+    /** @type {DOM} */
     this.outputContainer = document.getElementById(this.options.outputContainerId);
 
     this.bindChannel(this.channel);
+
+    /** @type {Object} */
+    this._handlers = {};
   }
 
-  Feed.prototype.on = function(type, callback) {
+  Feed.prototype.on = function(name, callback) {
+    switch (name) {
+      case 'reload':
+        type = RELOAD
+        break;
+      case 'empty':
+        type = EMPTY
+        break;
+      case 'entry':
+        type = ENTRY_NEW
+        break;
+      case 'entry-init':
+        type = ENTRY_INIT
+        break;
+      case 'entry-more':
+        type = ENTRY_MORE
+        break;
+      case 'hide':
+        type = HIDE
+        break;
+      case 'show':
+        type = SHOW
+        break;
+      case 'entry-message':
+        type = ENTRY_MESSAGE
+        break;
+      case 'authenticated':
+        type = AUTHENTICATED
+        break;
+      case 'authentication-required':
+        type = AUTHENTICATION_REQUIRED
+        break;
+      case 'authentication-failed':
+        type = AUTHENTICATION_FAILED
+        break;
+      case 'logout':
+        type = LOGGED_OUT
+        break;
+      default:
+        break;
+    }
+    if (this._handlers[type] == undefined) {
+      this._handlers[type] = []
+    }
+    this._handlers[type].push(callback);
 
+    return callback;
+  }
+
+  Feed.prototype.off = function(callback) {
+    for (var i in this._handlers) {
+      for (var x in this._handlers[i]) {
+        if (this._handlers[i][x] == callback) {
+          delete this._handlers[i][x];
+          return;
+        }
+      }
+    }
+  }
+
+  Feed.prototype.onData = function(feedEvent) {
+    switch (feedEvent.type) {
+      case RELOAD:
+        this.onReload(feedEvent.ts)
+        break;
+      case EMPTY:
+        this.onEmpty(feedEvent.ts)
+        break;
+      case ENTRY_NEW:
+        this.onEntryNew(feedEvent.ts, feedEvent.content)
+        break;
+      case ENTRY_INIT:
+        this.onEntryInit(feedEvent.ts, feedEvent.content)
+        break;
+      case ENTRY_MORE:
+        this.onEntryMore(feedEvent.ts, feedEvent.content)
+        break;
+      case HIDE:
+        this.onHide(feedEvent.ts)
+        break;
+      case SHOW:
+        this.onShow(feedEvent.ts)
+        break;
+      case ENTRY_MESSAGE:
+        this.onEntryMessage(feedEvent.ts, feedEvent.content)
+        break;
+      case AUTHENTICATED:
+        this.onAuthenticated(feedEvent.ts, feedEvent.content)
+        break;
+      case AUTHENTICATION_REQUIRED:
+        this.onAuthenticationRequired(feedEvent.ts, feedEvent.content)
+        break;
+      case AUTHENTICATION_FAILED:
+        this.onAuthenticationFailed(feedEvent.ts, feedEvent.content)
+        break;
+      case LOGGED_OUT:
+        this.onLogout(feedEvent.ts, feedEvent.content)
+        break;
+    }
   }
 
   // Events callbacks
 
-  Feed.prototype.onReload = function(callback) {
+  Feed.prototype.onReload = function(timestamp) {
+    for (var i in this._handlers[RELOAD]) {
+      this._handlers[RELOAD][i].call(this, timestamp);
+    }
   }
 
-  Feed.prototype.onReset = function(callback) {
+  Feed.prototype.onEmpty = function(timestamp) {
+    for (var i in this._handlers[EMPTY]) {
+      this._handlers[EMPTY][i].call(this, timestamp);
+    }
   }
 
-  Feed.prototype.onEntryAdd = function(callback) {
+  Feed.prototype.onEntryNew = function(timestamp, data) {
+    entry = new Entry(data, {styler: this.stylerFunction});
+
+    this.addEntry(entry)
+
+    for (var i in this._handlers[ENTRY_NEW]) {
+      this._handlers[ENTRY_NEW][i].call(this, timestamp, entry);
+    }
   }
 
-  Feed.prototype.onEntryDelete = function(callback) {
+  Feed.prototype.onEntryInit = function(timestamp, data) {
+    entries = JSON.parse(data);
+
+    for (var i in this._handlers[ENTRY_INIT]) {
+      this._handlers[ENTRY_INIT][i].call(this, timestamp, entries);
+    }
   }
 
-  Feed.prototype.onEntryUpdate = function(callback) {
+  Feed.prototype.onEntryMore = function(timestamp, data) {
+    entries = JSON.parse(data);
+
+    for (var i in this._handlers[ENTRY_MORE]) {
+      this._handlers[ENTRY_MORE][i].call(this, timestamp, entries);
+    }
   }
 
-  Feed.prototype.onEvent = function(eventName, callback) {
+  Feed.prototype.onHide = function(timestamp) {
+    for (var i in this._handlers[HIDE]) {
+      this._handlers[HIDE][i].call(this, timestamp);
+    }
   }
 
-  Feed.prototype.onData = function(callback) {
+  Feed.prototype.onShow = function(timestamp) {
+    for (var i in this._handlers[SHOW]) {
+      this._handlers[SHOW][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onEntryMessage = function(timestamp, content) {
+    entryEvent = new Event(content);
+
+    for (var i in this._handlers[ENTRY_MESSAGE]) {
+      this._handlers[ENTRY_MESSAGE][i].call(this, timestamp, entryEvent);
+    }
+  }
+
+  Feed.prototype.onAuthenticated = function(timestamp, content) {
+    for (var i in this._handlers[AUTHENTICATED]) {
+      this._handlers[AUTHENTICATED][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onAuthenticationRequired = function(timestamp, content) {
+    for (var i in this._handlers[AUTHENTICATION_REQUIRED]) {
+      this._handlers[AUTHENTICATION_REQUIRED][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onAuthenticationFailed = function(timestamp, content) {
+    for (var i in this._handlers[AUTHENTICATION_FAILED]) {
+      this._handlers[AUTHENTICATION_FAILED][i].call(this, timestamp);
+    }
+  }
+
+  Feed.prototype.onLogout = function(timestamp, content) {
+    for (var i in this._handlers[LOGGED_OUT]) {
+      this._handlers[LOGGED_OUT][i].call(this, timestamp);
+    }
   }
 
   // Entries management
 
-  Feed.prototype.addEntry = function(data) {
-    this.entryList.push(new Entry(data))
+  Feed.prototype.addEntry = function(entry) {
+
+    // types
+    // add by: timestamp up/down; always to top; always to bottom
+
+    entry.setParent(this);
+    this.entryList.push(entry);
+
+    this.outputContainer.innerHTML = '<div id="' + entry.getViewId() + '"></div>' + this.outputContainer.innerHTML;
+
+    entry.render();
   }
 
-  Feed.prototype.deleteEntry = function(id) {
+  Feed.prototype.deleteEntry = function(entry) {
+    entry.delete();
   }
 
-  Feed.prototype.updateEntry = function(id, data) {
+  Feed.prototype.updateEntry = function(entry, data) {
+  }
+
+  Feed.prototype.empty = function() {
+    for (var i in this.entryList) {
+      this.deleteEntry(this.entryList[i]);
+      delete this.entryList[i];
+    }
+    this.entryList = []
   }
 
   Feed.prototype.findEntry = function(id) {
   }
 
+  // UI
+
+  Feed.prototype.render = function(id) {
+    for (var i in this.entryList) {
+      this.entryList[i].render();
+    }
+  }
+
   // Handlers
 
   Feed.prototype.bindChannel = function(channel) {
-    channel.on('message', function(chid, ts, data) {
-      // should detect type of message
-      // if feed addressed then check id
-      // trigger action if needed
+    var self = this;
+    channel.on('message', function(chid, ts, systemEvent) {
+      if (systemEvent.type == SYSTEM_FEED_MESSAGE) {
+        feedEvent = new Event(systemEvent.content);
+        if (feedEvent.user == self.id || feedEvent.user == '*') {
+          self.onData(feedEvent);
+        }
+      }
     });
   }
 
   // Stylers
 
   Feed.prototype._stylerFunction = function(data) {
-    return JSON.stringify(data.Data);
+    return JSON.stringify(data);
+  }
+
+  Feed.prototype._renderFunction = function(data) {
+    return JSON.stringify(data);
   }
 
   // Helpers

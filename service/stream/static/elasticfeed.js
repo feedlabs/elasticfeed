@@ -10,12 +10,24 @@ function includeJs(jsFilePath) {
 includeJs('lib/feed.js');
 includeJs('lib/entry.js');
 includeJs('lib/channel.js');
-includeJs('lib/event/channel.js');
-includeJs('lib/event/system.js');
+includeJs('lib/event.js');
 
 (function(window) {
 
+  /** @type {Object} */
+  var defaultOptions = {
+    channel: {
+      url: 'localhost',
+      transport: 'ws'
+    },
+    stylerFunction: function(data) {
+    }
+  }
+
   var elasticfeed = {
+
+    /** @type {Object} */
+    options: {},
 
     /** @type {Object} */
     channelList: {},
@@ -23,36 +35,23 @@ includeJs('lib/event/system.js');
     /** @type {Object} */
     feedList: {},
 
-    initFeed: function(options) {
-      options = _extend({
-        channel: {
-          url: 'ws://localhost:80/ws',
-          transport: 'ws'
-        },
-        styler: function(data) {
-        }
-      }, options);
-
-      channel = this.getChannel(options.channel);
-
-      return new Feed(options, channel);
+    init: function(options) {
+      this.options = _extend(defaultOptions, options);
     },
 
-    /**
-     * Returns Feed object
-     * @param options
-     * @returns {*}
-     */
-    getFeed: function(options) {
-      if (options.id == undefined) {
-        return null;
+    initFeed: function(id, options) {
+      if (id == undefined) {
+        return false;
       }
 
       if (this.feedList[id] == undefined) {
-        this.feedList[id] = new Feed(options)
+        opts = _extend(this.options, options || {});
+        channel = this.getChannel(opts.channel);
+
+        this.feedList[id] = new Feed(id, opts, channel);
       }
 
-      return this.feedList[options.id];
+      return this.feedList[id];
     },
 
     /**
@@ -63,7 +62,7 @@ includeJs('lib/event/system.js');
      */
     getChannel: function(options, credential) {
       if (options.url == undefined) {
-        return null;
+        return false;
       }
 
       if (this.channelList[options.url] == undefined) {
@@ -74,11 +73,17 @@ includeJs('lib/event/system.js');
     },
 
     findFeed: function(id) {
-      return this.getFeed({id: id});
+      if (this.feedList[id] == undefined) {
+        return false;
+      }
+      return this.feedList[id];
     },
 
     findChannel: function(url) {
-      return this.getChannel({url: url});
+      if (this.channelList[url] == undefined) {
+        return false;
+      }
+      return this.channelList[url];
     }
 
   };

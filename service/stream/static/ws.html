@@ -5,25 +5,61 @@
 
       window.onload = function() {
 
-        feed = elasticfeed.initFeed({
-          transport: 'ws'
+        elasticfeed.init({
+          channel: {
+            url: 'ws://localhost:80',
+            transport: 'ws'
+          }
         });
 
-        feed.channel.on('join', function(chid, ts) {
-          console.log(chid + " joined the chat room");
+        feedList = {}
+
+        feedList[1] = elasticfeed.initFeed('86', {
+          outputContainerId: 'my-elastic-feed-1',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: #00bfff;">' + data + '</div>';
+          }
         });
 
-        feed.channel.on('leave', function(chid, ts) {
-          console.log(chid + " left the chat room");
+        feedList[2] = elasticfeed.initFeed('87', {
+          outputContainerId: 'my-elastic-feed-2',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: yellow;">' + data + '</div>';
+          }
         });
 
-        feed.channel.on('message', function(chid, ts, data) {
-          console.log(chid + " " + JSON.stringify(data));
+        feedList[3] = elasticfeed.initFeed('88', {
+          outputContainerId: 'my-elastic-feed-3',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: green;">' + data + '</div>';
+          }
         });
 
-        window['socket'] = feed.socket
+        feedList[4] = elasticfeed.initFeed('89', {
+          outputContainerId: 'my-elastic-feed-4',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: pink;">' + data + '</div>';
+          }
+        });
+
+        for (var i in feedList) {
+          feedList[i].on('reload', function(ts) {
+            this.addEntry(new Entry("reload feed by ts:" + ts))
+          })
+
+          feedList[i].on('empty', function(ts) {
+            this.empty();
+            this.addEntry(new Entry("empty feed by ts:" + ts))
+          })
+        }
+
       }
 
     </script>
+
+    <div id="my-elastic-feed-1" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-2" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-3" style="background-color: grey; width:25%; float: left"></div>
+    <div id="my-elastic-feed-4" style="background-color: grey; width:25%; float: left"></div>
   </body>
 </html>

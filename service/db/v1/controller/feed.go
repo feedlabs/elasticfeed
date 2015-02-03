@@ -5,6 +5,8 @@ import (
 
 	"github.com/feedlabs/elasticfeed/resource"
 	"github.com/feedlabs/elasticfeed/service/db/v1/template/feed"
+
+	"github.com/feedlabs/elasticfeed/service/db/v1/template"
 )
 
 type FeedController struct {
@@ -151,4 +153,20 @@ func (this *FeedController) Delete() {
 
 	feed.ResponseDelete()
 	this.Controller.ServeJson()
+}
+
+func (this *FeedController) ActionReload() {
+	feedId := this.Ctx.Input.Params[":feedId"]
+
+	resource.ActionReloadFeed(feedId)
+
+	this.ServeJson(template.Success("Feed reloaded."))
+}
+
+func (this *FeedController) ActionEmpty() {
+	feedId := this.Ctx.Input.Params[":feedId"]
+
+	resource.ActionEmptyFeed(feedId)
+
+	this.ServeJson(template.Success("Feed empty done."))
 }

@@ -1,29 +1,41 @@
 package room
 
 import (
+	"strconv"
 	"time"
 	"container/list"
 	"encoding/json"
 
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
-
 	"github.com/astaxie/beego/session"
-
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
 const (
-	FEED_ADD = iota
-	FEED_DELETE
-	FEED_UPDATE
-	FEED_RESET
-	FEED_RELOAD
+	CHANNEL_JOIN    = 0
+	CHANNEL_LEAVE   = 1
+	CHANNEL_MESSAGE = 2
 
-	ENTRY_ADD
-	ENTRY_DELETE
-	ENTRY_UPDATE
-	ENTRY_RELOAD
+	SYSTEM_FEED_MESSAGE = 1
+
+	FEED_RELOAD                  = 1
+	FEED_EMPTY                   = 2
+	FEED_ENTRY_NEW               = 3
+	FEED_ENTRY_INIT              = 4
+	FEED_ENTRY_MORE              = 5
+	FEED_HIDE                    = 6
+	FEED_SHOW                    = 7
+	FEED_ENTRY_MESSAGE           = 8
+	FEED_AUTHENTICATED           = 100
+	FEED_AUTHENTICATION_REQUIRED = 101
+	FEED_AUTHENTICATION_FAILED   = 102
+	FEED_LOGGED_OUT              = 103
+
+	ENTRY_UPDATE = 1
+	ENTRY_DELETE = 2
+	ENTRY_SHOW   = 3
+	ENTRY_HIDE   = 4
 )
 
 var (
@@ -49,7 +61,8 @@ type Subscriber struct {
 }
 
 func NewEvent(ep model.EventType, user, msg string) model.Event {
-	return model.Event{ep, user, time.Now().UnixNano(), msg}
+	ts := time.Now().UnixNano()
+	return model.Event{ep, user, ts, strconv.Itoa(int(ts)), msg}
 }
 
 func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
@@ -57,15 +70,28 @@ func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
 }
 
 func NewSystemEvent(ep model.EventType, user, msg string) model.Event {
-	return NewChannelEvent(ep, user, msg)
+	event := NewEvent(ep, user, msg)
+	data, _ := json.Marshal(event)
+
+	return NewChannelEvent(CHANNEL_MESSAGE, user, string(data))
 }
 
 func NewFeedEvent(ep model.EventType, user, msg string) model.Event {
-	return NewSystemEvent(ep, user, msg)
+	// "msg" is a feed action; can contain entry specific event
+	event := NewEvent(ep, user, msg)
+	data, _ := json.Marshal(event)
+
+	// "user" is and feed-id; "*" means all feeds on the client site
+	return NewSystemEvent(SYSTEM_FEED_MESSAGE, user, string(data))
 }
 
 func NewEntryEvent(ep model.EventType, user, msg string) model.Event {
-	return NewSystemEvent(ep, user, msg)
+	// "msg" is a feed entry data as a string
+	event := NewEvent(ep, user, msg)
+	data, _ := json.Marshal(event)
+
+	// "*" all feeds on client site will receive this message
+	return NewFeedEvent(FEED_ENTRY_MESSAGE, "*", string(data))
 }
 
 func Join(user string, ws *websocket.Conn) {
@@ -82,10 +108,10 @@ func FeedManager() {
 
 		case sub := <-Subscribe:
 			Subscribers.PushBack(sub)
-		Publish <- NewChannelEvent(model.EVENT_JOIN, sub.Name, "")
+		Publish <- NewChannelEvent(CHANNEL_JOIN, sub.Name, "")
 
 		case client := <-P2P:
-			data, _ := json.Marshal(NewSystemEvent(model.EVENT_MESSAGE, "system", "ok"))
+			data, _ := json.Marshal(NewSystemEvent(CHANNEL_MESSAGE, "system", "ok"))
 			client.WriteMessage(websocket.TextMessage, data)
 
 		case event := <-Publish:
@@ -108,7 +134,7 @@ func FeedManager() {
 						ws.Close()
 						feedify.Error("WebSocket closed:", unsub)
 					}
-					Publish <- NewChannelEvent(model.EVENT_LEAVE, unsub, "")
+					Publish <- NewChannelEvent(CHANNEL_LEAVE, unsub, "")
 					break
 				}
 			}
