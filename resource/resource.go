@@ -9,6 +9,7 @@ import (
 	"github.com/feedlabs/feedify/stream"
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/service/stream/model"
 )
 
 const RESOURCE_ORG_LABEL = "org"
@@ -97,34 +98,39 @@ func init() {
 			select {
 			case socketEvent := <-room.ResourceEvent:
 
-				// ***********************************************************
-				// here should be implemented REAL CONTENT IMPROVEMENT
-				// based on connected user or users!: habits, behaviours, stats etc.
-				// PIPE: filtering, customization
-				// ***********************************************************
+				go func(socketEvent model.SocketEvent) {
 
-				list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+					// ***********************************************************
+					// here should be implemented REAL CONTENT IMPROVEMENT
+					// based on connected user or users!: habits, behaviours, stats etc.
+					// PIPE: filtering, customization
+					// SCENARIO-ENGINE: scenarios
+					// ***********************************************************
 
-				if err == nil {
+					list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
 
-					// register socket handler
-					// needs to send notiffication to long pooling + ws
-					// join should generate uniqe ID and client should use it
-					// maybe sessionID could be as uniqeID ?
-					// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
+					if err == nil {
 
-					d, _ := json.Marshal(list)
-					event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
-					data, _ := json.Marshal(event)
+						// register socket handler
+						// needs to send notiffication to long pooling + ws
+						// join should generate uniqe ID and client should use it
+						// maybe sessionID could be as uniqeID ?
+						// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
 
-					if socketEvent.Ws != nil {
-						socketEvent.Ws.WriteMessage(1, data)
+						d, _ := json.Marshal(list)
+						event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
+						data, _ := json.Marshal(event)
+
+						if socketEvent.Ws != nil {
+							socketEvent.Ws.WriteMessage(1, data)
+						}
+
+						if socketEvent.Ch != nil {
+							socketEvent.Ch <- data
+						}
 					}
 
-					if socketEvent.Ch != nil {
-						socketEvent.Ch <- data
-					}
-				}
+				}(socketEvent)
 			}
 		}
 	}()
