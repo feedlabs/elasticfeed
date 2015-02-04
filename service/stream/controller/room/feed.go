@@ -37,13 +37,15 @@ const (
 )
 
 var (
-	Subscribe   = make(chan Subscriber, 10)
-	Unsubscribe = make(chan string, 10)
-	Publish     = make(chan model.Event, 10)
+	Subscribe     = make(chan Subscriber, 10)
+	Unsubscribe   = make(chan string, 10)
+	Publish       = make(chan model.Event, 10)
 	ResourceEvent = make(chan model.SocketEvent, 10)
 
 	WaitingList = list.New()
 	Subscribers = list.New()
+
+	FeedSubscribers = make(map[string]interface{})
 
 	GlobalSessions *session.Manager
 )
@@ -116,6 +118,15 @@ func FeedManager() {
 			Subscribers.PushBack(sub)
 
 		case event := <-Publish:
+
+			// here must be handled where to send notification
+			// - or to all sockets
+			// - or to specific client/feed (single socket)
+			// - or to public feed (multiple sockets)
+			//
+			// could be setup by resource manager go routine
+			// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
+
 			model.NewArchive(event)
 
 			for ch := WaitingList.Back(); ch != nil; ch = ch.Prev() {

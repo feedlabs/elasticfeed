@@ -54,7 +54,7 @@ var Feed = (function() {
     /** @type {Array} */
     this.entryList = [];
 
-    this.initLoad();
+    this.loadInit();
 
     /** @type {Object} */
     if (this.channel.options.transport == 'ws') {
@@ -280,7 +280,11 @@ var Feed = (function() {
     this.socket.send({action: ENTRY_INIT, feedId: this.feedId, appId: this.appId, orgId: this.orgId});
   }
 
-  Feed.prototype.initLoad = function() {
+  Feed.prototype.loadMore = function() {
+    this.socket.send({action: ENTRY_MORE, feedId: this.feedId, appId: this.appId, orgId: this.orgId, state: {}});
+  }
+
+  Feed.prototype.loadInit = function() {
     var self = this;
     this.channel.on('join', function() {
       if (self._state.initiated == true) {

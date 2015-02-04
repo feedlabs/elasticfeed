@@ -99,6 +99,13 @@ func init() {
 				list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
 
 				if err == nil {
+
+					// register socket handler
+					// needs to send notiffication to long pooling + ws
+					// join should generate uniqe ID and client should use it
+					// maybe sessionID could be as uniqeID ?
+					// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
+
 					d, _ := json.Marshal(list)
 					event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
 					data, _ := json.Marshal(event)
