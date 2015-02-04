@@ -80,22 +80,6 @@ type Entry struct {
 	Data      string
 }
 
-func init() {
-	stream_service, _ := service.NewStream()
-	if stream_service == nil {
-		panic(errors.New("Cannot create stream service"))
-	}
-	message = stream_service.Message
-
-	graph_service, _ := service.NewGraph()
-	if graph_service == nil {
-		panic(errors.New("Cannot create graph service"))
-	}
-	storage = graph_service.Storage
-
-	go ResourceStreamManager()
-}
-
 func ResourceStreamManager() {
 	for {
 		select {
@@ -113,6 +97,14 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 	// based on connected user (viewer) or users (audience)!: habits, behaviours, stats etc.
 	// PIPE: filtering, customization
 	// SCENARIO-ENGINE: scenarios
+	// *******************************************************************
+
+	// *******************************************************************
+	// SCENARIO AND RULES/METRICS
+	// should use go routine with time limit to query filter rules
+	// if in specific time there is nor rules the results should be sent
+	// client feed. After this the next package should be sent with
+	// rules which entries should be remove/hidden from the view!
 	// *******************************************************************
 
 	list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
@@ -153,4 +145,20 @@ func ConvertInterfaceToStringArray(d interface{}) []string {
 		output[i] = data[i].(string)
 	}
 	return output
+}
+
+func init() {
+	stream_service, _ := service.NewStream()
+	if stream_service == nil {
+		panic(errors.New("Cannot create stream service"))
+	}
+	message = stream_service.Message
+
+	graph_service, _ := service.NewGraph()
+	if graph_service == nil {
+		panic(errors.New("Cannot create graph service"))
+	}
+	storage = graph_service.Storage
+
+	go ResourceStreamManager()
 }

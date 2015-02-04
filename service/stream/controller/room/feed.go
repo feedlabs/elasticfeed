@@ -174,6 +174,6 @@ func broadcastWebSocket(event model.Event) {
 func init() {
 	GlobalSessions, _ = session.NewManager("memory", `{"cookieName":"elasticfeedsessid","gclifetime":3600}`)
 
-	go FeedManager()
 	go GlobalSessions.GC()
+	go FeedManager()
 }
