@@ -93,47 +93,51 @@ func init() {
 	}
 	storage = graph_service.Storage
 
-	go func() {
-		for {
-			select {
-			case socketEvent := <-room.ResourceEvent:
+	go ResourceStreamManager()
+}
 
-				go func(socketEvent model.SocketEvent) {
+func ResourceStreamManager() {
 
-					// ***********************************************************
-					// here should be implemented REAL CONTENT IMPROVEMENT
-					// based on connected user or users!: habits, behaviours, stats etc.
-					// PIPE: filtering, customization
-					// SCENARIO-ENGINE: scenarios
-					// ***********************************************************
+	for {
+		select {
+		case socketEvent := <-room.ResourceEvent:
 
-					list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
-
-					if err == nil {
-
-						// register socket handler
-						// needs to send notiffication to long pooling + ws
-						// join should generate uniqe ID and client should use it
-						// maybe sessionID could be as uniqeID ?
-						// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
-
-						d, _ := json.Marshal(list)
-						event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
-						data, _ := json.Marshal(event)
-
-						if socketEvent.Ws != nil {
-							socketEvent.Ws.WriteMessage(1, data)
-						}
-
-						if socketEvent.Ch != nil {
-							socketEvent.Ch <- data
-						}
-					}
-
-				}(socketEvent)
-			}
+			go ResourceStreamRequest(socketEvent)
 		}
-	}()
+	}
+
+}
+
+func ResourceStreamRequest(socketEvent model.SocketEvent) {
+	// ***********************************************************
+	// here should be implemented REAL CONTENT IMPROVEMENT
+	// based on connected user or users!: habits, behaviours, stats etc.
+	// PIPE: filtering, customization
+	// SCENARIO-ENGINE: scenarios
+	// ***********************************************************
+
+	list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+
+	if err == nil {
+
+		// register socket handler
+		// needs to send notiffication to long pooling + ws
+		// join should generate uniqe ID and client should use it
+		// maybe sessionID could be as uniqeID ?
+		// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
+
+		d, _ := json.Marshal(list)
+		event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
+		data, _ := json.Marshal(event)
+
+		if socketEvent.Ws != nil {
+			socketEvent.Ws.WriteMessage(1, data)
+		}
+
+		if socketEvent.Ch != nil {
+			socketEvent.Ch <- data
+		}
+	}
 }
 
 func Contains(s []string, e string) bool {
