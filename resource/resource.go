@@ -96,6 +96,13 @@ func init() {
 		for {
 			select {
 			case socketEvent := <-room.ResourceEvent:
+
+				// ***********************************************************
+				// here should be implemented REAL CONTENT IMPROVEMENT
+				// based on connected user or users!: habits, behaviours, stats etc.
+				// PIPE: filtering, customization
+				// ***********************************************************
+
 				list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
 
 				if err == nil {
