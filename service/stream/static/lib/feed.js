@@ -19,18 +19,28 @@ var Feed = (function() {
   /** @type {Feed} */
   var localCache = {}
 
-  /** @type {Object} */
   var globalOptions = {
-    feedId: '',
-    outputContainerId: 'defaultContainerId',
-    defaultElementLayout: '',
-    defaultElementCount: 0
+
+    /** @type {Function} */
+    stylerFunction: function(data) {
+      return JSON.stringify(data);
+    },
+
+    /** @type {Function} */
+    renderFunction: function(data) {
+      return JSON.stringify(data);
+    }
   };
 
-  /** @type {Object} */
   var globalCredential = {
+
+    /** @type {String} */
     username: null,
+
+    /** @type {String} */
     token: null,
+
+    /** @type {String} */
     method: 'basic'
   };
 
@@ -67,10 +77,10 @@ var Feed = (function() {
     this.options = _extend(globalOptions, options);
 
     /** @type {Function} */
-    this.stylerFunction = options.stylerFunction || this._stylerFunction;
+    this.stylerFunction = this.options.stylerFunction;
 
     /** @type {Function} */
-    this.renderFunction = options.renderFunction || this._renderFunction;
+    this.renderFunction = this.options.renderFunction;
 
     /** @type {DOM} */
     this.outputContainer = document.getElementById(this.options.outputContainerId);
@@ -349,16 +359,6 @@ var Feed = (function() {
         }
       }
     });
-  }
-
-  // Stylers
-
-  Feed.prototype._stylerFunction = function(data) {
-    return JSON.stringify(data);
-  }
-
-  Feed.prototype._renderFunction = function(data) {
-    return JSON.stringify(data);
   }
 
   // Helpers

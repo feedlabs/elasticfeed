@@ -16,11 +16,11 @@ includeJs('lib/event.js');
 
   /** @type {Object} */
   var defaultOptions = {
+
+    /** @type {Object} */
     channel: {
       url: 'localhost',
       transport: 'ws'
-    },
-    stylerFunction: function(data) {
     }
   }
 
