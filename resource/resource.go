@@ -3,6 +3,8 @@ package resource
 import (
 	"errors"
 	"encoding/json"
+	"time"
+	"math/rand"
 
 	"github.com/feedlabs/feedify/service"
 	"github.com/feedlabs/feedify/graph"
@@ -102,14 +104,53 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 	// *******************************************************************
 	// SCENARIO AND RULES/METRICS
 	// should use go routine with time limit to query filter rules
-	// if in specific time there is nor rules the results should be sent
+	// if in specific time there is no rules the results should be sent
 	// client feed. After this the next package should be sent with
 	// rules which entries should be remove/hidden from the view!
 	// *******************************************************************
 
-	list, err := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+	timeout := make(chan bool, 1)
+	results := make(chan []*Entry, 1)
 
-	if err == nil {
+	list, _ := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+
+	// PIPE TIMEOUT
+	go func() {
+		amt := time.Duration(rand.Intn(100))
+		time.Sleep(amt * time.Millisecond)
+		timeout <- true
+	}()
+
+	// SHOULD BE A FILTER IMPLEMENTATION
+	go func(list []*Entry, socketEvent model.SocketEvent) {
+
+		// PIPE DELAY SIMULATION
+		amt := time.Duration(rand.Intn(200))
+		time.Sleep(amt * time.Millisecond)
+
+		results <- list
+	}(list, socketEvent)
+
+	select {
+
+		// IF PIPE TAKES TOO MUCH TIME, DATA DELAYED
+	case <-timeout:
+
+		event := room.NewFeedEvent(room.FEED_ENTRY_NEW, socketEvent.FeedId, "{Content:\"tiemout\"}")
+		data, _ := json.Marshal(event)
+
+		if socketEvent.Ws != nil {
+			amt := time.Duration(rand.Intn(500)) * 1000
+			time.Sleep(amt * time.Microsecond)
+			socketEvent.Ws.WriteMessage(1, data)
+		}
+
+		if socketEvent.Ch != nil {
+			socketEvent.Ch <- data
+		}
+
+		// IF DATA ARRIVES WITHOUT DELAY
+	case list := <-results:
 
 		// *********************************************************************
 		// register socket handler
@@ -118,6 +159,12 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 		// maybe sessionID could be as uniqeID ?
 		// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
 		// *********************************************************************
+		//
+		// timeout with channels and routines?
+		// http://blog.golang.org/go-concurrency-patterns-timing-out-and
+
+		//		amt := time.Duration(rand.Intn(500)) * 10000
+		//		time.Sleep(amt * time.Microsecond)
 
 		d, _ := json.Marshal(list)
 		event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
@@ -130,7 +177,9 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 		if socketEvent.Ch != nil {
 			socketEvent.Ch <- data
 		}
+
 	}
+
 }
 
 func Contains(s []string, e string) bool {
