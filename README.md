@@ -1,6 +1,6 @@
 elasticfeed
 ===========
-![feed-overview - api](https://cloud.githubusercontent.com/assets/1843523/6097584/03c9958e-afc4-11e4-960a-9502b74ed174.png)
+![feed-overview - api 1](https://cloud.githubusercontent.com/assets/1843523/6098040/14c77e7e-afd2-11e4-8a39-e5a0a776019a.png)
 
 #### Development
 Create symbolic link from you directory to `GOPATH`
