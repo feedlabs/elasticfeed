@@ -12,22 +12,25 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream/model"
+	"github.com/feedlabs/elasticfeed/service/pipeline"
 )
 
-const RESOURCE_ORG_LABEL = "org"
-const RESOURCE_ADMIN_LABEL = "admin"
-const RESOURCE_TOKEN_LABEL = "token"
-const RESOURCE_APPLICATION_LABEL = "application"
-const RESOURCE_FEED_LABEL = "feed"
-const RESOURCE_ENTRY_LABEL = "entry"
+const (
+	RESOURCE_ORG_LABEL         = "org"
+	RESOURCE_ADMIN_LABEL       = "admin"
+	RESOURCE_TOKEN_LABEL       = "token"
+	RESOURCE_APPLICATION_LABEL = "application"
+	RESOURCE_FEED_LABEL        = "feed"
+	RESOURCE_ENTRY_LABEL       = "entry"
+)
 
 var (
 	Orgs            map[string]*Org
-	Admins        map[string]*Admin
-	Tokens        map[string]*Token
+	Admins        	map[string]*Admin
+	Tokens        	map[string]*Token
 	Applications    map[string]*Application
-	Feeds            map[string]*Feed
-	Entries        map[string]*Entry
+	Feeds           map[string]*Feed
+	Entries        	map[string]*Entry
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
@@ -82,6 +85,10 @@ type Entry struct {
 	Data      string
 }
 
+type Viewer struct {}
+
+type Metric struct {}
+
 func ResourceStreamManager() {
 	for {
 		select {
@@ -123,11 +130,7 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 
 	// SHOULD BE A FILTER IMPLEMENTATION
 	go func(list []*Entry, socketEvent model.SocketEvent) {
-
-		// PIPE DELAY SIMULATION
-		amt := time.Duration(rand.Intn(200))
-		time.Sleep(amt * time.Millisecond)
-
+		list = pipeline.Filter(list).([]*Entry)
 		results <- list
 	}(list, socketEvent)
 
