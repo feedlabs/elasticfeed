@@ -189,6 +189,13 @@ var Channel = (function() {
     };
   }
 
+  Channel.prototype.getEventSourceConnection = function() {
+    return {
+      send: function(data) {
+      }
+    }
+  }
+
   // HTTP
 
   Channel.prototype.__cleanup = function() {

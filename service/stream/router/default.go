@@ -13,4 +13,7 @@ func init() {
 	feedify.Router("/stream/lp/fetch", &channel.LongPollingController{}, "get:Fetch")
 
 	feedify.Router("/stream/ws/join", &channel.WebSocketController{}, "get:Join")
+
+	feedify.Router("/stream/es/join", &channel.EventSourceController{}, "get:Join")
+	feedify.Router("/stream/es/post", &channel.EventSourceController{})
 }
