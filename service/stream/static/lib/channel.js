@@ -189,7 +189,7 @@ var Channel = (function() {
     };
   }
 
-  Channel.prototype.geServerSentEventsConnection = function() {
+  Channel.prototype.getSSEConnection = function() {
 
     es = new EventSource("http://localhost:8001/stream/sse/join");
     es.onmessage = function(event) {
