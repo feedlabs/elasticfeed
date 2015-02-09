@@ -14,6 +14,6 @@ func init() {
 
 	feedify.Router("/stream/ws/join", &channel.WebSocketController{}, "get:Join")
 
-	feedify.Router("/stream/es/join", &channel.EventSourceController{}, "get:Join")
-	feedify.Router("/stream/es/post", &channel.EventSourceController{})
+	feedify.Router("/stream/sse/join", &channel.SSEController{}, "get:Join")
+	feedify.Router("/stream/sse/post", &channel.SSEController{})
 }
