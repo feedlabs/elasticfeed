@@ -190,8 +190,21 @@ var Channel = (function() {
   }
 
   Channel.prototype.getEventSourceConnection = function() {
+
+    es = new EventSource("http://localhost:8001/stream/es/join");
+    es.onmessage = function(event) {
+    };
+
+    es.addEventListener("some-event", function(event) {
+    }, false);
+
     return {
       send: function(data) {
+        self.post("/stream/es/post", {chid: self.id, data: JSON.stringify(data)}, function(data) {
+          response_json = JSON.parse(data);
+          event = new Event(JSON.parse(response_json['response']));
+          self.onData(event);
+        });
       }
     }
   }

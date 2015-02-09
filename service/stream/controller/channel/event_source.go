@@ -2,6 +2,8 @@ package channel
 
 import (
 	"github.com/feedlabs/feedify"
+
+//	"github.com/mroth/sseserver"
 )
 
 type EventSourceController struct {
