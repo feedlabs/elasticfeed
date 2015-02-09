@@ -6,5 +6,6 @@ import (
 )
 
 func main() {
+	feedify.SetStaticPath("/static", "public")
 	feedify.Run()
 }
