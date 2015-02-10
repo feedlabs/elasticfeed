@@ -19,4 +19,4 @@ Streaming cluster overview
 
 User behaviour, habits, needs tracker
 -------------------------------------
-![box[(https://cloud.githubusercontent.com/assets/1843523/6068952/ace3886e-ad80-11e4-94c8-62aa8a15a88b.png)
+![box](https://cloud.githubusercontent.com/assets/1843523/6068952/ace3886e-ad80-11e4-94c8-62aa8a15a88b.png)
