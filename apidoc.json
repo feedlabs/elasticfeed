@@ -6,11 +6,11 @@
   "url": "https://api.feedlabs.com/v1/",
   "header": {
     "title": "Principles",
-    "filename": "docs/apidoc-header.md"
+    "filename": "docs/apidoc/apidoc-header.md"
   },
   "footer": {
     "title": "Appendix",
-    "filename": "docs/apidoc-footer.md"
+    "filename": "docs/apidoc/apidoc-footer.md"
   },
   "order": [
     "Application",
