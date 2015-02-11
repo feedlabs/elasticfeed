@@ -23,4 +23,8 @@ User behaviour, habits, needs tracker
 
 Abstract bi-directional idea
 ----------------------------
-![ws](https://cloud.githubusercontent.com/assets/1843523/5181563/fc21baee-7497-11e4-9f20-02f342191fac.png)
+![ws](https://cloud.githubusercontent.com/assets/1843523/5192959/1fce00ec-74fc-11e4-9e9f-d6c8c0859170.png)
+
+API templeting, validation
+--------------------------
+![api](https://cloud.githubusercontent.com/assets/1843523/5181563/fc21baee-7497-11e4-9f20-02f342191fac.png)
