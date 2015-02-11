@@ -31,7 +31,7 @@ $ npm install apidoc -g
 ##### Generate
 
 ```
-$ apidoc -i public/ -o docs/api
+$ apidoc -i service/db -o docs/api
 ```
 
 ##### View
