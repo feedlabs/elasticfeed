@@ -21,6 +21,10 @@ User behaviour, habits, needs tracker
 -------------------------------------
 ![box](https://cloud.githubusercontent.com/assets/1843523/6068952/ace3886e-ad80-11e4-94c8-62aa8a15a88b.png)
 
+Elasticfeed Plugins RPC Communication
+-------------------------------------
+![elasticfeed-plugin - general](https://cloud.githubusercontent.com/assets/1843523/6179238/98c81150-b317-11e4-889a-6169be8a251f.png)
+
 Abstract bi-directional idea
 ----------------------------
 ![ws](https://cloud.githubusercontent.com/assets/1843523/5192959/1fce00ec-74fc-11e4-9e9f-d6c8c0859170.png)
