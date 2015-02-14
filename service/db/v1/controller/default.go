@@ -6,7 +6,7 @@ import (
 
 	"github.com/feedlabs/feedify"
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/helper"
+	"github.com/feedlabs/elasticfeed/common"
 	"github.com/feedlabs/elasticfeed/service/db/v1/template"
 )
 
@@ -53,7 +53,7 @@ func SetGlobalResponseHeader() {
 
 func SetAuthenticationFilter() {
 	var AuthUser = func(ctx *context.Context) {
-		ctx.Input.Data["admin"] = helper.Auth(ctx)
+		ctx.Input.Data["admin"] = common.Auth(ctx)
 	}
 	beego.InsertFilter("/v1/*", beego.BeforeRouter, AuthUser)
 }

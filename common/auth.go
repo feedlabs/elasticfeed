@@ -1,10 +1,10 @@
-package helper
+package common
 
 import (
 	auth "github.com/abbot/go-http-auth"
 	"github.com/astaxie/beego/context"
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/helper/config"
+	"github.com/feedlabs/elasticfeed/common/config"
 )
 
 var (

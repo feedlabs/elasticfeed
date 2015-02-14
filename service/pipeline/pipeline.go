@@ -1,7 +1,7 @@
 package pipeline
 
 import (
-	plugin "github.com/feedlabs/elasticfeed/plugin/pipeline"
+	plugin "github.com/feedlabs/elasticfeed/elasticfeed/plugin/pipeline"
 )
 
 func Filter(data interface{}) interface{} {

@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/feedlabs/feedify/graph"
-	"github.com/feedlabs/elasticfeed/helper/config"
+	"github.com/feedlabs/elasticfeed/common/config"
 )
 
 func (this *Admin) IsSuperUser() bool {
