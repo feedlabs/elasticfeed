@@ -29,5 +29,5 @@ for ARCHIVE in ./pkg/dist/*; do
     curl \
         -T ${ARCHIVE} \
         -umitchellh:${BINTRAY_API_KEY} \
-        "https://api.bintray.com/content/mitchellh/packer/packer/${VERSION}/${ARCHIVE_NAME}"
+        "https://api.bintray.com/content/kris-lab/elasticfeed/elasticfeed/${VERSION}/${ARCHIVE_NAME}"
 done

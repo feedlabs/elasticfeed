@@ -42,7 +42,7 @@ this exits with exit status 0, then everything is working!
     ...
 
 To compile a development version of Elasticfeed and the built-in plugins,
-run `make dev`. This will put Packer binaries in the `bin` folder:
+run `make dev`. This will put Elasticfeed binaries in the `bin` folder:
 
     $ make dev
     ...

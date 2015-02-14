@@ -35,14 +35,14 @@ for PLATFORM in $(find ./pkg -mindepth 1 -maxdepth 1 -type d); do
 
     echo "--> ${OSARCH}"
     pushd $PLATFORM >/dev/null 2>&1
-    zip ../dist/packer_${VERSION}_${OSARCH}.zip ./*
+    zip ../dist/elasticfeed_${VERSION}_${OSARCH}.zip ./*
     popd >/dev/null 2>&1
 done
 
 # Make the checksums
 echo "==> Checksumming..."
 pushd ./pkg/dist >/dev/null 2>&1
-shasum -a256 * > ./packer_${VERSION}_SHA256SUMS
+shasum -a256 * > ./elasticfeed_${VERSION}_SHA256SUMS
 popd >/dev/null 2>&1
 
 echo "==> Uploading..."
@@ -53,5 +53,5 @@ for ARCHIVE in ./pkg/dist/*; do
     curl \
         -T ${ARCHIVE} \
         -umitchellh:${BINTRAY_API_KEY} \
-        "https://api.bintray.com/content/mitchellh/packer/packer/${VERSION}/${ARCHIVE_NAME}"
+        "https://api.bintray.com/content/kris-lab/elasticfeed/elasticfeed/${VERSION}/${ARCHIVE_NAME}"
 done
