@@ -4,7 +4,7 @@ import (
 	_ "github.com/feedlabs/elasticfeed/service"
 	"github.com/feedlabs/feedify"
 
-	_ "github.com/feedlabs/elasticfeed/common/plugin"
+	_ "github.com/feedlabs/elasticfeed/elasticfeed/plugin"
 )
 
 func main() {
