@@ -36,3 +36,7 @@ API templeting, validation
 Elasticfeed workflow overview
 -----------------------------
 ![elasticfeed-overview - logic 1](https://cloud.githubusercontent.com/assets/1843523/6204507/facd7f7e-b54d-11e4-9b47-ac772d4c9cac.png)
+
+Plugins 
+-------
+![elasticfeed-plugin - types 2](https://cloud.githubusercontent.com/assets/1843523/6203126/7ad202be-b510-11e4-817f-45da0530386a.png)
