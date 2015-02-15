@@ -32,3 +32,7 @@ Abstract bi-directional idea
 API templeting, validation
 --------------------------
 ![api](https://cloud.githubusercontent.com/assets/1843523/5181563/fc21baee-7497-11e4-9f20-02f342191fac.png)
+
+Elasticfeed workflow overview
+-----------------------------
+![elasticfeed-overview - logic 1](https://cloud.githubusercontent.com/assets/1843523/6204507/facd7f7e-b54d-11e4-9b47-ac772d4c9cac.png)
