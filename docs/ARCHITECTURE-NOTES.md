@@ -40,3 +40,7 @@ Elasticfeed workflow overview
 Plugins 
 -------
 ![elasticfeed-plugin - types 2](https://cloud.githubusercontent.com/assets/1843523/6203126/7ad202be-b510-11e4-817f-45da0530386a.png)
+
+AI plugin
+------------
+![ellasticfeed-plugin-ai - overview](https://cloud.githubusercontent.com/assets/1843523/6220173/3997f7ee-b633-11e4-8ef9-15565270b1c4.png)
