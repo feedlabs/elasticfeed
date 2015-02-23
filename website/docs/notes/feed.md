@@ -1,6 +1,31 @@
 Feed API
 --------
 
+NEW ORG
+-------
+```
+curl -u john:hello -XPOST -H "content-type:application/json" -d '{"data":"NEW ORG"}' localhost:10100/v1/org --digest
+```
+
+NEW APP
+-------
+```
+curl -u john:hello -XPOST -H "content-type:application/json" -d '{"data":"NEW APP"}' localhost:10100/v1/application --digest
+```
+
+NEW FEED
+-------
+```
+curl -u john:hello -XPOST -H "content-type:application/json" -d '{"data":"NEW FEED"}' localhost:10100/v1/application/XXX/feed --digest
+```
+
+NEW FEED
+-------
+```
+curl -u john:hello -XPOST -H "content-type:application/json" -d '{"data":"NEW ENTRY"}' localhost:10100/v1/application/XXX/feed/XXX/entry --digest
+```
+
+
 POST
 ----
 ```
