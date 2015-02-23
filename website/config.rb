@@ -4,7 +4,9 @@
 
 set :base_url, "https://www.elasticfeed.io/"
 
-activate :feedlabs do |h|
+set :latest_version, "1.0"
+
+activate :hashicorp do |h|
   h.version      = ENV["ELASTICFEED_VERSION"]
   h.bintray_repo = 'elasticfeed/elasticfeed'
   h.bintray_user = 'elasticfeed'
