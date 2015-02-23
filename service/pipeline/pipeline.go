@@ -1,12 +1,12 @@
 package pipeline
 
 import (
-	plugin "github.com/feedlabs/elasticfeed/elasticfeed/plugin/pipeline"
+	plugin "github.com/feedlabs/elasticfeed/plugin/pipeline"
 )
 
 func Filter(data interface{}) interface{} {
 	// should call plugins of type PIPELINE
-	return plugin.Animate(data)
+	return plugin.RandomAnimator(data)
 }
 
 func init() {}

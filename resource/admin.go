@@ -136,8 +136,14 @@ func DeleteAdmin(id string) (error) {
 }
 
 func FindAdminByUsername(username string) (admin *Admin, err error) {
-	org := &Org{"26", "", "", 0, 0, 0}
-	whitelist := []string{"127.0.0.1", "192.168.1.51"}
+
+	/* -----------------------------------------------
+	* Hardcoded admin ORG ID
+	* ------------------------------------------------
+	 */
+
+	org := &Org{"0", "", "", 0, 0, 0}
+	whitelist := []string{"127.0.0.1", "192.168.1.51", "localhost"}
 
 	password := "hello"
 	if username == config.GetApiSuperuser() {

@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-func Animate(data interface {}) interface {} {
+func RandomAnimator(data interface {}) interface {} {
 
 	// PIPE DELAY SIMULATION
 
