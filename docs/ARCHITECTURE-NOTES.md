@@ -3,7 +3,7 @@ Architecture
 
 DB stack
 --------
-![elasticfeed-overview - feed-workflow](https://cloud.githubusercontent.com/assets/1843523/6526441/433ae238-c412-11e4-8262-18c62a72a928.png)
+![elasticfeed-overview - feed-workflow 1](https://cloud.githubusercontent.com/assets/1843523/6537338/1ee323b6-c456-11e4-91c5-9ab6eb5b0ede.png)
 
 Streming Message Stack
 ----------------------
