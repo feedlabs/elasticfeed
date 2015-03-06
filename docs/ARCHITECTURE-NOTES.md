@@ -1,6 +1,10 @@
 Architecture
 ============
 
+DB stack
+--------
+![elasticfeed-overview - feed-workflow](https://cloud.githubusercontent.com/assets/1843523/6526441/433ae238-c412-11e4-8262-18c62a72a928.png)
+
 Streming Message Stack
 ----------------------
 ![msg](https://cloud.githubusercontent.com/assets/1843523/6065023/550b4672-ad62-11e4-91fe-b968d363e5bb.png)
