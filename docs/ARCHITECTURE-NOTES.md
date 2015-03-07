@@ -5,6 +5,14 @@ DB stack
 --------
 ![elasticfeed-overview - feed-workflow 1](https://cloud.githubusercontent.com/assets/1843523/6537338/1ee323b6-c456-11e4-91c5-9ab6eb5b0ede.png)
 
+User behaviour, habits, needs tracker
+-------------------------------------
+![box](https://cloud.githubusercontent.com/assets/1843523/6068952/ace3886e-ad80-11e4-94c8-62aa8a15a88b.png)
+
+Elasticfeed workflow overview
+-----------------------------
+![elasticfeed-overview - logic 1](https://cloud.githubusercontent.com/assets/1843523/6204507/facd7f7e-b54d-11e4-9b47-ac772d4c9cac.png)
+
 Streming Message Stack
 ----------------------
 ![msg](https://cloud.githubusercontent.com/assets/1843523/6065023/550b4672-ad62-11e4-91fe-b968d363e5bb.png)
@@ -21,10 +29,6 @@ Streaming cluster overview
 --------------------------
 ![streaming](https://cloud.githubusercontent.com/assets/1843523/5886850/3a404bc0-a3b3-11e4-94ac-f23551d81378.png)
 
-User behaviour, habits, needs tracker
--------------------------------------
-![box](https://cloud.githubusercontent.com/assets/1843523/6068952/ace3886e-ad80-11e4-94c8-62aa8a15a88b.png)
-
 Abstract bi-directional idea
 ----------------------------
 ![ws](https://cloud.githubusercontent.com/assets/1843523/5192959/1fce00ec-74fc-11e4-9e9f-d6c8c0859170.png)
@@ -32,7 +36,3 @@ Abstract bi-directional idea
 API templeting, validation
 --------------------------
 ![api](https://cloud.githubusercontent.com/assets/1843523/5181563/fc21baee-7497-11e4-9f20-02f342191fac.png)
-
-Elasticfeed workflow overview
------------------------------
-![elasticfeed-overview - logic 1](https://cloud.githubusercontent.com/assets/1843523/6204507/facd7f7e-b54d-11e4-9b47-ac772d4c9cac.png)
