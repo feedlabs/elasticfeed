@@ -3,7 +3,7 @@ Architecture
 
 DB stack
 --------
-![elasticfeed-overview - feed-workflow 1](https://cloud.githubusercontent.com/assets/1843523/6537338/1ee323b6-c456-11e4-91c5-9ab6eb5b0ede.png)
+![elasticfeed-overview - feed-workflows](https://cloud.githubusercontent.com/assets/1843523/6546270/0655d7cc-c5ae-11e4-9144-b8cd053dc24a.png)
 
 User behaviour, habits, needs tracker
 -------------------------------------
