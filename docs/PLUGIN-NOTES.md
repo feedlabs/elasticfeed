@@ -17,6 +17,10 @@ AI, Neural Network workflow
 ---------------------------
 ![ellasticfeed-plugin-ai - 3-nn-workflow](https://cloud.githubusercontent.com/assets/1843523/6652101/e42607ee-ca62-11e4-9df7-95d1510a458e.png)
 
+Hooks, events distribution
+--------------------------
+![elasticfeed-overview - workflows](https://cloud.githubusercontent.com/assets/1843523/6640952/0a465ab4-c99b-11e4-9167-734d620099ee.png)
+
 Examples
 --------
 ![elasticfeed-plugin - plugin-list](https://cloud.githubusercontent.com/assets/1843523/6505187/c04d40e6-c33f-11e4-8792-adc644dd4670.png)
