@@ -15,7 +15,7 @@ AI plugin
 
 AI, Neural Network workflow
 ---------------------------
-![ellasticfeed-plugin-ai - 3-nn](https://cloud.githubusercontent.com/assets/1843523/6505220/02144646-c340-11e4-932f-276ca35ccd68.png)
+![ellasticfeed-plugin-ai - 3-nn-workflow](https://cloud.githubusercontent.com/assets/1843523/6652101/e42607ee-ca62-11e4-9df7-95d1510a458e.png)
 
 Examples
 --------
