@@ -19,7 +19,7 @@ AI, Neural Network workflow
 
 Hooks, events distribution
 --------------------------
-![elasticfeed-overview - workflows](https://cloud.githubusercontent.com/assets/1843523/6640952/0a465ab4-c99b-11e4-9167-734d620099ee.png)
+![elasticfeed-plugin - events-dispatch-model](https://cloud.githubusercontent.com/assets/1843523/6996897/073edbf8-db9c-11e4-9d13-e3df6637f8b1.png)
 
 Examples
 --------
