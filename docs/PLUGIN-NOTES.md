@@ -1,6 +1,14 @@
 Plugin
 ======
 
+Workflows - Plugins logic
+-------------------------
+![elasticfeed-overview - plugin-workflows](https://cloud.githubusercontent.com/assets/1843523/6996899/1cd90844-db9c-11e4-8658-410f27cf4edf.png)
+
+Low-High Event Dispatcher
+-------------------------
+![elasticfeed-plugin - low-high-dispatcher](https://cloud.githubusercontent.com/assets/1843523/6996907/5c799180-db9c-11e4-890d-02e483b6ca4e.png)
+
 Elasticfeed Plugins RPC Communication
 -------------------------------------
 ![elasticfeed-plugin - communication](https://cloud.githubusercontent.com/assets/1843523/6505170/8e58ce84-c33f-11e4-826c-8a5754fec134.png)
