@@ -1,6 +1,10 @@
 Plugin
 ======
 
+Hooks, events distribution
+--------------------------
+![elasticfeed-plugin - events-dispatch-model](https://cloud.githubusercontent.com/assets/1843523/6996897/073edbf8-db9c-11e4-9d13-e3df6637f8b1.png)
+
 Workflows - Plugins logic
 -------------------------
 ![elasticfeed-overview - plugin-workflows](https://cloud.githubusercontent.com/assets/1843523/6996899/1cd90844-db9c-11e4-8658-410f27cf4edf.png)
@@ -24,10 +28,6 @@ AI plugin
 AI, Neural Network workflow
 ---------------------------
 ![ellasticfeed-plugin-ai - 3-nn-workflow](https://cloud.githubusercontent.com/assets/1843523/6652101/e42607ee-ca62-11e4-9df7-95d1510a458e.png)
-
-Hooks, events distribution
---------------------------
-![elasticfeed-plugin - events-dispatch-model](https://cloud.githubusercontent.com/assets/1843523/6996897/073edbf8-db9c-11e4-9d13-e3df6637f8b1.png)
 
 Examples
 --------
