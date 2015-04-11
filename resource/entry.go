@@ -131,7 +131,3 @@ func DeleteEntry(id string, FeedId string, ApplicationId string, OrgId string) (
 
 	return storage.DeleteNode(_id)
 }
-
-func init() {
-	Entries = make(map[string]*Entry)
-}

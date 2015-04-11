@@ -1,13 +1,30 @@
 package main
 
 import (
-	_ "github.com/feedlabs/elasticfeed/service"
-	"github.com/feedlabs/feedify"
+	"github.com/feedlabs/elasticfeed/service"
+	"github.com/feedlabs/elasticfeed/plugin"
+	"github.com/feedlabs/elasticfeed/workflow"
+	"github.com/feedlabs/elasticfeed/event"
+	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/elasticfeed"
+)
 
-	_ "github.com/feedlabs/elasticfeed/elasticfeed/plugin"
+var (
+	ServerEngine *elasticfeed.Elasticfeed
 )
 
 func main() {
-	feedify.SetStaticPath("/static", "public")
-	feedify.Run()
+	eManager := event.NewEventManager()
+	pManager := plugin.NewPluginManager()
+	wManager := workflow.NewWorkflowManager(nil, pManager, eManager)
+
+	ServerEngine = elasticfeed.NewElasticfeed(
+		resource.NewResourceManager(),
+		eManager,
+		service.NewServiceManager(),
+		pManager,
+		wManager,
+	)
+
+	ServerEngine.Run()
 }

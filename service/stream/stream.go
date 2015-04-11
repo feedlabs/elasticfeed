@@ -1,8 +1,17 @@
 package stream
 
 import (
-	_ "github.com/feedlabs/elasticfeed/service/stream/router"
-	_ "github.com/feedlabs/elasticfeed/service/stream/controller"
+	"github.com/feedlabs/elasticfeed/service/stream/router"
+	"github.com/feedlabs/elasticfeed/service/stream/controller"
 )
 
-func init() {}
+type StreamService struct {}
+
+func (this *StreamService) Init() {
+	router.InitRouters()
+	controller.InitRooms()
+}
+
+func NewMetricService() *StreamService {
+	return &StreamService{}
+}

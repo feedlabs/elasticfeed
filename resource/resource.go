@@ -12,7 +12,9 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream/model"
-	"github.com/feedlabs/elasticfeed/service/pipeline"
+	"github.com/feedlabs/elasticfeed/plugin/pipeline"
+
+	"github.com/feedlabs/elasticfeed/workflow"
 )
 
 const (
@@ -26,11 +28,11 @@ const (
 
 var (
 	Orgs            map[string]*Org
-	Admins        	map[string]*Admin
-	Tokens        	map[string]*Token
+	Admins            map[string]*Admin
+	Tokens            map[string]*Token
 	Applications    map[string]*Application
 	Feeds           map[string]*Feed
-	Entries        	map[string]*Entry
+	Entries            map[string]*Entry
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
@@ -77,6 +79,9 @@ type Feed struct {
 	Data          string
 
 	Entries       int
+
+	Workflow      *workflow.Workflow
+	Workflowfile    map[string]interface{}
 }
 
 type Entry struct {
@@ -199,18 +204,23 @@ func ConvertInterfaceToStringArray(d interface{}) []string {
 	return output
 }
 
-func init() {
-	stream_service, _ := service.NewStream()
-	if stream_service == nil {
-		panic(errors.New("Cannot create stream service"))
-	}
-	message = stream_service.Message
+func InitResources() {
+	Admins = make(map[string]*Admin)
+	Applications = make(map[string]*Application)
+	Feeds = make(map[string]*Feed)
+	Entries = make(map[string]*Entry)
+	Orgs = make(map[string]*Org)
+	Tokens = make(map[string]*Token)
+}
 
+func InitStorage() {
 	graph_service, _ := service.NewGraph()
 	if graph_service == nil {
 		panic(errors.New("Cannot create graph service"))
 	}
 	storage = graph_service.Storage
+}
 
+func InitStreamCommunicator() {
 	go ResourceStreamManager()
 }

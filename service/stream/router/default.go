@@ -5,7 +5,7 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/channel"
 )
 
-func init() {
+func InitRouters() {
 	feedify.Router("/stream/lp/join", &channel.LongPollingController{}, "get:Join")
 	feedify.Router("/stream/lp/post", &channel.LongPollingController{})
 	feedify.Router("/stream/lp/fetch", &channel.LongPollingController{}, "get:Fetch")

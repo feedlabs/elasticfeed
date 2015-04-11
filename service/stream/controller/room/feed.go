@@ -171,7 +171,7 @@ func broadcastWebSocket(event model.Event) {
 	}
 }
 
-func init() {
+func InitFeedRoom() {
 	GlobalSessions, _ = session.NewManager("memory", `{"cookieName":"elasticfeedsessid","gclifetime":3600}`)
 
 	go GlobalSessions.GC()

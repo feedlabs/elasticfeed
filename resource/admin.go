@@ -152,7 +152,3 @@ func FindAdminByUsername(username string) (admin *Admin, err error) {
 
 	return &Admin{"0", org, username, true, whitelist, password, 0}, nil
 }
-
-func init() {
-	Admins = make(map[string]*Admin)
-}

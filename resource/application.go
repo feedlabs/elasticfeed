@@ -107,7 +107,3 @@ func DeleteApplication(id string) (error) {
 	_id, _ := strconv.Atoi(id)
 	return storage.DeleteNode(_id)
 }
-
-func init() {
-	Applications = make(map[string]*Application)
-}

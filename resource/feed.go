@@ -7,6 +7,7 @@ import (
 	"github.com/feedlabs/feedify/graph"
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
+	"github.com/feedlabs/elasticfeed/workflow"
 )
 
 func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {
@@ -15,6 +16,22 @@ func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {
 
 func (this *Feed) GetEntryList() (entries []*Entry, err error) {
 	return GetEntryList(this.Id, this.Application.Id, this.Application.Org.Id)
+}
+
+func (this *Feed) SetWorkflowfile(data map[string]interface{}) {
+	this.Workflowfile = data
+}
+
+func (this *Feed) GetWorkflowfile() map[string]interface{} {
+	return this.Workflowfile
+}
+
+func (this *Feed) InitWorkflow(wm *workflow.WorkflowManager) {
+	this.Workflow = wm.CreateFeedWorkflow(this)
+}
+
+func (this *Feed) GetWorkflow() *workflow.Workflow {
+	return this.Workflow
 }
 
 func GetFeedList(ApplicationId string, OrgId string) (feedList []*Feed, err error) {
@@ -33,7 +50,7 @@ func GetFeedList(ApplicationId string, OrgId string) (feedList []*Feed, err erro
 		id := strconv.Itoa(rel.EndNode.Id)
 		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "entry")
 
-		feed := &Feed{id , app, data, len(rels)}
+		feed := NewFeed(id , app, data, len(rels))
 		feeds = append(feeds, feed)
 	}
 
@@ -60,7 +77,7 @@ func GetFeed(id string, applicationId string, orgId string) (feed *Feed, err err
 	if node != nil && Contains(node.Labels, RESOURCE_FEED_LABEL) && app.Id == node.Data["applicationId"].(string) {
 		data := node.Data["data"].(string)
 		rels, _ := storage.RelationshipsNode(node.Id, "entry")
-		return &Feed{strconv.Itoa(node.Id), app, data, len(rels)}, nil
+		return NewFeed(strconv.Itoa(node.Id), app, data, len(rels)), nil
 	}
 
 	return nil, errors.New("FeedId not exist for ApplicationId `"+applicationId+"`")
@@ -112,6 +129,6 @@ func ActionEmptyFeed(id string) {
 	room.Publish <- room.NewFeedEvent(room.FEED_EMPTY, id, "empty")
 }
 
-func init() {
-	Feeds = make(map[string]*Feed)
+func NewFeed(id string, app *Application, data string, entries int) *Feed {
+	return &Feed{id, app, data, entries, nil, nil}
 }
