@@ -9,22 +9,11 @@ import (
 	"github.com/feedlabs/elasticfeed/elasticfeed"
 )
 
-var (
-	ServerEngine *elasticfeed.Elasticfeed
-)
-
 func main() {
-	eManager := event.NewEventManager()
-	pManager := plugin.NewPluginManager()
-	wManager := workflow.NewWorkflowManager(nil, pManager, eManager)
+	em := event.NewEventManager()
+	pm := plugin.NewPluginManager()
+	wm := workflow.NewWorkflowManager(nil, pm, em)
 
-	ServerEngine = elasticfeed.NewElasticfeed(
-		resource.NewResourceManager(),
-		eManager,
-		service.NewServiceManager(),
-		pManager,
-		wManager,
-	)
-
+	ServerEngine := elasticfeed.NewElasticfeed(resource.NewResourceManager(), em, service.NewServiceManager(), pm, wm)
 	ServerEngine.Run()
 }

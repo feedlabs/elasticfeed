@@ -11,20 +11,36 @@ import (
 )
 
 type Elasticfeed struct {
-	rManager *resource.ResourceManager
-	eManager *event.EventManager
-	sManager *service.ServiceManager
-	pManager *plugin.PluginManager
-	wManager *workflow.WorkflowManager
+	rm *resource.ResourceManager
+	em *event.EventManager
+	sm *service.ServiceManager
+	pm *plugin.PluginManager
+	wm *workflow.WorkflowManager
 }
 
-func (this *Elasticfeed) GetEventsManager() *event.EventManager {
-	return this.eManager
+func (this *Elasticfeed) GetEventManager() *event.EventManager {
+	return this.em
+}
+
+func (this *Elasticfeed) GetResourceManager() *resource.ResourceManager {
+	return this.rm
+}
+
+func (this *Elasticfeed) GetServiceManager() *service.ServiceManager {
+	return this.sm
+}
+
+func (this *Elasticfeed) GetPluginManager() *plugin.PluginManager {
+	return this.pm
+}
+
+func (this *Elasticfeed) GetWorkflowManager() *workflow.WorkflowManager {
+	return this.wm
 }
 
 func (this *Elasticfeed) Run() {
-	this.rManager.Init()
-	this.sManager.Init()
+	this.GetResourceManager().Init()
+	this.GetServiceManager().Init()
 
 	feedify.SetStaticPath("/static", "public")
 	feedify.Run()
