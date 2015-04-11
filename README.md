@@ -1,7 +1,7 @@
 elasticfeed
 ===========
 #### Overview
-![elasticfeed-overview - server-engine 2](https://cloud.githubusercontent.com/assets/1843523/7103135/4fb3d170-e099-11e4-9c50-8fb7090331a5.png)
+![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/7103145/c5f8d754-e099-11e4-8201-60c7c714c436.png)
 
 #### Internal workflow
 ![elasticfeed-overview - mission](https://cloud.githubusercontent.com/assets/1843523/7103001/212978e0-e095-11e4-8b23-091adefe3cb7.png)
