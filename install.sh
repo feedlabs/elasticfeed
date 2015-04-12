@@ -40,3 +40,6 @@ go get github.com/bradfitz/gomemcache/memcache
 
 # websoscket
 go get github.com/gorilla/websocket
+
+# sseserver
+go get github.com/mroth/sseserver

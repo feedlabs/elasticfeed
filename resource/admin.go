@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/feedlabs/feedify/graph"
-	"github.com/feedlabs/elasticfeed/helper/config"
+	"github.com/feedlabs/elasticfeed/common/config"
 )
 
 func (this *Admin) IsSuperUser() bool {
@@ -136,8 +136,14 @@ func DeleteAdmin(id string) (error) {
 }
 
 func FindAdminByUsername(username string) (admin *Admin, err error) {
-	org := &Org{"26", "", "", 0, 0, 0}
-	whitelist := []string{"127.0.0.1", "192.168.1.51"}
+
+	/* -----------------------------------------------
+	* Hardcoded admin ORG ID
+	* ------------------------------------------------
+	 */
+
+	org := &Org{"0", "", "", 0, 0, 0}
+	whitelist := []string{"127.0.0.1", "192.168.1.51", "localhost"}
 
 	password := "hello"
 	if username == config.GetApiSuperuser() {
@@ -145,8 +151,4 @@ func FindAdminByUsername(username string) (admin *Admin, err error) {
 	}
 
 	return &Admin{"0", org, username, true, whitelist, password, 0}, nil
-}
-
-func init() {
-	Admins = make(map[string]*Admin)
 }

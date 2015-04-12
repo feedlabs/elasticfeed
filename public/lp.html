@@ -1,0 +1,81 @@
+<html>
+  <body>
+    <script src="elasticfeed.min.js"></script>
+    <script>
+
+      window.onload = function() {
+
+        elasticfeed.init({
+          channel: {
+            url: 'http://localhost:10100/stream/lp',
+            transport: 'lp'
+          }
+        });
+
+        feedList = {}
+
+        feedList[1] = elasticfeed.initFeed('2:1:0', {
+          outputContainerId: 'my-elastic-feed-1',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: #91ff87;">' + data + '</div>';
+          }
+        });
+
+        feedList[2] = elasticfeed.initFeed('9:1:0', {
+          outputContainerId: 'my-elastic-feed-2',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: #ff9308;">' + data + '</div>';
+          }
+        });
+
+        feedList[3] = elasticfeed.initFeed('13:1:0', {
+          outputContainerId: 'my-elastic-feed-3',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: #00bfff;">' + data + '</div>';
+          }
+        });
+
+        feedList[4] = elasticfeed.initFeed('14:1:0', {
+          outputContainerId: 'my-elastic-feed-4',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: yellow;">' + data + '</div>';
+          }
+        });
+
+        feedList[5] = elasticfeed.initFeed('15:1:0', {
+          outputContainerId: 'my-elastic-feed-5',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: green;">' + data + '</div>';
+          }
+        });
+
+        feedList[6] = elasticfeed.initFeed('19:1:0', {
+          outputContainerId: 'my-elastic-feed-6',
+          stylerFunction: function(data) {
+            return '<div style="height:50px; border:1px dotted; background-color: pink;">' + data + '</div>';
+          }
+        });
+
+        for (var i in feedList) {
+          feedList[i].on('reload', function(ts) {
+            this.addEntry(new Entry("reload feed by ts:" + ts))
+          })
+
+          feedList[i].on('empty', function(ts) {
+            this.empty();
+            this.addEntry(new Entry("empty feed by ts:" + ts))
+          })
+        }
+
+      }
+
+    </script>
+
+    <div id="my-elastic-feed-1" style="background-color: white; width:16.6%; float: left; height: 100%; overflow: auto;"></div>
+    <div id="my-elastic-feed-2" style="background-color: white; width:16.6%; float: left; height: 100%; overflow: auto;"></div>
+    <div id="my-elastic-feed-3" style="background-color: white; width:16.6%; float: left; height: 100%; overflow: auto;"></div>
+    <div id="my-elastic-feed-4" style="background-color: white; width:16.6%; float: left; height: 100%; overflow: auto;"></div>
+    <div id="my-elastic-feed-5" style="background-color: white; width:16.6%; float: left; height: 100%; overflow: auto;"></div>
+    <div id="my-elastic-feed-6" style="background-color: white; width:16.6%; float: left; height: 100%; overflow: auto;"></div>
+  </body>
+</html>

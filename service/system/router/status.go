@@ -5,6 +5,6 @@ import (
 	"github.com/feedlabs/elasticfeed/service/system/controller"
 )
 
-func init() {
+func InitRouters() {
 	feedify.Router("/system/status", &controller.StatusController{}, "get:Get")
 }

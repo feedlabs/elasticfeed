@@ -23,6 +23,12 @@ func (this *LongPollingController) Join() {
 	defer sess.SessionRelease(w)
 
 	room.Join(chid, nil)
+
+	list := make(map[string]interface {})
+	list["response"] = room.NewChannelEvent(room.CHANNEL_JOIN, "system", "join")
+
+	this.Data["json"] = list
+	this.ServeJson()
 }
 
 func (this *LongPollingController) Post() {
@@ -37,7 +43,19 @@ func (this *LongPollingController) Post() {
 	// should be executed and returned directly to user
 	// lastReceived time should not be changed in that case
 
-	room.Publish <- room.NewSystemEvent(room.CHANNEL_MESSAGE, chid, data)
+	//	room.Publish <- room.NewSystemEvent(room.CHANNEL_MESSAGE, chid, data)
+
+	ch := make(chan []byte)
+
+	room.ResourceEvent <- room.NewSocketEvent([]byte(data), nil, ch)
+
+	response := <-ch
+
+	list := make(map[string]string)
+	list["response"] = string(response)
+
+	this.Data["json"] = list
+	this.ServeJson()
 }
 
 func (this *LongPollingController) Fetch() {

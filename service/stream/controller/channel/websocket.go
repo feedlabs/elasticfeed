@@ -2,6 +2,7 @@ package channel
 
 import (
 	"net/http"
+	"encoding/json"
 
 	"github.com/feedlabs/feedify"
 	"github.com/gorilla/websocket"
@@ -36,13 +37,15 @@ func (this *WebSocketController) Join() {
 	room.Join(chid, ws)
 	defer room.Leave(chid)
 
+	data, _ := json.Marshal(room.NewChannelEvent(room.CHANNEL_JOIN, chid, "join"))
+	ws.WriteMessage(websocket.TextMessage, data)
+
 	for {
 		_, p, err := ws.ReadMessage()
 		if err != nil {
 			return
 		}
 
-		room.Publish <- room.NewSystemEvent(room.CHANNEL_MESSAGE, chid, string(p))
-		room.P2P <- ws
+		room.ResourceEvent <- room.NewSocketEvent(p, ws, nil)
 	}
 }

@@ -1,8 +1,15 @@
 package system
 
 import (
-	_ "github.com/feedlabs/elasticfeed/service/system/controller"
-	_ "github.com/feedlabs/elasticfeed/service/system/router"
+	"github.com/feedlabs/elasticfeed/service/system/router"
 )
 
-func init() {}
+type SystemService struct {}
+
+func (this *SystemService) Init() {
+	router.InitRouters()
+}
+
+func NewMetricService() *SystemService {
+	return &SystemService{}
+}

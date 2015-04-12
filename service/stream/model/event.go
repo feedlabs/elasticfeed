@@ -2,6 +2,8 @@ package model
 
 import (
 	"container/list"
+
+	"github.com/gorilla/websocket"
 )
 
 type EventType int
@@ -12,6 +14,14 @@ type Event struct {
 	Ts               int64
 	Timestamp        string
 	Content          string
+}
+
+type SocketEvent struct {
+	Ws                    *websocket.Conn
+	Ch                    chan []byte
+	FeedId                string
+	AppId                 string
+	OrgId                 string
 }
 
 const archiveSize = 1
