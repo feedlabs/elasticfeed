@@ -1,10 +1,10 @@
 elasticfeed
 ===========
 #### Overview
-![feed-overview - api 4](https://cloud.githubusercontent.com/assets/1843523/6098783/26b3c180-afe9-11e4-9eb8-dc7908f28344.png)
+![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/7103145/c5f8d754-e099-11e4-8201-60c7c714c436.png)
 
 #### Internal workflow
-![feed-overview - mission](https://cloud.githubusercontent.com/assets/1843523/6098048/8b9a1fb6-afd2-11e4-8f80-fde4ad59b51d.png)
+![elasticfeed-overview - mission](https://cloud.githubusercontent.com/assets/1843523/7103001/212978e0-e095-11e4-8b23-091adefe3cb7.png)
 
 #### Development environment
 Create symbolic link from you directory to `GOPATH`
