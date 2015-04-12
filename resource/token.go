@@ -7,10 +7,6 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
-func init() {
-	Tokens = make(map[string]*Token)
-}
-
 func GetTokenList(AdminId string, OrgId string) (tokenLinst []*Token, err error) {
 	admin, err := GetAdmin(AdminId, OrgId)
 	if err != nil {

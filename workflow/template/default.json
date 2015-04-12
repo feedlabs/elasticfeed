@@ -1,0 +1,31 @@
+{
+  "profiler": {
+    "default-profiler": true,
+    "mem": 256,
+    "cpus": 4,
+    "bandwidth": 1000
+  },
+  "storing": {
+    "create-entry": {
+      "indexer": [],
+      "crawler": []
+    }
+  },
+  "processing": {
+    "feed-maintainer": {
+      "scenario": []
+    }
+  },
+  "distributing": {
+    "push-entry-to-ui": {
+      "sensor": [],
+      "pipeline": []
+    }
+  },
+  "learning": {
+    "create-metric": {
+      "sensor": [],
+      "scenario": []
+    }
+  }
+}

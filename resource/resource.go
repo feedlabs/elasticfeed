@@ -24,6 +24,8 @@ const (
 	RESOURCE_APPLICATION_LABEL = "application"
 	RESOURCE_FEED_LABEL        = "feed"
 	RESOURCE_ENTRY_LABEL       = "entry"
+	RESOURCE_METRIC_LABEL       = "metric"
+	RESOURCE_VIEWER_LABEL       = "viewer"
 )
 
 var (
@@ -33,6 +35,8 @@ var (
 	Applications    map[string]*Application
 	Feeds           map[string]*Feed
 	Entries            map[string]*Entry
+	Metrics            map[string]*Metric
+	Viewers            map[string]*Viewer
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
@@ -211,6 +215,8 @@ func InitResources() {
 	Entries = make(map[string]*Entry)
 	Orgs = make(map[string]*Org)
 	Tokens = make(map[string]*Token)
+	Metrics = make(map[string]*Metric)
+	Viewers = make(map[string]*Viewer)
 }
 
 func InitStorage() {

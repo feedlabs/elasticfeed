@@ -19,8 +19,9 @@ func (this *WorkflowManager) InitTemplate(t interface{}) {
 	this.template = t
 }
 
-func (this *WorkflowManager) CreateFeedWorkflow(f interface {}) *Workflow {
-	w := NewWorkflow(f, this)
+func (this *WorkflowManager) CreateFeedWorkflow(f interface {}, data map[string]interface {}) *Workflow {
+	w := NewWorkflow(data, f, this)
+	w.Init()
 	this.workflows = append(this.workflows, w)
 	return w
 }

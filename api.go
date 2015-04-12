@@ -10,10 +10,12 @@ import (
 )
 
 func main() {
+	rm := resource.NewResourceManager()
 	em := event.NewEventManager()
-	pm := plugin.NewPluginManager()
+	pm := plugin.NewPluginManager(rm)
 	wm := workflow.NewWorkflowManager(nil, pm, em)
+	sm := service.NewServiceManager()
 
-	ServerEngine := elasticfeed.NewElasticfeed(resource.NewResourceManager(), em, service.NewServiceManager(), pm, wm)
+	ServerEngine := elasticfeed.NewElasticfeed(rm, em, sm, pm, wm)
 	ServerEngine.Run()
 }

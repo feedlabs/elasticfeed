@@ -27,7 +27,7 @@ func (this *Feed) GetWorkflowfile() map[string]interface{} {
 }
 
 func (this *Feed) InitWorkflow(wm *workflow.WorkflowManager) {
-	this.Workflow = wm.CreateFeedWorkflow(this)
+	this.Workflow = wm.CreateFeedWorkflow(this, this.GetWorkflowfile())
 }
 
 func (this *Feed) GetWorkflow() *workflow.Workflow {
