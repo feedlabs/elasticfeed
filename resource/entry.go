@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/feedify/graph"
-
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 

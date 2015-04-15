@@ -15,6 +15,7 @@ func InitRouters() {
 	InitAdminRouters()
 	InitApplicationRouters()
 	InitEntryRouters()
+	InitEntryWorkflows()
 	InitFeedRouters()
 	InitOrgRouters()
 	InitTokenRouters()

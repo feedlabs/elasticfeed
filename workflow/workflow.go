@@ -2,46 +2,47 @@ package workflow
 
 import (
 	"github.com/feedlabs/elasticfeed/plugin"
+	"github.com/feedlabs/elasticfeed/resource"
 )
 
-type Workflow struct {
-	feed    interface{}
+type WorkflowController struct {
+	feed    *resource.Feed
 	manager *WorkflowManager
 
 	profiler *plugin.Profiler
-	data    map[string]interface{}
 }
 
-func (this *Workflow) GetManager() *WorkflowManager {
+func (this *WorkflowController) GetManager() *WorkflowManager {
 	return nil
 }
 
-func (this *Workflow) GetFeed() *interface{} {
+func (this *WorkflowController) GetFeed() *interface{} {
 	return nil
 }
 
-func (this *Workflow) GetProfiler() *plugin.Profiler {
+func (this *WorkflowController) GetProfiler() *plugin.Profiler {
 	return this.profiler
 }
 
-func (this *Workflow) Init() {
+func (this *WorkflowController) Init() {
 	// verify Feed.Workflowfile stricture; does match WorkflowManager Templating
 	// verify plugins availability: this.manager.findPlugin()
 	// run Plugins if require specific Profiler
 	// bind Feed to system Events: this.manager.BindToSystemEvents()
 }
 
-func (this *Workflow) DispatchIndexerHook(data interface{}) interface{} {
+func (this *WorkflowController) DispatchIndexerHook(data interface{}) interface{} {
 	return data
 }
 
-func (this *Workflow) DispatchPipelineHook(data interface{}) interface{} {
+func (this *WorkflowController) DispatchPipelineHook(data interface{}) interface{} {
 	return data
 }
 
-func NewWorkflow(data map[string]interface{}, f interface{}, wm *WorkflowManager) *Workflow {
-	p := plugin.NewProfiler(data["profiler"].(map[string]string))
-	w := &Workflow{f, wm, p, data}
+func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {
+	data := feed.GetWorkflow().GetProfilerRawData()
+	p := plugin.NewProfiler(data)
+	w := &WorkflowController{feed, wm, p}
 
 	w.Init()
 

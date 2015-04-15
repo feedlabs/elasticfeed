@@ -13,8 +13,6 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 	"github.com/feedlabs/elasticfeed/plugin/pipeline"
-
-	"github.com/feedlabs/elasticfeed/workflow"
 )
 
 const (
@@ -24,8 +22,10 @@ const (
 	RESOURCE_APPLICATION_LABEL = "application"
 	RESOURCE_FEED_LABEL        = "feed"
 	RESOURCE_ENTRY_LABEL       = "entry"
-	RESOURCE_METRIC_LABEL       = "metric"
-	RESOURCE_VIEWER_LABEL       = "viewer"
+	RESOURCE_METRIC_LABEL      = "metric"
+	RESOURCE_VIEWER_LABEL      = "viewer"
+	RESOURCE_WORKFLOW_LABEL    = "workflow"
+	RESOURCE_PLUGIN_LABEL      = "plugin"
 )
 
 var (
@@ -37,6 +37,8 @@ var (
 	Entries            map[string]*Entry
 	Metrics            map[string]*Metric
 	Viewers            map[string]*Viewer
+	Workflows            map[string]*Workflow
+	Plugins            map[string]*Plugin
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
@@ -82,10 +84,8 @@ type Feed struct {
 	Application   *Application
 	Data          string
 
-	Entries       int
-
-	Workflow      *workflow.Workflow
-	Workflowfile    map[string]interface{}
+	Entries         int
+	Workflows       int
 }
 
 type Entry struct {
@@ -97,6 +97,14 @@ type Entry struct {
 type Viewer struct {}
 
 type Metric struct {}
+
+type Workflow struct {
+	Id        string
+	Feed      *Feed
+	Data      string
+}
+
+type Plugin struct {}
 
 func ResourceStreamManager() {
 	for {
