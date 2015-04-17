@@ -96,7 +96,17 @@ func AddWorkflow(feedWorkflow Workflow, FeedId string, ApplicationId string, Org
 }
 
 func UpdateWorkflow(id string, FeedId string, ApplicationId string, OrgId string, data string) (err error) {
-	return nil
+	workflow, err := GetWorkflow(id, FeedId, ApplicationId, OrgId)
+
+	if err != nil {
+		return err
+	}
+
+	// update workflow
+	workflow.Data = data
+
+	_id, _ := strconv.Atoi(workflow.Id)
+	return storage.SetPropertyNode(_id, "data", data)
 }
 
 func DeleteWorkflow(id string, FeedId string, ApplicationId string, OrgId string) (error) {
