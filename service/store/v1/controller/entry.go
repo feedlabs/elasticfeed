@@ -21,7 +21,7 @@ type EntryController struct {
  * @apiUse EntryGetListByFeedRequest
  * @apiUse EntryGetListByFeedResponse
  */
-func (this *EntryController) GetListByFeed() {
+func (this *EntryController) GetList() {
 	entry.RequestGetListByFeed(this.GetInput())
 
 	appId := this.Ctx.Input.Params[":applicationId"]
@@ -40,7 +40,7 @@ func (this *EntryController) GetListByFeed() {
 }
 
 /**
- * @api {get} application/:applicationId/entry/:entryId Get (Global)
+ * @api {get} application/:applicationId/feed/:feedId/entry/:entryId Get (Global)
  * @apiVersion 1.0.0
  * @apiName GetEntry
  * @apiGroup Entry
@@ -48,16 +48,6 @@ func (this *EntryController) GetListByFeed() {
  *
  * @apiUse EntryGetRequest
  * @apiUse EntryGetResponse
- */
-/**
- * @api {get} application/:applicationId/feed/:feedId/entry/:entryId Get (Feed)
- * @apiVersion 1.0.0
- * @apiName GetEntryFeed
- * @apiGroup Entry
- * @apiDescription This will return a specific entry.
- *
- * @apiUse EntryGetByFeedRequest
- * @apiUse EntryGetByFeedResponse
  */
 func (this *EntryController) Get() {
 	// two different usages both
@@ -82,33 +72,6 @@ func (this *EntryController) Get() {
 }
 
 /**
- * @api {post} application/:applicationId/entry Create (Global)
- * @apiVersion 1.0.0
- * @apiName PostEntry
- * @apiGroup Entry
- * @apiDescription Create a entry on the global feed. This could be used to store a element in the cloud system and re-use it later.
- *
- * @apiUse EntryPostRequest
- * @apiUse EntryPostResponse
- */
-func (this *EntryController) Post() {
-	// global entry; should be added to APP no to the FEED
-	entry.RequestPost(this.GetInput())
-	entry.ResponsePost()
-	this.Controller.ServeJson()
-}
-
-/**
- * @api {post} application/:applicationId/feed/:feedId/entry Create (Feed)
- * @apiVersion 1.0.0
- * @apiName PostEntryFeed
- * @apiGroup Entry
- * @apiDescription Create a entry in the global feed and link it automatically to a feed.
- *
- * @apiUse EntryPostToFeedRequest
- * @apiUse EntryPostToFeedResponse
- */
-/**
  *
  * @api {post} application/:applicationId/feed/:feedId/entry/ Add (Feed)
  * @apiVersion 1.0.0
@@ -119,7 +82,7 @@ func (this *EntryController) Post() {
  * @apiUse EntryAddToFeedRequest
  * @apiUse EntryAddToFeedResponse
  */
-func (this *EntryController) PostToFeed() {
+func (this *EntryController) Post() {
 	// two different usages
 	// 1: post new data and create entry directly to feed
 	// 2: post just a entryId which will be added to feed
@@ -181,7 +144,7 @@ func (this *EntryController) Put() {
 }
 
 /**
- * @api {delete} application/:applicationId/entry/:entryId Delete (Global)
+ * @api {delete} application/:applicationId/feed/:feedId/entry/:entryId Delete (Global)
  * @apiVersion 1.0.0
  * @apiName DeleteEntry
  * @apiGroup Entry
@@ -209,18 +172,3 @@ func (this *EntryController) Delete() {
 	this.Controller.ServeJson()
 }
 
-/**
- * @api {delete} application/:applicationId/feed/:feedId/entry/:entryId Remove (Feed)
- * @apiVersion 1.0.0
- * @apiName RemoveEntry
- * @apiGroup Entry
- * @apiDescription Removes a specific entry from a feed.
- *
- * @apiUse EntryRemoveRequest
- * @apiUse EntryRemoveResponse
- */
-func (this *EntryController) Remove() {
-	entry.RequestRemove(this.GetInput())
-	entry.ResponseRemove()
-	this.Controller.ServeJson()
-}
