@@ -110,7 +110,20 @@ func UpdateWorkflow(id string, FeedId string, ApplicationId string, OrgId string
 }
 
 func DeleteWorkflow(id string, FeedId string, ApplicationId string, OrgId string) (error) {
-	return nil
+	workflow, err := GetWorkflow(id, FeedId, ApplicationId, OrgId)
+
+	if err != nil {
+		return err
+	}
+
+	_id, _ := strconv.Atoi(workflow.Id)
+	_rels, _ := storage.RelationshipsNode(_id, "workflow")
+
+	for _, rel := range _rels {
+		storage.DeleteRelation(rel.Id)
+	}
+
+	return storage.DeleteNode(_id)
 }
 
 func NewWorkflow(id string, feed *Feed, data string) *Workflow {
