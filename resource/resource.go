@@ -104,7 +104,13 @@ type Workflow struct {
 	Data      string
 }
 
-type Plugin struct {}
+type Plugin struct {
+	Id		string
+	Name 	string
+	Type	string
+	Version	string
+	Path	string
+}
 
 func ResourceStreamManager() {
 	for {
