@@ -15,7 +15,7 @@ func GetResponseDefinition(input *context.Input) (*template.ResponseDefinition) 
 }
 
 /**
- * @apiDefine OrgGetListRequest
+ * @apiDefine PluginGetListRequest
  *
  */
 func RequestGetList(input *context.Input) (formatter *template.ResponseDefinition, err error) {
@@ -26,7 +26,7 @@ func RequestGetList(input *context.Input) (formatter *template.ResponseDefinitio
 }
 
 /**
- * @apiDefine OrgGetRequest
+ * @apiDefine PluginGetRequest
  *
  * @apiParam {String} pluginId  The plugin id
  */
@@ -38,7 +38,7 @@ func RequestGet(input *context.Input) (formatter *template.ResponseDefinition, e
 }
 
 /**
- * @apiDefine OrgPostRequest
+ * @apiDefine PluginPostRequest
  */
 func RequestPost(input *context.Input) (formatter *template.ResponseDefinition, err error) {
 	if template.QueryParamsCount(input.Request.URL) != 0 {
@@ -48,7 +48,7 @@ func RequestPost(input *context.Input) (formatter *template.ResponseDefinition, 
 }
 
 /**
- * @apiDefine OrgPutRequest
+ * @apiDefine PluginPutRequest
  *
  * @apiParam {String}    pluginId        The plugin id
  */
@@ -60,7 +60,7 @@ func RequestPut(input *context.Input) (formatter *template.ResponseDefinition, e
 }
 
 /**
- * @apiDefine OrgDeleteRequest
+ * @apiDefine PluginDeleteRequest
  *
  * @apiParam {String}  pluginId  The plugin id
  */

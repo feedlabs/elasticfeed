@@ -99,17 +99,18 @@ type Viewer struct {}
 type Metric struct {}
 
 type Workflow struct {
-	Id        string
-	Feed      *Feed
-	Data      string
+	Id             string
+	Feed           *Feed
+	Default        bool
+	Data           string
 }
 
 type Plugin struct {
-	Id		string
-	Name 	string
-	Group	string
-	Version	string
-	Path	string
+	Id         string
+	Name       string
+	Group      string
+	Version    string
+	Path       string
 }
 
 func ResourceStreamManager() {

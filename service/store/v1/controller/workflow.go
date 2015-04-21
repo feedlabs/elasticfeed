@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/service/store/v1/template/workflow"
+	template "github.com/feedlabs/elasticfeed/service/store/v1/template/workflow"
 )
 
 type WorkflowController struct {
@@ -22,21 +22,47 @@ type WorkflowController struct {
  * @apiUse WorkflowGetListResponse
  */
 func (this *WorkflowController) GetList() {
-	workflow.RequestGetList(this.GetInput())
+	formatter, err := template.RequestGetList(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feed, err := resource.GetFeed(feedId, appId, this.GetAdminOrgId())
+
 	obs, err := feed.GetWorkflowList()
-
 	if err != nil {
-		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		this.ServeJson(template.GetError(err))
 	} else {
-		this.Data["json"] = obs
+		this.ServeJson(template.ResponseGetList(obs, formatter))
 	}
+}
 
-	workflow.ResponseGetList()
-	this.Controller.ServeJson()
+/**
+ * @api {get} application/:applicationId/feed/:feedId/workflow/:workflowId Get
+ * @apiVersion 1.0.0
+ * @apiName GetWorkflow
+ * @apiGroup Workflow
+ * @apiDescription This will return a specific workflow.
+ *
+ * @apiUse WorkflowGetRequest
+ * @apiUse WorkflowGetResponse
+ */
+func (this *WorkflowController) Get() {
+	formatter, err := template.RequestGet(this.GetInput())
+
+	appId := this.Ctx.Input.Params[":applicationId"]
+	feedId := this.Ctx.Input.Params[":feedId"]
+	feedWorkflowId := this.Ctx.Input.Params[":feedWorkflowId"]
+
+	ob, err := resource.GetWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+	} else {
+		this.ServeJson(template.ResponseGet(ob, formatter))
+	}
 }
 
 /**
@@ -51,7 +77,11 @@ func (this *WorkflowController) GetList() {
  * @apiUse WorkflowAddToFeedResponse
  */
 func (this *WorkflowController) Post() {
-	workflow.RequestPost(this.GetInput())
+	formatter, err := template.RequestPost(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
@@ -62,16 +92,13 @@ func (this *WorkflowController) Post() {
 
 	app, err := resource.GetApplication(appId, this.GetAdminOrgId())
 	feed, err := app.GetFeed(feedId)
-	workflowId, err := feed.AddWorkflow(ob)
 
+	_, err = feed.AddWorkflow(ob)
 	if err != nil {
-		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		this.ServeJson(template.GetError(err))
 	} else {
-		this.Data["json"] = map[string]string{"id": workflowId}
+		this.ServeJson(template.ResponsePost(&ob, formatter))
 	}
-
-	workflow.ResponsePost()
-	this.Controller.ServeJson()
 }
 
 /**
@@ -85,7 +112,11 @@ func (this *WorkflowController) Post() {
  * @apiUse WorkflowPutResponse
  */
 func (this *WorkflowController) Put() {
-	workflow.RequestPut(this.GetInput())
+	formatter, err := template.RequestPut(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
@@ -96,15 +127,12 @@ func (this *WorkflowController) Put() {
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err := resource.UpdateWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId(), ob.Data)
+	err = resource.UpdateWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId(), ob.Data)
 	if err != nil {
-		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		this.ServeJson(template.GetError(err))
 	} else {
-		this.Data["json"] = map[string]string{"result": "update success", "status": "ok"}
+		this.ServeJson(template.ResponsePut(&ob, formatter))
 	}
-
-	workflow.ResponsePut()
-	this.Controller.ServeJson()
 }
 
 /**
@@ -118,20 +146,21 @@ func (this *WorkflowController) Put() {
  * @apiUse WorkflowDeleteResponse
  */
 func (this *WorkflowController) Delete() {
-	workflow.RequestDelete(this.GetInput())
+	formatter, err := template.RequestDelete(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
 
 	appId := this.Ctx.Input.Params[":applicationId"]
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedWorkflowId := this.Ctx.Input.Params[":feedWorkflowId"]
 
-	err := resource.DeleteWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId())
-
+	err = resource.DeleteWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId())
 	if err != nil {
-		this.Data["json"] = map[string]string{"result": err.Error(), "status": "error"}
+		this.ServeJson(template.GetError(err))
+		return
 	} else {
-		this.Data["json"] = map[string]string{"result": "delete success", "status": "ok"}
+		this.ServeJson(template.ResponseDelete("Org has been deleted", formatter))
 	}
-
-	workflow.ResponseDelete()
-	this.Controller.ServeJson()
 }

@@ -28,7 +28,13 @@ func GetWorkflowList(FeedId string, ApplicationId string, OrgId string) (feedWor
 
 	for _, rel := range _rels {
 		data := rel.EndNode.Data["data"].(string)
-		workflow := NewWorkflow(strconv.Itoa(rel.EndNode.Id), feed, data)
+		def := rel.EndNode.Data["default"]
+
+		if def == nil {
+			def = false
+		}
+
+		workflow := NewWorkflow(strconv.Itoa(rel.EndNode.Id), feed, def.(bool), data)
 		if workflow != nil && Contains(rel.EndNode.Labels, RESOURCE_WORKFLOW_LABEL) && feed.Id == rel.EndNode.Data["feedId"].(string) {
 			workflows = append(workflows, workflow)
 		}
@@ -56,7 +62,13 @@ func GetWorkflow(id string, FeedId string, ApplicationId string, OrgId string) (
 
 	if workflow != nil && Contains(workflow.Labels, RESOURCE_WORKFLOW_LABEL) && feed.Id == workflow.Data["feedId"].(string) {
 		data := workflow.Data["data"].(string)
-		return NewWorkflow(strconv.Itoa(workflow.Id), feed, data), nil
+		def := workflow.Data["default"]
+
+		if def == nil {
+			def = false
+		}
+
+		return NewWorkflow(strconv.Itoa(workflow.Id), feed, def.(bool), data), nil
 	}
 
 	return nil, errors.New("WorkflowId `"+id+"` not exist")
@@ -126,6 +138,6 @@ func DeleteWorkflow(id string, FeedId string, ApplicationId string, OrgId string
 	return storage.DeleteNode(_id)
 }
 
-func NewWorkflow(id string, feed *Feed, data string) *Workflow {
-	return &Workflow{id, feed, data}
+func NewWorkflow(id string, feed *Feed, def bool, data string) *Workflow {
+	return &Workflow{id, feed, def, data}
 }

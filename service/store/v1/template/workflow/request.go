@@ -1,59 +1,72 @@
 package workflow
 
 import (
+	"errors"
 	"github.com/feedlabs/feedify/context"
+	"github.com/feedlabs/elasticfeed/service/store/v1/template"
 )
 
+func CheckRequiredParams() {
+	// workflowId
+}
+
+func GetResponseDefinition(input *context.Input) (*template.ResponseDefinition) {
+	return template.NewResponseDefinition(input)
+}
 
 /**
- * @apiDefine WorkflowGetListByFeedRequest
+ * @apiDefine WorkflowGetListRequest
  *
- * @apiParam {String}  applicationId  The application id
- * @apiParam {String}  feedId         The application id
  */
-func RequestGetList(input *context.Input) {
-
+func RequestGetList(input *context.Input) (formatter *template.ResponseDefinition, err error) {
+	if template.QueryParamsCount(input.Request.URL) > 4 {
+		return nil, errors.New("Too many params in URI query")
+	}
+	return GetResponseDefinition(input), nil
 }
 
 /**
  * @apiDefine WorkflowGetRequest
  *
- * @apiParam {String}  applicationId  The application id
- * @apiParam {String}  workflowId     The workflow id
+ * @apiParam {String} pluginId  The plugin id
  */
-func RequestGet(input *context.Input) {
-
+func RequestGet(input *context.Input) (formatter *template.ResponseDefinition, err error) {
+	if template.QueryParamsCount(input.Request.URL) != 1 {
+		return nil, errors.New("Too many params in URI query")
+	}
+	return GetResponseDefinition(input), nil
 }
 
 /**
  * @apiDefine WorkflowPostRequest
- *
- * @apiParam {String}    applicationId  The application id
- * @apiParam {String}    data           The data of the workflow
- * @apiParam {String[]}  [tagList]      Tags of the workflow
  */
-func RequestPost(input *context.Input) {
-
+func RequestPost(input *context.Input) (formatter *template.ResponseDefinition, err error) {
+	if template.QueryParamsCount(input.Request.URL) != 0 {
+		return nil, errors.New("Too many params in URI query")
+	}
+	return GetResponseDefinition(input), nil
 }
 
 /**
  * @apiDefine WorkflowPutRequest
  *
- * @apiParam {String}    applicationId  The application id
- * @apiParam {String}    workflowId     The workflow id
- * @apiParam {String}    data           The data of the workflow
- * @apiParam {String[]}  [tagList]      Tags of the workflow
+ * @apiParam {String}    pluginId        The plugin id
  */
-func RequestPut(input *context.Input) {
-
+func RequestPut(input *context.Input) (formatter *template.ResponseDefinition, err error) {
+	if template.QueryParamsCount(input.Request.URL) != 1 {
+		return nil, errors.New("Too many params in URI query")
+	}
+	return GetResponseDefinition(input), nil
 }
 
 /**
  * @apiDefine WorkflowDeleteRequest
  *
- * @apiParam {String}  applicationId  The application id
- * @apiParam {String}  workflowId     The workflow id
+ * @apiParam {String}  pluginId  The plugin id
  */
-func RequestDelete(input *context.Input) {
-
+func RequestDelete(input *context.Input) (formatter *template.ResponseDefinition, err error) {
+	if template.QueryParamsCount(input.Request.URL) != 1 {
+		return nil, errors.New("Too many params in URI query")
+	}
+	return GetResponseDefinition(input), nil
 }

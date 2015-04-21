@@ -1,6 +1,31 @@
 package workflow
 
+import (
+	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/service/store/v1/template"
+)
 
+func GetEntry(workflow *resource.Workflow) (entry map[string]interface{}) {
+	entry = make(map[string]interface{})
+
+	entry["id"] = workflow.Id
+	entry["applicationId"] = workflow.Feed.Application.Id
+	entry["feedId"] = workflow.Feed.Id
+	entry["default"] = workflow.Default
+	entry["data"] = workflow.Data
+	entry["status"] = "running"
+	entry["errors"] = "no errors"
+
+	return entry
+}
+
+func GetError(err error) (entry map[string]interface{}, code int) {
+	return template.Error(err)
+}
+
+func GetSuccess(msg string) (entry map[string]string, code int) {
+	return template.Success(msg)
+}
 /**
  * @apiDefine WorkflowGetListByFeedResponse
  *
@@ -33,8 +58,14 @@ package workflow
  *       ]
  *     }
  */
-func ResponseGetList() {
+func ResponseGetList(workflowList []*resource.Workflow, formatter *template.ResponseDefinition) (entryList []map[string]interface{}, code int) {
+	var output []map[string]interface{}
 
+	for _, plugin := range workflowList {
+		output = append(output, GetEntry(plugin))
+	}
+
+	return output, template.GetOK()
 }
 
 /**
@@ -59,8 +90,8 @@ func ResponseGetList() {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponseGet() {
-
+func ResponseGet(workflow *resource.Workflow, formatter *template.ResponseDefinition) (entry map[string]interface{}, code int) {
+	return GetEntry(workflow), template.GetOK()
 }
 
 /**
@@ -85,8 +116,8 @@ func ResponseGet() {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponsePost() {
-
+func ResponsePost(workflow *resource.Workflow, formatter *template.ResponseDefinition) (entry map[string]interface{}, code int) {
+	return GetEntry(workflow), template.PostOK()
 }
 
 /**
@@ -113,8 +144,8 @@ func ResponsePost() {
  *       "createStamp": "1415637736",
  *     }
  */
-func ResponsePut() {
-
+func ResponsePut(workflow *resource.Workflow, formatter *template.ResponseDefinition) (entry map[string]interface{}, code int) {
+	return GetEntry(workflow), template.PutOK()
 }
 
 /**
@@ -123,6 +154,7 @@ func ResponsePut() {
  * @apiSuccessExample {json} Success-Response:
  * HTTP/1.1 200 OK
  */
-func ResponseDelete() {
-
+func ResponseDelete(msg string, formatter *template.ResponseDefinition) (entry map[string]string, code int) {
+	return GetSuccess(msg)
 }
+
