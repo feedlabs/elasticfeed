@@ -13,9 +13,14 @@ func GetEntry(plugin *resource.Plugin) (entry map[string]interface{}) {
 	entry["group"] = plugin.Group
 	entry["version"] = plugin.Version
 	entry["license"] = plugin.License
-	entry["path"] = plugin.Path
-	entry["status"] = "running"
-	entry["errors"] = "no errors"
+
+	if plugin.Path == "" {
+		entry["status"] = "error"
+		entry["errors"] = "File path is missing"
+	} else {
+		entry["status"] = "running"
+		entry["errors"] = "no errors"
+	}
 
 	return entry
 }
