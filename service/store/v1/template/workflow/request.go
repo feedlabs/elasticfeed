@@ -53,7 +53,7 @@ func RequestPost(input *context.Input) (formatter *template.ResponseDefinition, 
  * @apiParam {String}    pluginId        The plugin id
  */
 func RequestPut(input *context.Input) (formatter *template.ResponseDefinition, err error) {
-	if template.QueryParamsCount(input.Request.URL) != 1 {
+	if template.QueryParamsCount(input.Request.URL) > 4 {
 		return nil, errors.New("Too many params in URI query")
 	}
 	return GetResponseDefinition(input), nil

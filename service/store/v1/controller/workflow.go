@@ -122,16 +122,16 @@ func (this *WorkflowController) Put() {
 	feedId := this.Ctx.Input.Params[":feedId"]
 	feedWorkflowId := this.Ctx.Input.Params[":feedWorkflowId"]
 
-	var ob resource.Workflow
+	var ob *resource.Workflow
 
 	data := this.Ctx.Input.CopyBody()
 	json.Unmarshal(data, &ob)
 
-	err = resource.UpdateWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId(), ob.Data)
+	_ob, err := resource.UpdateWorkflow(feedWorkflowId, feedId, appId, this.GetAdminOrgId(), ob.Data)
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 	} else {
-		this.ServeJson(template.ResponsePut(&ob, formatter))
+		this.ServeJson(template.ResponsePut(_ob, formatter))
 	}
 }
 
