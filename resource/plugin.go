@@ -22,7 +22,19 @@ func GetPluginList() (pluginList []*Plugin, err error) {
 			node.Data["name"] = ""
 		}
 
-		plugin := NewPlugin(id , node.Data["name"].(string))
+		if node.Data["group"] == nil {
+			node.Data["group"] = ""
+		}
+
+		if node.Data["version"] == nil {
+			node.Data["version"] = ""
+		}
+
+		if node.Data["path"] == nil {
+			node.Data["path"] = ""
+		}
+
+		plugin := NewPlugin(id , node.Data["name"].(string), node.Data["group"].(string), node.Data["version"].(string), node.Data["path"].(string))
 		plugins = append(plugins, plugin)
 	}
 
@@ -47,7 +59,19 @@ func GetPlugin(id string) (plugin *Plugin, err error) {
 			node.Data["name"] = ""
 		}
 
-		return NewPlugin(id , node.Data["name"].(string)), nil
+		if node.Data["group"] == nil {
+			node.Data["group"] = ""
+		}
+
+		if node.Data["version"] == nil {
+			node.Data["version"] = ""
+		}
+
+		if node.Data["path"] == nil {
+			node.Data["path"] = ""
+		}
+
+		return NewPlugin(id , node.Data["name"].(string), node.Data["group"].(string), node.Data["version"].(string), node.Data["path"].(string)), nil
 	}
 
 	return nil, errors.New("PluginId `"+id+"` not exist")
@@ -56,6 +80,7 @@ func GetPlugin(id string) (plugin *Plugin, err error) {
 func AddPlugin(plugin *Plugin) (err error) {
 	properties := graph.Props {
 		"name": plugin.Name,
+		"group": plugin.Group,
 		"version": plugin.Version,
 		"path": plugin.Path,
 	}
@@ -81,10 +106,6 @@ func DeletePlugin(id string) (error) {
 	return storage.DeleteNode(_id)
 }
 
-func NewPlugin(id string, name string) *Plugin {
-	_type := "sensor"
-	_version := "1"
-	_path := "/tmp"
-
-	return &Plugin{id, name, _type, _version, _path}
+func NewPlugin(id string, name string, group string, version string, path string) *Plugin {
+	return &Plugin{id, name, group, version, path}
 }

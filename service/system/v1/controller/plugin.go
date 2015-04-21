@@ -137,6 +137,11 @@ func (this *PluginController) Put() {
  */
 func (this *PluginController) Delete() {
 	formatter, err := template.RequestDelete(this.GetInput())
+
+	pluginId := this.Ctx.Input.Params[":pluginId"]
+
+	err = resource.DeletePlugin(pluginId)
+
 	if err != nil {
 		this.ServeJson(template.GetError(err))
 		return

@@ -107,7 +107,7 @@ type Workflow struct {
 type Plugin struct {
 	Id		string
 	Name 	string
-	Type	string
+	Group	string
 	Version	string
 	Path	string
 }
@@ -231,6 +231,7 @@ func InitResources() {
 	Tokens = make(map[string]*Token)
 	Metrics = make(map[string]*Metric)
 	Viewers = make(map[string]*Viewer)
+	Plugins = make(map[string]*Plugin)
 }
 
 func InitStorage() {

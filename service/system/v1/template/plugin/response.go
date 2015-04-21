@@ -8,6 +8,13 @@ import (
 func GetEntry(plugin *resource.Plugin) (entry map[string]interface{}) {
 	entry = make(map[string]interface{})
 
+	entry["id"] = plugin.Id
+	entry["name"] = plugin.Name
+	entry["group"] = plugin.Group
+	entry["version"] = plugin.Version
+	entry["status"] = "running"
+	entry["errors"] = "no errors"
+
 	return entry
 }
 
@@ -39,7 +46,9 @@ func GetSuccess(msg string) (entry map[string]string, code int) {
 func ResponseGetList(pluginList []*resource.Plugin, formatter *template.ResponseDefinition) (entryList []map[string]interface{}, code int) {
 	var output []map[string]interface{}
 
-	output = make([]map[string]interface{}, 0)
+	for _, plugin := range pluginList {
+		output = append(output, GetEntry(plugin))
+	}
 
 	return output, template.GetOK()
 }
