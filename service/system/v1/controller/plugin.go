@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"io/ioutil"
 
 	"github.com/feedlabs/elasticfeed/resource"
 	template "github.com/feedlabs/elasticfeed/service/system/v1/template/plugin"
@@ -122,6 +123,46 @@ func (this *PluginController) Put() {
 		this.ServeJson(template.GetError(err))
 	} else {
 		this.ServeJson(template.ResponsePut(&plugin, formatter))
+	}
+}
+
+/**
+ * @api {put} plugin/:pluginId/upload Upload
+ * @apiVersion 1.0.0
+ * @apiName PutPluginFile
+ * @apiGroup Plugin
+ * @apiDescription Update a specific plugin.
+ *
+ * @apiUse PluginPutFileRequest
+ * @apiUse PluginPutFileResponse
+ */
+func (this *PluginController) PutFile() {
+
+	formatter, err := template.RequestPut(this.GetInput())
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+		return
+	}
+
+	pluginId := this.Ctx.Input.Params[":pluginId"]
+
+	data := this.Ctx.Input.CopyBody()
+
+	// write whole the body
+	path := "/tmp/output-" + pluginId
+	err = ioutil.WriteFile(path, data, 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	plugin, err := resource.GetPlugin(pluginId)
+	plugin.Path = path
+
+	err = resource.UpdatePlugin(plugin)
+	if err != nil {
+		this.ServeJson(template.GetError(err))
+	} else {
+		this.ServeJson(template.ResponsePut(plugin, formatter))
 	}
 }
 

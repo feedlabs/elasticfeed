@@ -12,6 +12,8 @@ func GetEntry(plugin *resource.Plugin) (entry map[string]interface{}) {
 	entry["name"] = plugin.Name
 	entry["group"] = plugin.Group
 	entry["version"] = plugin.Version
+	entry["license"] = plugin.License
+	entry["path"] = plugin.Path
 	entry["status"] = "running"
 	entry["errors"] = "no errors"
 

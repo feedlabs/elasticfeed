@@ -34,7 +34,11 @@ func GetPluginList() (pluginList []*Plugin, err error) {
 			node.Data["path"] = ""
 		}
 
-		plugin := NewPlugin(id , node.Data["name"].(string), node.Data["group"].(string), node.Data["version"].(string), node.Data["path"].(string))
+		if node.Data["license"] == nil {
+			node.Data["license"] = ""
+		}
+
+		plugin := NewPlugin(id , node.Data["name"].(string), node.Data["group"].(string), node.Data["version"].(string), node.Data["path"].(string), node.Data["license"].(string))
 		plugins = append(plugins, plugin)
 	}
 
@@ -71,7 +75,11 @@ func GetPlugin(id string) (plugin *Plugin, err error) {
 			node.Data["path"] = ""
 		}
 
-		return NewPlugin(id , node.Data["name"].(string), node.Data["group"].(string), node.Data["version"].(string), node.Data["path"].(string)), nil
+		if node.Data["license"] == nil {
+			node.Data["license"] = ""
+		}
+
+		return NewPlugin(id , node.Data["name"].(string), node.Data["group"].(string), node.Data["version"].(string), node.Data["path"].(string), node.Data["license"].(string)), nil
 	}
 
 	return nil, errors.New("PluginId `"+id+"` not exist")
@@ -83,6 +91,7 @@ func AddPlugin(plugin *Plugin) (err error) {
 		"group": plugin.Group,
 		"version": plugin.Version,
 		"path": plugin.Path,
+		"license": plugin.License,
 	}
 
 	_plugin, err := storage.NewNode(properties, RESOURCE_PLUGIN_LABEL)
@@ -98,7 +107,14 @@ func AddPlugin(plugin *Plugin) (err error) {
 
 func UpdatePlugin(plugin *Plugin) (err error) {
 	_id, _ := strconv.Atoi(plugin.Id)
-	return storage.SetPropertyNode(_id, "name", plugin.Name)
+
+	err = storage.SetPropertyNode(_id, "name", plugin.Name)
+	err = storage.SetPropertyNode(_id, "group", plugin.Group)
+	err = storage.SetPropertyNode(_id, "version", plugin.Version)
+	err = storage.SetPropertyNode(_id, "path", plugin.Path)
+	err = storage.SetPropertyNode(_id, "license", plugin.License)
+
+	return err
 }
 
 func DeletePlugin(id string) (error) {
@@ -106,6 +122,6 @@ func DeletePlugin(id string) (error) {
 	return storage.DeleteNode(_id)
 }
 
-func NewPlugin(id string, name string, group string, version string, path string) *Plugin {
-	return &Plugin{id, name, group, version, path}
+func NewPlugin(id string, name string, group string, version string, path string, license string) *Plugin {
+	return &Plugin{id, name, group, version, path, license}
 }
