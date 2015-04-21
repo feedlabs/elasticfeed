@@ -8,7 +8,7 @@ import (
 )
 
 func GetPluginList() (pluginList []*Plugin, err error) {
-	nodes, err := storage.FindNodesByLabel(RESOURCE_ORG_LABEL)
+	nodes, err := storage.FindNodesByLabel(RESOURCE_PLUGIN_LABEL)
 	if err != nil {
 		nodes = nil
 	}
@@ -41,7 +41,7 @@ func GetPlugin(id string) (plugin *Plugin, err error) {
 		return nil, err
 	}
 
-	if node != nil && Contains(node.Labels, RESOURCE_ORG_LABEL) {
+	if node != nil && Contains(node.Labels, RESOURCE_PLUGIN_LABEL) {
 
 		if node.Data["name"] == nil {
 			node.Data["name"] = ""
@@ -60,7 +60,7 @@ func AddPlugin(plugin *Plugin) (err error) {
 		"path": plugin.Path,
 	}
 
-	_plugin, err := storage.NewNode(properties, RESOURCE_ORG_LABEL)
+	_plugin, err := storage.NewNode(properties, RESOURCE_PLUGIN_LABEL)
 
 	if err != nil {
 		return err

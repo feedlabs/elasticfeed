@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/feedlabs/elasticfeed/resource"
-	template "github.com/feedlabs/elasticfeed/service/system/template/plugin"
+	template "github.com/feedlabs/elasticfeed/service/system/v1/template/plugin"
 )
 
 type PluginController struct {

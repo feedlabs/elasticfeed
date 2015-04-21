@@ -2,7 +2,7 @@ package plugin
 
 import (
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/service/system/template"
+	"github.com/feedlabs/elasticfeed/service/system/v1/template"
 )
 
 func GetEntry(plugin *resource.Plugin) (entry map[string]interface{}) {
