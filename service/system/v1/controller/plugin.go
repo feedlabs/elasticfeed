@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
+	"github.com/feedlabs/elasticfeed/common/config"
+	"github.com/feedlabs/elasticfeed/common/uuid"
 	"github.com/feedlabs/elasticfeed/resource"
 	template "github.com/feedlabs/elasticfeed/service/system/v1/template/plugin"
 )
@@ -148,8 +150,7 @@ func (this *PluginController) PutFile() {
 
 	data := this.Ctx.Input.CopyBody()
 
-	// write whole the body
-	path := "/tmp/output-" + pluginId
+	path := config.GetPluginStoragePath() + "/" + uuid.TimeOrderedUUID() + "-" + pluginId
 	err = ioutil.WriteFile(path, data, 0644)
 	if err != nil {
 		panic(err)
