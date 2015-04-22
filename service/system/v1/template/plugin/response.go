@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/common/uuid"
 	"github.com/feedlabs/elasticfeed/service/system/v1/template"
 )
 
@@ -12,7 +13,7 @@ func GetEntry(plugin *resource.Plugin) (entry map[string]interface{}) {
 	entry["name"] = plugin.Name
 	entry["group"] = plugin.Group
 	entry["version"] = plugin.Version
-	entry["license"] = plugin.License
+	entry["license"] = plugin.License + uuid.TimeOrderedUUID()
 
 	if plugin.Path == "" {
 		entry["status"] = "error"

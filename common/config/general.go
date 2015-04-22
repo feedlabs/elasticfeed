@@ -27,7 +27,7 @@ func GetAuthRealm() string {
 }
 
 func GetPluginStoragePath() string {
-	return GetHomeAbsolutePath() + "/" + feedify.GetConfigKey("plugin-manager::storage")
+	return feedify.GetConfigKey("plugin-manager::storage")
 }
 
 func GetHomeAbsolutePath() string {

@@ -7,6 +7,15 @@ import (
 	"github.com/feedlabs/feedify/graph"
 )
 
+const (
+	PLUGIN_INDEXER  = 1
+	PLUGIN_CRAWLER  = 2
+	PLUGIN_SENSOR   = 3
+	PLUGIN_SCENARIO = 4
+	PLUGIN_PIPELINE = 5
+	PLUGIN_HELPER   = 6
+)
+
 func GetPluginList() (pluginList []*Plugin, err error) {
 	nodes, err := storage.FindNodesByLabel(RESOURCE_PLUGIN_LABEL)
 	if err != nil {

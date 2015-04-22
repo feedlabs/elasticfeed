@@ -1,6 +1,6 @@
 // +build windows
 
-package plugin
+package config
 
 import (
 	"path/filepath"

@@ -147,17 +147,18 @@ func (this *PluginController) PutFile() {
 	}
 
 	pluginId := this.Ctx.Input.Params[":pluginId"]
+	plugin, err := resource.GetPlugin(pluginId)
+
+	rel_path := config.GetPluginStoragePath() + "/" + plugin.Group + "-" + uuid.TimeOrderedUUID() + "-" + pluginId
+	abs_path := config.GetHomeAbsolutePath() + "/" + rel_path
 
 	data := this.Ctx.Input.CopyBody()
-
-	path := config.GetPluginStoragePath() + "/" + uuid.TimeOrderedUUID() + "-" + pluginId
-	err = ioutil.WriteFile(path, data, 0644)
+	err = ioutil.WriteFile(abs_path, data, 0644)
 	if err != nil {
 		panic(err)
 	}
 
-	plugin, err := resource.GetPlugin(pluginId)
-	plugin.Path = path
+	plugin.Path = rel_path
 
 	err = resource.UpdatePlugin(plugin)
 	if err != nil {

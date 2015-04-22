@@ -12,7 +12,7 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream/model"
-	"github.com/feedlabs/elasticfeed/plugin/pipeline"
+	"github.com/feedlabs/elasticfeed/plugin/plugins/pipeline"
 )
 
 const (

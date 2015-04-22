@@ -1,7 +1,7 @@
 package workflow
 
 import (
-	"github.com/feedlabs/elasticfeed/plugin"
+	"github.com/feedlabs/elasticfeed/plugin/model"
 	"github.com/feedlabs/elasticfeed/resource"
 )
 
@@ -9,7 +9,7 @@ type WorkflowController struct {
 	feed    *resource.Feed
 	manager *WorkflowManager
 
-	profiler *plugin.Profiler
+	profiler *model.Profiler
 }
 
 func (this *WorkflowController) GetManager() *WorkflowManager {
@@ -20,7 +20,7 @@ func (this *WorkflowController) GetFeed() *interface{} {
 	return nil
 }
 
-func (this *WorkflowController) GetProfiler() *plugin.Profiler {
+func (this *WorkflowController) GetProfiler() *model.Profiler {
 	return this.profiler
 }
 
@@ -41,7 +41,7 @@ func (this *WorkflowController) DispatchPipelineHook(data interface{}) interface
 
 func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {
 	data := feed.GetWorkflow().GetProfilerRawData()
-	p := plugin.NewProfiler(data)
+	p := model.NewProfiler(data)
 	w := &WorkflowController{feed, wm, p}
 
 	w.Init()

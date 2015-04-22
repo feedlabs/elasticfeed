@@ -1,4 +1,4 @@
-package provider
+package sensor
 
 func Weather() {}
 func StockIndices() {}

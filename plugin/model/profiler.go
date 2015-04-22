@@ -1,4 +1,4 @@
-package plugin
+package model
 
 type Profiler struct {
 	data map[string]string
