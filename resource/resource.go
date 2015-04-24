@@ -1,5 +1,12 @@
 package resource
 
+/*
+ TO DO
+
+ - resource should trigger system event via EventManager
+  */
+
+
 import (
 	"errors"
 	"encoding/json"
