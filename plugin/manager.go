@@ -3,6 +3,8 @@ package plugin
 import (
 	"strconv"
 
+	"fmt"
+
 	"log"
 	"os/exec"
 	"path/filepath"
@@ -102,15 +104,26 @@ func (c *PluginManager) Discover() error {
 	return nil
 }
 
-func (c *PluginManager) LoadIndexers(name string) (model.Indexer, error) {
-	log.Printf("Loading provisioner: %s\n", name)
+func (c *PluginManager) LoadIndexer(name string) (model.Indexer, error) {
+	log.Printf("Loading indexer: %s\n", name)
 	bin, ok := c.Indexers[name]
 	if !ok {
-		log.Printf("Indexers not found: %s\n", name)
+		log.Printf("Indexer not found: %s\n", name)
 		return nil, nil
 	}
 
 	return c.pluginClient(bin).Indexer()
+}
+
+func (c *PluginManager) LoadPipeline(name string) (model.Pipeline, error) {
+	log.Printf("Loading pipeline: %s\n", name)
+	bin, ok := c.Pipelines[name]
+	if !ok {
+		log.Printf("Pipeline not found: %s\n", name)
+		return nil, nil
+	}
+
+	return c.pluginClient(bin).Pipeline()
 }
 
 func (c *PluginManager) discover(path string) error {
@@ -229,6 +242,21 @@ func NewPluginManager(resourceManager interface{}) *PluginManager {
 	pm := &PluginManager{}
 
 	pm.api = model.NewResourceApi(resourceManager)
+
+	pm.discover(filepath.Join(config.GetHomeAbsolutePath(), "plugins/pipeline-ann"))
+
+	list := []string{"ann", "ann1", "ann2"}
+
+	for _, name  := range(list) {
+		ann, _ := pm.LoadPipeline(name)
+
+		ann.Prepare()
+		a, b := ann.Run(nil)
+
+		fmt.Println(a)
+		fmt.Println(b)
+	}
+
 
 	return pm
 }

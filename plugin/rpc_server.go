@@ -14,7 +14,8 @@ import (
 var endpointId uint64
 
 const (
-	DefaultIndexerEndpoint      string  = "Indexer"
+	DefaultIndexerEndpoint      string = "Indexer"
+	DefaultPipelineEndpoint     string = "Pipeline"
 	DefaultArtifactEndpoint     string = "Artifact"
 )
 
@@ -66,9 +67,16 @@ func (s *RpcServer) RegisterArtifact(a model.Artifact) {
 	})
 }
 
-func (s *RpcServer) RegisterIndexer(b model.Indexer) {
+func (s *RpcServer) RegisterIndexer(i model.Indexer) {
 	s.server.RegisterName(DefaultIndexerEndpoint, &IndexerRpcServer{
-		indexer: b,
+		indexer: i,
+		mux:     s.mux,
+	})
+}
+
+func (s *RpcServer) RegisterPipeline(p model.Pipeline) {
+	s.server.RegisterName(DefaultPipelineEndpoint, &PipelineRpcServer{
+		pipeline: p,
 		mux:     s.mux,
 	})
 }

@@ -74,6 +74,13 @@ func (c *RpcClient) Indexer() model.Indexer {
 	}
 }
 
+func (c *RpcClient) Pipeline() model.Pipeline {
+	return &RpcPipeline{
+		client: c.client,
+		mux:    c.mux,
+	}
+}
+
 func (c *RpcClient) Artifact() model.Artifact {
 	return &RpcArtifact{
 		client:   c.client,

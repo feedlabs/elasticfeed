@@ -138,6 +138,17 @@ func (c *Client) Indexer() (model.Indexer, error) {
 	return &cmdIndexer{client.Indexer(), c}, nil
 }
 
+// Returns a pipeline implementation that is communicating over this
+// client. If the client hasn't been started, this will start it.
+func (c *Client) Pipeline() (model.Pipeline, error) {
+	client, err := c.RpcClient()
+	if err != nil {
+		return nil, err
+	}
+
+	return &cmdPipeline{client.Pipeline(), c}, nil
+}
+
 // End the executing subprocess (if it is running) and perform any cleanup
 // tasks necessary such as capturing any remaining logs and so on.
 //

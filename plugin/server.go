@@ -1,7 +1,7 @@
-// The plugin package provides the functionality to both expose a Packer
-// plugin binary and to connect to an existing Packer plugin binary.
+// The plugin package provides the functionality to both expose a Elasticfeed
+// plugin binary and to connect to an existing Elasticfeed plugin binary.
 //
-// Packer supports plugins in the form of self-contained external static
+// Elasticfeed supports plugins in the form of self-contained external static
 // Go binaries. These binaries behave in a certain way (enforced by this
 // package) and are connected to in a certain way (also enforced by this
 // package).
@@ -25,20 +25,20 @@ import (
 // be checked by the plugin safely to take action.
 var Interrupts int32 = 0
 
-const MagicCookieKey = "PACKER_PLUGIN_MAGIC_COOKIE"
-const MagicCookieValue = "d602bf8f470bc67ca7faa0386276bbdd4330efaf76d1a219cb4d6991ca9872b2"
+const MagicCookieKey = "ELASTICFEED_PLUGIN_MAGIC_COOKIE"
+const MagicCookieValue = "LQhHwrfdFtcZCudDzaQK8xkipGN3yqc3htghipXmJsakNRV9kwP]dPGLWuh"
 
 // The APIVersion is outputted along with the RPC address. The plugin
 // client validates this API version and will show an error if it doesn't
 // know how to speak it.
 const APIVersion = "4"
 
-// Server waits for a connection to this plugin and returns a Packer
+// Server waits for a connection to this plugin and returns a Elasticfeed
 // RPC server that you can use to register components and serve them.
 func Server() (*RpcServer, error) {
 	if os.Getenv(MagicCookieKey) != MagicCookieValue {
 		return nil, errors.New(
-			"Please do not execute plugins directly. Packer will execute these for you.")
+			"Please do not execute plugins directly. Elasticfeed will execute these for you.")
 	}
 
 	// If there is no explicit number of Go threads to use, then set it
@@ -46,12 +46,12 @@ func Server() (*RpcServer, error) {
 		runtime.GOMAXPROCS(runtime.NumCPU())
 	}
 
-	minPort, err := strconv.ParseInt(os.Getenv("PACKER_PLUGIN_MIN_PORT"), 10, 32)
+	minPort, err := strconv.ParseInt(os.Getenv("ELASTICFEED_PLUGIN_MIN_PORT"), 10, 32)
 	if err != nil {
 		return nil, err
 	}
 
-	maxPort, err := strconv.ParseInt(os.Getenv("PACKER_PLUGIN_MAX_PORT"), 10, 32)
+	maxPort, err := strconv.ParseInt(os.Getenv("ELASTICFEED_PLUGIN_MAX_PORT"), 10, 32)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func serverListener_tcp(minPort, maxPort int64) (net.Listener, error) {
 }
 
 func serverListener_unix() (net.Listener, error) {
-	tf, err := ioutil.TempFile("", "packer-plugin")
+	tf, err := ioutil.TempFile("", "elasticfeed-plugin")
 	if err != nil {
 		return nil, err
 	}
