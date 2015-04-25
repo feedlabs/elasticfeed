@@ -24,7 +24,7 @@ type SocketEvent struct {
 	OrgId                 string
 }
 
-const archiveSize = 1
+const archiveSize = 10
 
 var Archive = list.New()
 

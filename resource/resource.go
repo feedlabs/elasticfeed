@@ -1,5 +1,12 @@
 package resource
 
+/*
+ TO DO
+
+ - resource should trigger system event via EventManager
+  */
+
+
 import (
 	"errors"
 	"encoding/json"
@@ -12,9 +19,7 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream/model"
-	"github.com/feedlabs/elasticfeed/plugin/pipeline"
-
-	"github.com/feedlabs/elasticfeed/workflow"
+	"github.com/feedlabs/elasticfeed/plugins/pipeline"
 )
 
 const (
@@ -24,8 +29,10 @@ const (
 	RESOURCE_APPLICATION_LABEL = "application"
 	RESOURCE_FEED_LABEL        = "feed"
 	RESOURCE_ENTRY_LABEL       = "entry"
-	RESOURCE_METRIC_LABEL       = "metric"
-	RESOURCE_VIEWER_LABEL       = "viewer"
+	RESOURCE_METRIC_LABEL      = "metric"
+	RESOURCE_VIEWER_LABEL      = "viewer"
+	RESOURCE_WORKFLOW_LABEL    = "workflow"
+	RESOURCE_PLUGIN_LABEL      = "plugin"
 )
 
 var (
@@ -37,6 +44,8 @@ var (
 	Entries            map[string]*Entry
 	Metrics            map[string]*Metric
 	Viewers            map[string]*Viewer
+	Workflows            map[string]*Workflow
+	Plugins            map[string]*Plugin
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
@@ -82,10 +91,8 @@ type Feed struct {
 	Application   *Application
 	Data          string
 
-	Entries       int
-
-	Workflow      *workflow.Workflow
-	Workflowfile    map[string]interface{}
+	Entries         int
+	Workflows       int
 }
 
 type Entry struct {
@@ -97,6 +104,22 @@ type Entry struct {
 type Viewer struct {}
 
 type Metric struct {}
+
+type Workflow struct {
+	Id             string
+	Feed           *Feed
+	Default        bool
+	Data           string
+}
+
+type Plugin struct {
+	Id            string
+	Name          string
+	Group         string
+	Version       string
+	Path          string
+	License       string
+}
 
 func ResourceStreamManager() {
 	for {
@@ -217,6 +240,7 @@ func InitResources() {
 	Tokens = make(map[string]*Token)
 	Metrics = make(map[string]*Metric)
 	Viewers = make(map[string]*Viewer)
+	Plugins = make(map[string]*Plugin)
 }
 
 func InitStorage() {

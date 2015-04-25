@@ -5,33 +5,33 @@ import (
 	"strconv"
 
 	"github.com/feedlabs/feedify/graph"
-
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
-	"github.com/feedlabs/elasticfeed/workflow"
 )
 
 func (this *Feed) AddEntry(entry Entry) (EntryId string, err error) {
 	return AddEntry(entry, this.Id, this.Application.Id, this.Application.Org.Id)
 }
 
+func (this *Feed) AddWorkflow(workflow Workflow) (WorkflowId string, err error) {
+	return AddWorkflow(workflow, this.Id, this.Application.Id, this.Application.Org.Id)
+}
+
 func (this *Feed) GetEntryList() (entries []*Entry, err error) {
 	return GetEntryList(this.Id, this.Application.Id, this.Application.Org.Id)
 }
 
-func (this *Feed) SetWorkflowfile(data map[string]interface{}) {
-	this.Workflowfile = data
+func (this *Feed) GetWorkflowList() (entries []*Workflow, err error) {
+	return GetWorkflowList(this.Id, this.Application.Id, this.Application.Org.Id)
 }
 
-func (this *Feed) GetWorkflowfile() map[string]interface{} {
-	return this.Workflowfile
-}
+func (this *Feed) GetWorkflow() *Workflow {
+	w, err := GetWorkflowList(this.Id, this.Application.Id, this.Application.Org.Id)
 
-func (this *Feed) InitWorkflow(wm *workflow.WorkflowManager) {
-	this.Workflow = wm.CreateFeedWorkflow(this, this.GetWorkflowfile())
-}
+	if err == nil {
+		return w[0]
+	}
 
-func (this *Feed) GetWorkflow() *workflow.Workflow {
-	return this.Workflow
+	return nil
 }
 
 func GetFeedList(ApplicationId string, OrgId string) (feedList []*Feed, err error) {
@@ -48,9 +48,10 @@ func GetFeedList(ApplicationId string, OrgId string) (feedList []*Feed, err erro
 	for _, rel := range _rels {
 		data := rel.EndNode.Data["data"].(string)
 		id := strconv.Itoa(rel.EndNode.Id)
-		rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "entry")
+		entry_rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "entry")
+		workflow_rels, _ := storage.RelationshipsNode(rel.EndNode.Id, "workflow")
 
-		feed := NewFeed(id , app, data, len(rels))
+		feed := NewFeed(id, app, data, len(entry_rels), len(workflow_rels))
 		feeds = append(feeds, feed)
 	}
 
@@ -76,8 +77,9 @@ func GetFeed(id string, applicationId string, orgId string) (feed *Feed, err err
 
 	if node != nil && Contains(node.Labels, RESOURCE_FEED_LABEL) && app.Id == node.Data["applicationId"].(string) {
 		data := node.Data["data"].(string)
-		rels, _ := storage.RelationshipsNode(node.Id, "entry")
-		return NewFeed(strconv.Itoa(node.Id), app, data, len(rels)), nil
+		entry_rels, _ := storage.RelationshipsNode(node.Id, "entry")
+		workflow_rels, _ := storage.RelationshipsNode(node.Id, "workflow")
+		return NewFeed(strconv.Itoa(node.Id), app, data, len(entry_rels), len(workflow_rels)), nil
 	}
 
 	return nil, errors.New("FeedId not exist for ApplicationId `"+applicationId+"`")
@@ -129,6 +131,6 @@ func ActionEmptyFeed(id string) {
 	room.Publish <- room.NewFeedEvent(room.FEED_EMPTY, id, "empty")
 }
 
-func NewFeed(id string, app *Application, data string, entries int) *Feed {
-	return &Feed{id, app, data, entries, nil, nil}
+func NewFeed(id string, app *Application, data string, entries int, workflows int) *Feed {
+	return &Feed{id, app, data, entries, workflows}
 }

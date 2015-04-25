@@ -103,10 +103,6 @@ func DeleteOrg(id string) (error) {
 	return storage.DeleteNode(_id)
 }
 
-func init() {
-	Orgs = make(map[string]*Org)
-}
-
 // TOKEN PART
 
 func GetOrgTokenList(orgId string) (orgList []*Token, err error) {
