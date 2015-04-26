@@ -1,4 +1,4 @@
-![logo - new page 4](https://cloud.githubusercontent.com/assets/1843523/7339210/d3688f5a-ec66-11e4-8032-b97bcc85eafd.png)
+![logo - new page 5](https://cloud.githubusercontent.com/assets/1843523/7339262/1ba4bcf6-ec69-11e4-9a23-051497cf8108.png)
 ===========
 #### Overview
 ![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/7103145/c5f8d754-e099-11e4-8201-60c7c714c436.png)
