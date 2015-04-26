@@ -1,4 +1,4 @@
-elasticfeed
+![logo - new page](https://cloud.githubusercontent.com/assets/1843523/7339007/913cbc48-ec5f-11e4-8cfd-573bd95244c9.png)
 ===========
 #### Overview
 ![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/7103145/c5f8d754-e099-11e4-8201-60c7c714c436.png)
