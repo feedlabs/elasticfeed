@@ -16,7 +16,7 @@ var (
 func main() {
 	rm := resource.NewResourceManager()
 	em := event.NewEventManager()
-	pm := plugin.NewPluginManager(rm)
+	pm := plugin.NewPluginManager()
 	wm := workflow.NewWorkflowManager(nil, pm, em)
 	sm := service.NewServiceManager()
 
