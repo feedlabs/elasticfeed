@@ -38,16 +38,16 @@ const (
 )
 
 var (
-	Orgs            map[string]*Org
+	Orgs              map[string]*Org
 	Admins            map[string]*Admin
 	Tokens            map[string]*Token
-	Applications    map[string]*Application
-	Feeds           map[string]*Feed
-	Entries            map[string]*Entry
-	Metrics            map[string]*Metric
-	Viewers            map[string]*Viewer
-	Workflows            map[string]*Workflow
-	Plugins            map[string]*Plugin
+	Applications      map[string]*Application
+	Feeds             map[string]*Feed
+	Entries           map[string]*Entry
+	Metrics           map[string]*Metric
+	Viewers           map[string]*Viewer
+	Workflows         map[string]*Workflow
+	Plugins           map[string]*Plugin
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
