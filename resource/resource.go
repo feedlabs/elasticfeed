@@ -1,12 +1,5 @@
 package resource
 
-/*
- TO DO
-
- - resource should trigger system event via EventManager
-  */
-
-
 import (
 	"errors"
 	"encoding/json"
@@ -238,12 +231,6 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 		// maybe sessionID could be as uniqeID ?
 		// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
 		// *********************************************************************
-		//
-		// timeout with channels and routines?
-		// http://blog.golang.org/go-concurrency-patterns-timing-out-and
-		//
-		//		amt := time.Duration(rand.Intn(500)) * 10000
-		//		time.Sleep(amt * time.Microsecond)
 
 		d, _ := json.Marshal(list)
 		event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
