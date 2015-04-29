@@ -159,18 +159,19 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 	timeout := make(chan bool, 1)
 	results := make(chan []*Entry, 1)
 
+	// COLLECTING ENTRIES
 	if entryListCache == nil {
 		entryListCache, _ = GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
 	}
 
-	// PIPE TIMEOUT
-	//	go func() {
-	//		amt := time.Duration(rand.Intn(100))
-	//		time.Sleep(amt * time.Millisecond)
-	//		timeout <- true
-	//	}()
+	// WORKFLOW TIMEOUT
+	go func() {
+		amt := time.Duration(100)
+		time.Sleep(amt * time.Millisecond)
+		timeout <- true
+	}()
 
-	// SHOULD BE A FILTER IMPLEMENTATION
+	// WORKFLOW PIPELINE
 	go func(list []*Entry, socketEvent model.SocketEvent) {
 
 		if pluginManager == nil {
@@ -238,7 +239,7 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 		//
 		// timeout with channels and routines?
 		// http://blog.golang.org/go-concurrency-patterns-timing-out-and
-
+		//
 		//		amt := time.Duration(rand.Intn(500)) * 10000
 		//		time.Sleep(amt * time.Microsecond)
 
