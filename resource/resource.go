@@ -165,6 +165,8 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 	}
 
 	// WORKFLOW TIMEOUT
+	// !! SHOULD BE CONFIGURABLE OVER RUNTIME SETTING
+	// !! DEFAULT VALUE SHOULD BE IN CONFIG FILE
 	go func() {
 		amt := time.Duration(100)
 		time.Sleep(amt * time.Millisecond)

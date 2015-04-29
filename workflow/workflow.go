@@ -10,6 +10,12 @@ type WorkflowController struct {
 	manager *WorkflowManager
 
 	profiler *model.Profiler
+
+	IndexerTimeout     int
+	CrawlerTimeout     int
+	SensorTimeout      int
+	PipelineTimeout    int
+	ScenarioTimeout    int
 }
 
 func (this *WorkflowController) GetManager() *WorkflowManager {
