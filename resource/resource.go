@@ -19,7 +19,9 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream/model"
-	"github.com/feedlabs/elasticfeed/plugins/pipeline"
+
+	"github.com/feedlabs/elasticfeed/plugin"
+	pmodel "github.com/feedlabs/elasticfeed/plugin/model"
 )
 
 const (
@@ -49,6 +51,12 @@ var (
 
 	message    *stream.StreamMessage
 	storage    *graph.GraphStorage
+)
+
+var (
+	pluginManager *plugin.PluginManager
+	pluginManagerAnn pmodel.Pipeline
+	entryListCache []*Entry
 )
 
 type Org struct {
@@ -151,20 +159,53 @@ func ResourceStreamRequest(socketEvent model.SocketEvent) {
 	timeout := make(chan bool, 1)
 	results := make(chan []*Entry, 1)
 
-	list, _ := GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+	if entryListCache == nil {
+		entryListCache, _ = GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+	}
 
 	// PIPE TIMEOUT
-	go func() {
-		amt := time.Duration(rand.Intn(100))
-		time.Sleep(amt * time.Millisecond)
-		timeout <- true
-	}()
+	//	go func() {
+	//		amt := time.Duration(rand.Intn(100))
+	//		time.Sleep(amt * time.Millisecond)
+	//		timeout <- true
+	//	}()
 
 	// SHOULD BE A FILTER IMPLEMENTATION
 	go func(list []*Entry, socketEvent model.SocketEvent) {
-		list = pipeline.Filter(list).([]*Entry)
+
+		if pluginManager == nil {
+			pluginManager = plugin.NewPluginManager()
+		}
+
+		if pluginManagerAnn == nil {
+			pluginManagerAnn, _ = pluginManager.LoadPipeline("ann")
+			pluginManagerAnn.Prepare()
+		}
+
+		newList, _ := pluginManagerAnn.Run(list)
+
+		var newEntryList []*Entry
+
+		for _, v := range newList.([]interface{}) {
+			Id := ""
+			Data := ""
+			for k, vv := range v.(map[interface{}]interface{}) {
+				if k == "Id" {
+					Id = vv.(string)
+				}
+				if k == "Data" {
+					Data = vv.(string)
+				}
+			}
+			if Id != "" && Data != "" {
+				newEntryList = append(newEntryList, &Entry{Id, nil, Data})
+			}
+		}
+
+		list = newEntryList
+
 		results <- list
-	}(list, socketEvent)
+	}(entryListCache, socketEvent)
 
 	select {
 

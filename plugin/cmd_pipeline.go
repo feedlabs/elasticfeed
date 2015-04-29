@@ -19,13 +19,13 @@ func (b *cmdPipeline) Prepare(config ...interface{}) ([]string, error) {
 	return b.pipeline.Prepare(config...)
 }
 
-func (b *cmdPipeline) Run(cache model.Cache) (model.Artifact, error) {
+func (b *cmdPipeline) Run(data interface {}) (interface {}, error) {
 	defer func() {
 		r := recover()
 		b.checkExit(r, nil)
 	}()
 
-	return b.pipeline.Run(cache)
+	return b.pipeline.Run(data)
 }
 
 func (b *cmdPipeline) Cancel() {

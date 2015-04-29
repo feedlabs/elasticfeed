@@ -22,12 +22,13 @@ type PipelineRpcServer struct {
 }
 
 type PipelinePrepareArgs struct {
-	Configs []interface{}
+	Data interface{}
 }
 
 type PipelinePrepareResponse struct {
 	Warnings []string
 	Error    *BasicError
+	Data     interface {}
 }
 
 func (b *RpcPipeline) Prepare(config ...interface{}) ([]string, error) {
@@ -44,27 +45,17 @@ func (b *RpcPipeline) Prepare(config ...interface{}) ([]string, error) {
 	return resp.Warnings, err
 }
 
-func (b *RpcPipeline) Run(cache model.Cache) (model.Artifact, error) {
-	nextId := b.mux.NextId()
-	server := newRpcServerWithMux(b.mux, nextId)
-	server.RegisterCache(cache)
-	go server.Serve()
+func (h *RpcPipeline) Run(data interface{}) (interface{}, error) {
 
-	var responseId uint32
-	if err := b.client.Call("Pipeline.Run", nextId, &responseId); err != nil {
-		return nil, err
+	args := PipelinePrepareArgs{
+		Data:     data,
 	}
 
-	if responseId == 0 {
-		return nil, nil
-	}
+	var response PipelinePrepareResponse
 
-	client, err := newRpcClientWithMux(b.mux, responseId)
-	if err != nil {
-		return nil, err
-	}
+	_ = h.client.Call("Pipeline.Run", &args, &response)
 
-	return client.Artifact(), nil
+	return response.Data, nil
 }
 
 func (b *RpcPipeline) Cancel() {
@@ -74,7 +65,7 @@ func (b *RpcPipeline) Cancel() {
 }
 
 func (b *PipelineRpcServer) Prepare(args *PipelinePrepareArgs, reply *PipelinePrepareResponse) error {
-	warnings, err := b.pipeline.Prepare(args.Configs...)
+	warnings, err := b.pipeline.Prepare(nil)
 	*reply = PipelinePrepareResponse{
 		Warnings: warnings,
 		Error:    NewBasicError(err),
@@ -82,25 +73,14 @@ func (b *PipelineRpcServer) Prepare(args *PipelinePrepareArgs, reply *PipelinePr
 	return nil
 }
 
-func (b *PipelineRpcServer) Run(streamId uint32, reply *uint32) error {
-	client, err := newRpcClientWithMux(b.mux, streamId)
-	if err != nil {
-		return NewBasicError(err)
-	}
-	defer client.Close()
+func (b *PipelineRpcServer) Run(args *PipelinePrepareArgs, reply *PipelinePrepareResponse) (err error) {
 
-	artifact, err := b.pipeline.Run(client.Cache())
-	if err != nil {
-		return NewBasicError(err)
-	}
+	data, err := b.pipeline.Run(args.Data)
 
-	*reply = 0
-	if artifact != nil {
-		streamId = b.mux.NextId()
-		server := newRpcServerWithMux(b.mux, streamId)
-		server.RegisterArtifact(artifact)
-		go server.Serve()
-		*reply = streamId
+	*reply = PipelinePrepareResponse{
+		Warnings: nil,
+		Error: nil,
+		Data: data,
 	}
 
 	return nil

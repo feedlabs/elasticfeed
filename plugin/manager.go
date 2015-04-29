@@ -1,16 +1,11 @@
 package plugin
 
 import (
-	"strconv"
-
-	"fmt"
-
 	"log"
 	"os/exec"
 	"path/filepath"
 	"strings"
 
-	"github.com/feedlabs/elasticfeed/resource"
 	"github.com/feedlabs/elasticfeed/plugin/model"
 	"github.com/feedlabs/elasticfeed/common/config"
 
@@ -25,31 +20,8 @@ type PluginManager struct {
 	Scenarios       map[string]string
 	Helpers         map[string]string
 
-	Store         	map[int]map[string]interface{}
-
-	api            *model.ResourceApi
-
 	PluginMinPort              uint
 	PluginMaxPort              uint
-}
-
-func (this *PluginManager) GetResourceApi() interface{} {
-	return this.api
-}
-
-func (this *PluginManager) InitPlugin(name string, profiler *model.Profiler) *Plugin {
-
-	// _p := resource.FindPluginByName(name)
-	// findIsRunningWithProfiler(_p, profiler)
-	_p := resource.NewPlugin("", "", "", "", "", "")
-	p := NewPlugin(_p, this, this.api, profiler)
-
-	p.Init()
-
-	_group, _ := strconv.Atoi(_p.Group)
-	this.Store[_group][_p.Id] = p
-
-	return p
 }
 
 func (this *PluginManager) FindPlugin(name string, profiler *model.Profiler) *interface{} {
@@ -64,10 +36,6 @@ func (this *PluginManager) RunPlugin(p Plugin) (err error) {
 	}
 
 	return nil
-}
-
-func (this *PluginManager) GetIndexers() map[string]interface{} {
-	return this.Store[resource.PLUGIN_INDEXER]
 }
 
 // Discover discovers plugins.
@@ -237,26 +205,10 @@ func (c *PluginManager) pluginClient(path string) *Client {
 	return NewClient(&config)
 }
 
-
-func NewPluginManager(resourceManager interface{}) *PluginManager {
+func NewPluginManager() *PluginManager {
 	pm := &PluginManager{}
 
-	pm.api = model.NewResourceApi(resourceManager)
-
-	pm.discover(filepath.Join(config.GetHomeAbsolutePath(), "plugins/pipeline-ann"))
-
-	list := []string{"ann", "ann1", "ann2"}
-
-	for _, name  := range(list) {
-		ann, _ := pm.LoadPipeline(name)
-
-		ann.Prepare()
-		a, b := ann.Run(nil)
-
-		fmt.Println(a)
-		fmt.Println(b)
-	}
-
+	pm.discover(filepath.Join(config.GetHomeAbsolutePath(), "public/userfiles/plugin/imports"))
 
 	return pm
 }
