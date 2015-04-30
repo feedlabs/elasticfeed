@@ -1,14 +1,14 @@
 package workflow
 
 import (
-	"github.com/feedlabs/elasticfeed/plugin"
-	"github.com/feedlabs/elasticfeed/event"
+	"github.com/feedlabs/elasticfeed/elasticfeed/model"
+
 	"github.com/feedlabs/elasticfeed/resource"
 )
 
 type WorkflowManager struct {
-	pManager *plugin.PluginManager
-	eManager *event.EventManager
+	pManager model.PluginManager
+	eManager model.EventManager
 
 	workflows []*WorkflowController
 	template  interface{}
@@ -27,7 +27,7 @@ func (this *WorkflowManager) CreateFeedWorkflow(feed *resource.Feed) *WorkflowCo
 	return w
 }
 
-func NewWorkflowManager(tpl interface{}, pm *plugin.PluginManager, em *event.EventManager) *WorkflowManager {
+func NewWorkflowManager(tpl interface{}, pm model.PluginManager, em model.EventManager) *WorkflowManager {
 	// load template if not passed
 	if tpl == nil {
 		tpl = make(map[string]interface {})

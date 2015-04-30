@@ -1,6 +1,8 @@
 package elasticfeed
 
 import (
+	"github.com/feedlabs/elasticfeed/elasticfeed/model"
+
 	"github.com/feedlabs/elasticfeed/plugin"
 	"github.com/feedlabs/elasticfeed/workflow"
 	"github.com/feedlabs/elasticfeed/service"
@@ -11,31 +13,31 @@ import (
 )
 
 type Elasticfeed struct {
-	rm *resource.ResourceManager
-	em *event.EventManager
-	sm *service.ServiceManager
-	pm *plugin.PluginManager
-	wm *workflow.WorkflowManager
+	R model.ResourceManager
+	E model.EventManager
+	S model.ServiceManager
+	P model.PluginManager
+	W model.WorkflowManager
 }
 
-func (this *Elasticfeed) GetEventManager() *event.EventManager {
-	return this.em
+func (this *Elasticfeed) GetEventManager() model.EventManager {
+	return this.E
 }
 
-func (this *Elasticfeed) GetResourceManager() *resource.ResourceManager {
-	return this.rm
+func (this *Elasticfeed) GetResourceManager() model.ResourceManager {
+	return this.R
 }
 
-func (this *Elasticfeed) GetServiceManager() *service.ServiceManager {
-	return this.sm
+func (this *Elasticfeed) GetServiceManager() model.ServiceManager {
+	return this.S
 }
 
-func (this *Elasticfeed) GetPluginManager() *plugin.PluginManager {
-	return this.pm
+func (this *Elasticfeed) GetPluginManager() model.PluginManager {
+	return this.P
 }
 
-func (this *Elasticfeed) GetWorkflowManager() *workflow.WorkflowManager {
-	return this.wm
+func (this *Elasticfeed) GetWorkflowManager() model.WorkflowManager {
+	return this.W
 }
 
 func (this *Elasticfeed) Run() {
@@ -46,6 +48,15 @@ func (this *Elasticfeed) Run() {
 	feedify.Run()
 }
 
-func NewElasticfeed(rm *resource.ResourceManager, em *event.EventManager, sm *service.ServiceManager, pm *plugin.PluginManager, wm *workflow.WorkflowManager) *Elasticfeed {
-	return &Elasticfeed{rm, em, sm, pm, wm}
+func NewElasticfeed() model.Elasticfeed {
+
+	engine := &Elasticfeed{}
+
+	engine.R = resource.NewResourceManager(engine)
+	engine.E = event.NewEventManager(engine)
+	engine.P = plugin.NewPluginManager(engine)
+	engine.W = workflow.NewWorkflowManager(nil, engine.P, engine.E)
+	engine.S = service.NewServiceManager(engine)
+
+	return engine
 }

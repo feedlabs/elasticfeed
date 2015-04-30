@@ -12,6 +12,6 @@ func (this *StreamService) Init() {
 	controller.InitRooms()
 }
 
-func NewMetricService() *StreamService {
+func NewStreamService() *StreamService {
 	return &StreamService{}
 }

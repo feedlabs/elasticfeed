@@ -1,5 +1,9 @@
 package event
 
+import (
+	"github.com/feedlabs/elasticfeed/elasticfeed/model"
+)
+
 const (
 	EVENT_STORING      = "storing"
 	EVENT_PROCESSING   = "processing"
@@ -13,6 +17,7 @@ const (
 )
 
 type EventManager struct {
+	engine model.Elasticfeed
 	events map[string]interface {}
 }
 
@@ -40,7 +45,7 @@ func (this *EventManager) GetEventsMap() map[string]interface{} {
 	}
 }
 
-func NewEventManager() *EventManager {
+func NewEventManager(engine model.Elasticfeed) model.EventManager {
 	e := make(map[string]interface{})
-	return &EventManager{e}
+	return &EventManager{engine, e}
 }

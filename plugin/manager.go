@@ -10,9 +10,13 @@ import (
 	"github.com/feedlabs/elasticfeed/common/config"
 
 	"github.com/mitchellh/osext"
+
+	emodel "github.com/feedlabs/elasticfeed/elasticfeed/model"
 )
 
 type PluginManager struct {
+	engine 			emodel.Elasticfeed
+
 	Indexers        map[string]string
 	Crawlers        map[string]string
 	Sensors         map[string]string
@@ -205,8 +209,9 @@ func (c *PluginManager) pluginClient(path string) *Client {
 	return NewClient(&config)
 }
 
-func NewPluginManager() *PluginManager {
-	pm := &PluginManager{}
+func NewPluginManager(engine emodel.Elasticfeed) emodel.PluginManager {
+
+	pm := &PluginManager{engine, nil, nil, nil, nil, nil, nil, 40000, 41000}
 
 	pm.discover(filepath.Join(config.GetHomeAbsolutePath(), "public/userfiles/plugin/imports"))
 
