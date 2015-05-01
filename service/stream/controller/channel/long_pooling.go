@@ -1,14 +1,12 @@
 package channel
 
 import (
-	"github.com/feedlabs/feedify"
-
 	"github.com/feedlabs/elasticfeed/service/stream/model"
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
 type LongPollingController struct {
-	feedify.Controller
+	DefaultController
 }
 
 func (this *LongPollingController) Join() {

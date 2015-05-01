@@ -11,7 +11,7 @@ import (
 )
 
 type WebSocketController struct {
-	feedify.Controller
+	DefaultController
 }
 
 func (this *WebSocketController) Join() {
