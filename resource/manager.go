@@ -26,13 +26,15 @@ func (this * ResourceManager) Init() {
 }
 
 func (this * ResourceManager) InitStreamCommunicator() {
+	// should bind service-stream-controllers to get handler to channel
+	// should pass it down to listen for events on streaming controllers
 	go this.ResourceStreamManager()
 }
 
 func (this * ResourceManager) ResourceStreamManager() {
 	for {
 		select {
-		case socketEvent := <-room.ResourceEvent:
+		case socketEvent := <-this.engine.GetServiceManager().GetStreamService().GetFeedRoomManager().ResourceEvent:
 
 			go this.ResourceStreamRequest(socketEvent)
 		}

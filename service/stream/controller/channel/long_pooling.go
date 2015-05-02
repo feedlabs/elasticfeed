@@ -20,7 +20,7 @@ func (this *LongPollingController) Join() {
 	sess := room.GlobalSessions.SessionStart(w, r)
 	defer sess.SessionRelease(w)
 
-	room.Join(chid, nil)
+	room.FeedRoom.Join(chid, nil)
 
 	list := make(map[string]interface {})
 	list["response"] = room.NewChannelEvent(room.CHANNEL_JOIN, "system", "join")
@@ -45,7 +45,7 @@ func (this *LongPollingController) Post() {
 
 	ch := make(chan []byte)
 
-	room.ResourceEvent <- room.NewSocketEvent([]byte(data), nil, ch)
+	room.FeedRoom.ResourceEvent <- room.NewSocketEvent([]byte(data), nil, ch)
 
 	response := <-ch
 
@@ -71,7 +71,7 @@ func (this *LongPollingController) Fetch() {
 
 	// Wait for new message(s).
 	ch := make(chan bool)
-	room.WaitingList.PushBack(ch)
+	room.FeedRoom.WaitingList.PushBack(ch)
 	<-ch
 
 	this.Data["json"] = model.GetEvents(int(lastReceived))

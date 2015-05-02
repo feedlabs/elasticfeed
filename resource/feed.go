@@ -124,11 +124,11 @@ func DeleteFeed(id string) (error) {
 }
 
 func ActionReloadFeed(id string) {
-	room.Publish <- room.NewFeedEvent(room.FEED_RELOAD, id, "reload")
+	room.FeedRoom.Publish <- room.NewFeedEvent(room.FEED_RELOAD, id, "reload")
 }
 
 func ActionEmptyFeed(id string) {
-	room.Publish <- room.NewFeedEvent(room.FEED_EMPTY, id, "empty")
+	room.FeedRoom.Publish <- room.NewFeedEvent(room.FEED_EMPTY, id, "empty")
 }
 
 func NewFeed(id string, app *Application, data string, entries int, workflows int) *Feed {

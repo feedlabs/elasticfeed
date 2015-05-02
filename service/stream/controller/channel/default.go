@@ -6,6 +6,4 @@ import (
 
 type DefaultController struct {
 	feedify.Controller
-
-	// should implement FeedRoomManager
 }

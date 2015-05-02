@@ -34,8 +34,8 @@ func (this *WebSocketController) Join() {
 		return
 	}
 
-	room.Join(chid, ws)
-	defer room.Leave(chid)
+	room.FeedRoom.Join(chid, ws)
+	defer room.FeedRoom.Leave(chid)
 
 	data, _ := json.Marshal(room.NewChannelEvent(room.CHANNEL_JOIN, chid, "join"))
 	ws.WriteMessage(websocket.TextMessage, data)
@@ -46,6 +46,6 @@ func (this *WebSocketController) Join() {
 			return
 		}
 
-		room.ResourceEvent <- room.NewSocketEvent(p, ws, nil)
+		room.FeedRoom.ResourceEvent <- room.NewSocketEvent(p, ws, nil)
 	}
 }
