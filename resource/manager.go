@@ -9,6 +9,7 @@ import (
 	smodel "github.com/feedlabs/elasticfeed/service/stream/model"
 	pmodel "github.com/feedlabs/elasticfeed/plugin/model"
 
+	"github.com/feedlabs/elasticfeed/service/stream"
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
@@ -22,32 +23,61 @@ type ResourceManager struct {
 }
 
 func (this * ResourceManager) Init() {
-	this.InitStreamCommunicator()
+	this.BindServiceEvents()
 }
 
-func (this * ResourceManager) InitStreamCommunicator() {
+func (this * ResourceManager) BindServiceEvents() {
 	// should bind service-stream-controllers to get handler to channel
 	// should pass it down to listen for events on streaming controllers
-	go this.ResourceStreamManager()
+	go this.BindStreamServiceEvents()
 }
 
-func (this * ResourceManager) ResourceStreamManager() {
+func (this * ResourceManager) GetStreamService() *stream.StreamService {
+	return this.GetEngine().GetServiceManager().GetStreamService()
+}
+
+func (this * ResourceManager) GetEngine() emodel.Elasticfeed {
+	return this.engine
+}
+
+func (this * ResourceManager) BindStreamServiceEvents() {
+
 	for {
 		select {
-		case socketEvent := <-this.engine.GetServiceManager().GetStreamService().GetFeedRoomManager().ResourceEvent:
+		case socketEvent := <-this.GetStreamService().GetFeedRoomManager().ResourceEvent:
 
-			go this.ResourceStreamRequest(socketEvent)
+			action := socketEvent.ActionId
+
+			switch {
+			case action == room.FEED_ENTRY_INIT || action == room.FEED_ENTRY_MORE:
+				go this.ResourcePipelineRound(socketEvent)
+			}
+
 		}
 	}
 }
 
-func (this * ResourceManager) ResourceStreamRequest(socketEvent smodel.SocketEvent) {
+func (this * ResourceManager) ResourceFeedMaintainer() {
+	// will run WorkflowManager with Scenario plugins
+}
+
+func (this * ResourceManager) ResourceNewEntity(id int) {
+	// will run WorkflowManager with Indexer and Crawler plugins
+}
+
+func (this * ResourceManager) ResourceNewMetric(socketEvent smodel.SocketEvent) {
+	// will run WorkflowManager with Scenario plugins
+}
+
+func (this * ResourceManager) ResourcePipelineRound(socketEvent smodel.SocketEvent) {
+
+	// will run WorkflowManager with Pipeline plugins
 
 	// *******************************************************************
-	// here should be implemented REAL CONTENT IMPROVEMENT
+	// REAL CONTENT IMPROVEMENT
 	// based on connected user (viewer) or users (audience)!: habits, behaviours, stats etc.
-	// PIPE: filtering, customization
-	// SCENARIO-ENGINE: scenarios
+	// WORKFLOW PIPE: filtering, customization
+	// WORKFLOW SCENARIO-ENGINE: scenarios SHOULD BE IMPLEMENTED ON METRIC SERVICE
 	// *******************************************************************
 
 	// *******************************************************************

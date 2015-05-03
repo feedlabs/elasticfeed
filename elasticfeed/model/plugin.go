@@ -7,5 +7,4 @@ import (
 type PluginManager interface {
 
 	LoadPipeline(name string) (pmodel.Pipeline, error)
-
 }

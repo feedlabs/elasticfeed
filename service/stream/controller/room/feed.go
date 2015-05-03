@@ -61,7 +61,7 @@ func NewSocketEvent(msg []byte, ws *websocket.Conn, ch chan []byte) model.Socket
 
 	json.Unmarshal(msg, &data)
 
-	return model.SocketEvent{ws, ch, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
+	return model.SocketEvent{ws, ch, 4, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
 }
 
 func NewChannelEvent(ep model.EventType, user, msg string) model.Event {

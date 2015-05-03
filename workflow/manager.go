@@ -14,6 +14,24 @@ type WorkflowManager struct {
 	template  interface{}
 }
 
+/**
+ - MOVE FEED ROOM MANAGER EVENT LOGIC FROM RESOURCE MANAGER TO WORKFLOW MANAGER CLASS
+
+ - IMPLEMENT EVENTS TRIGGERS
+
+ - IMPLEMENT STREAM SERVICE EVENT BINDING
+ - IMPLEMENT STORE SERVICE EVENT BINDING
+
+ - IMPLEMENT LOCAL CRON JOB FOR
+   - SENSOR REFRESH EVENT
+   - FEED MAINTAINER EVENT
+
+ - IMPLEMENT RESOURCE API WHICH
+   - CAN BE PASSED TO PLUGINS
+   - CAN PROVIDE/CREATE DATA
+
+ */
+
 func (this *WorkflowManager) InitTemplate(t interface{}) {
 	// verify event availability into EventsManger
 	// verify hooks workflows
