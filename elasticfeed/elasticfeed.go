@@ -43,6 +43,7 @@ func (this *Elasticfeed) GetWorkflowManager() model.WorkflowManager {
 func (this *Elasticfeed) Run() {
 	this.GetResourceManager().Init()
 	this.GetServiceManager().Init()
+	this.GetWorkflowManager().Init()
 
 	feedify.SetStaticPath("/static", "public")
 	feedify.Run()
@@ -55,7 +56,7 @@ func NewElasticfeed() model.Elasticfeed {
 	engine.R = resource.NewResourceManager(engine)
 	engine.E = event.NewEventManager(engine)
 	engine.P = plugin.NewPluginManager(engine)
-	engine.W = workflow.NewWorkflowManager(nil, engine.P, engine.E)
+	engine.W = workflow.NewWorkflowManager(engine, nil, engine.P, engine.E)
 	engine.S = service.NewServiceManager(engine)
 
 	return engine

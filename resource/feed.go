@@ -124,10 +124,14 @@ func DeleteFeed(id string) (error) {
 }
 
 func ActionReloadFeed(id string) {
+	// SHOULD CREATE AND TRIGGER EVENT VIA SYSTEM EVENT MANAGER
+	// STREAM SERVICE SHOUD LISTEN FOR IT AND STREAM TO CONNECTED CLIENTS
 	room.FeedRoom.Publish <- room.NewFeedEvent(room.FEED_RELOAD, id, "reload")
 }
 
 func ActionEmptyFeed(id string) {
+	// SHOULD CREATE AND TRIGGER EVENT VIA SYSTEM EVENT MANAGER
+	// STREAM SERVICE SHOUD LISTEN FOR IT AND STREAM TO CONNECTED CLIENTS
 	room.FeedRoom.Publish <- room.NewFeedEvent(room.FEED_EMPTY, id, "empty")
 }
 

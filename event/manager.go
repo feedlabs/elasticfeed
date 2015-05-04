@@ -11,14 +11,30 @@ const (
 	EVENT_LEARNING     = "learning"
 
 	EVENT_STORING_CREATE_ENTRY       = "create-entry"
+	EVENT_STORING_CREATE_VIEWER      = "create-viewer"
 	EVENT_PROCESSING_FEED_MAINTAINER = "feed-maintainer"
+	EVENT_PROCESSING_SENSOR_UPDATE   = "sensor-update"
 	EVENT_DISTRIBUTING_PUSH_ENTRY    = "push-entry"
 	EVENT_LEARNING_CREATE_METRIC     = "create-metric"
 )
 
+/**
+	- COULD DEFINE EVENTS
+	- COULD TRIGGER ON BINDED LISTENERS
+
+	- COULD DEFINE ALARM CLOCK
+	- COULD DEFINE INTERRUPTS
+
+	EVENT
+	- SHOULD HAVE DATA/CALLBACK
+	- SHOULD HAVE TYPE
+	- SHOULD HAVE PARENT
+	- SHOULD HAVE DESTINATION
+ */
+
 type EventManager struct {
 	engine model.Elasticfeed
-	events map[string]interface {}
+	events map[string]interface{}
 }
 
 func (this *EventManager) On(name string, callback func(event *Event)) {
