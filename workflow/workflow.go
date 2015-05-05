@@ -10,6 +10,12 @@ type WorkflowController struct {
 	manager *WorkflowManager
 
 	profiler *model.Profiler
+
+	IndexerTimeout     int
+	CrawlerTimeout     int
+	SensorTimeout      int
+	PipelineTimeout    int
+	ScenarioTimeout    int
 }
 
 func (this *WorkflowController) GetManager() *WorkflowManager {
@@ -42,7 +48,7 @@ func (this *WorkflowController) DispatchPipelineHook(data interface{}) interface
 func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {
 	data := feed.GetWorkflow().GetProfilerRawData()
 	p := model.NewProfiler(data)
-	w := &WorkflowController{feed, wm, p}
+	w := &WorkflowController{feed, wm, p, 100, 100, 100, 100, 100}
 
 	w.Init()
 

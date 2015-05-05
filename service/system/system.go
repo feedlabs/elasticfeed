@@ -11,6 +11,6 @@ func (this *SystemService) Init() {
 	router.InitPluginRouters()
 }
 
-func NewMetricService() *SystemService {
+func NewSystemService() *SystemService {
 	return &SystemService{}
 }

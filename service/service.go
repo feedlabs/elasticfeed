@@ -4,14 +4,18 @@ import (
 	"github.com/feedlabs/elasticfeed/service/store"
 	"github.com/feedlabs/elasticfeed/service/stream"
 	"github.com/feedlabs/elasticfeed/service/system"
+
+	"github.com/feedlabs/elasticfeed/elasticfeed/model"
 )
 
 type Service struct {}
 
 type ServiceManager struct {
-	store     *store.DbService
-	stream    *stream.StreamService
-	system    *system.SystemService
+	engine        model.Elasticfeed
+
+	store         *store.DbService
+	stream        *stream.StreamService
+	system        *system.SystemService
 }
 
 func (this *ServiceManager) Init() {
@@ -32,6 +36,11 @@ func (this *ServiceManager) GetSystemService() *system.SystemService {
 	return this.system
 }
 
-func NewServiceManager() *ServiceManager {
-	return &ServiceManager{}
+func NewServiceManager(engine model.Elasticfeed) *ServiceManager {
+
+	store := store.NewDbService()
+	stream := stream.NewStreamService()
+	system := system.NewSystemService()
+
+	return &ServiceManager{engine, store, stream, system}
 }

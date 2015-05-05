@@ -35,8 +35,8 @@ func (this *StatusController) Get() {
 			"mem_sys": strconv.Itoa(int(memstats.Sys)),
 		},
 		"stream": map[string]interface{} {
-			"subscribers": strconv.Itoa(room.Subscribers.Len()),
-			"waitinglist": strconv.Itoa(room.WaitingList.Len()),
+			"subscribers": strconv.Itoa(room.FeedRoom.Subscribers.Len()),
+			"waitinglist": strconv.Itoa(room.FeedRoom.WaitingList.Len()),
 			"archived_queue": strconv.Itoa(model.Archive.Len()),
 		},
 	}

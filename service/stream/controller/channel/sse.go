@@ -1,13 +1,11 @@
 package channel
 
 import (
-	"github.com/feedlabs/feedify"
-
 //	"github.com/mroth/sseserver"
 )
 
 type SSEController struct {
-	feedify.Controller
+	DefaultController
 }
 
 func (this *SSEController) Join() {

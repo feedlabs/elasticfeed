@@ -87,7 +87,9 @@ func AddEntry(feedEntry Entry, FeedId string, ApplicationId string, OrgId string
 
 	// notify
 	d, _ := json.Marshal(feedEntry)
-	room.Publish <- room.NewFeedEvent(room.FEED_ENTRY_NEW, feed.Id, string(d))
+	// SHOULD CREATE AND TRIGGER EVENT VIA SYSTEM EVENT MANAGER
+	// STREAM SERVICE SHOUD LISTEN FOR IT AND STREAM TO CONNECTED CLIENTS
+	room.FeedRoom.Publish <- room.NewFeedEvent(room.FEED_ENTRY_NEW, feed.Id, string(d))
 
 	return feedEntry.Id, nil
 }
@@ -104,7 +106,9 @@ func UpdateEntry(id string, FeedId string, ApplicationId string, OrgId string, d
 
 	// notify
 	d, _ := json.Marshal(entry)
-	room.Publish <- room.NewEntryEvent(room.ENTRY_UPDATE, entry.Id, string(d))
+	// SHOULD CREATE AND TRIGGER EVENT VIA SYSTEM EVENT MANAGER
+	// STREAM SERVICE SHOUD LISTEN FOR IT AND STREAM TO CONNECTED CLIENTS
+	room.FeedRoom.Publish <- room.NewEntryEvent(room.ENTRY_UPDATE, entry.Id, string(d))
 
 	_id, _ := strconv.Atoi(entry.Id)
 	return storage.SetPropertyNode(_id, "data", data)
@@ -126,7 +130,9 @@ func DeleteEntry(id string, FeedId string, ApplicationId string, OrgId string) (
 
 	// notify
 	d, _ := json.Marshal(entry)
-	room.Publish <- room.NewEntryEvent(room.ENTRY_DELETE, entry.Id, string(d))
+	// SHOULD CREATE AND TRIGGER EVENT VIA SYSTEM EVENT MANAGER
+	// STREAM SERVICE SHOUD LISTEN FOR IT AND STREAM TO CONNECTED CLIENTS
+	room.FeedRoom.Publish <- room.NewEntryEvent(room.ENTRY_DELETE, entry.Id, string(d))
 
 	return storage.DeleteNode(_id)
 }

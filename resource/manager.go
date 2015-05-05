@@ -1,13 +1,24 @@
 package resource
 
-type ResourceManager struct {}
+import (
+	emodel "github.com/feedlabs/elasticfeed/elasticfeed/model"
+	"github.com/feedlabs/elasticfeed/service/stream"
+)
 
-func (this * ResourceManager) Init() {
-	InitStorage()
-	InitResources()
-	InitStreamCommunicator()
+type ResourceManager struct {
+	engine emodel.Elasticfeed
 }
 
-func NewResourceManager() *ResourceManager {
-	return &ResourceManager{}
+func (this * ResourceManager) Init() {}
+
+func (this * ResourceManager) GetStreamService() *stream.StreamService {
+	return this.GetEngine().GetServiceManager().GetStreamService()
+}
+
+func (this * ResourceManager) GetEngine() emodel.Elasticfeed {
+	return this.engine
+}
+
+func NewResourceManager(engine emodel.Elasticfeed) emodel.ResourceManager {
+	return &ResourceManager{engine}
 }

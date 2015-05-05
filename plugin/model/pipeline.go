@@ -4,7 +4,7 @@ type Pipeline interface {
 
 	Prepare(...interface{}) ([]string, error)
 
-	Run(cache Cache) (Artifact, error)
+	Run(data interface {}) (interface {}, error)
 
 	Cancel()
 }

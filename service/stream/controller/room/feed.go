@@ -37,16 +37,7 @@ const (
 )
 
 var (
-	Subscribe     = make(chan Subscriber, 10)
-	Unsubscribe   = make(chan string, 10)
-	Publish       = make(chan model.Event, 10)
-	ResourceEvent = make(chan model.SocketEvent, 10)
-
-	WaitingList = list.New()
-	Subscribers = list.New()
-
-	FeedSubscribers = make(map[string]interface{})
-
+	FeedRoom *FeedRoomManager
 	GlobalSessions *session.Manager
 )
 
@@ -70,7 +61,7 @@ func NewSocketEvent(msg []byte, ws *websocket.Conn, ch chan []byte) model.Socket
 
 	json.Unmarshal(msg, &data)
 
-	return model.SocketEvent{ws, ch, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
+	return model.SocketEvent{ws, ch, 4, data["feedId"].(string), data["appId"].(string), data["orgId"].(string)}
 }
 
 func NewChannelEvent(ep model.EventType, user, msg string) model.Event {
@@ -102,78 +93,103 @@ func NewEntryEvent(ep model.EventType, user, msg string) model.Event {
 	return NewFeedEvent(FEED_ENTRY_MESSAGE, "*", string(data))
 }
 
-func Join(user string, ws *websocket.Conn) {
-	Subscribe <- Subscriber{Name: user, Conn: ws}
+type FeedRoomManager struct {
+	Subscribe     chan Subscriber
+	Unsubscribe   chan string
+	Publish       chan model.Event
+
+	ResourceEvent chan model.SocketEvent
+
+	WaitingList        *list.List
+	Subscribers        *list.List
 }
 
-func Leave(user string) {
-	Unsubscribe <- user
+func (this *FeedRoomManager) Join(user string, ws *websocket.Conn) {
+	this.Subscribe <- Subscriber{Name: user, Conn: ws}
 }
 
-func FeedManager() {
-	for {
-		select {
+func (this *FeedRoomManager) Leave(user string) {
+	this.Unsubscribe <- user
+}
 
-		case sub := <-Subscribe:
-			Subscribers.PushBack(sub)
+func (this *FeedRoomManager) Run() {
+	go func() {
+		for {
+			select {
 
-		case event := <-Publish:
+			case sub := <-this.Subscribe:
+				this.Subscribers.PushBack(sub)
 
-			// here must be handled where to send notification
-			// - or to all sockets
-			// - or to specific client/feed (single socket)
-			// - or to public feed (multiple sockets)
-			//
-			// could be setup by resource manager go routine
-			// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
+			case event := <-this.Publish:
 
-			model.NewArchive(event)
+				// here must be handled where to send notification
+				// - or to all sockets
+				// - or to specific client/feed (single socket)
+				// - or to public feed (multiple sockets)
+				//
+				// could be setup by resource manager go routine
+				// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
 
-			for ch := WaitingList.Back(); ch != nil; ch = ch.Prev() {
-				ch.Value.(chan bool) <- true
-				WaitingList.Remove(ch)
-			}
+				model.NewArchive(event)
 
-			broadcastWebSocket(event)
+				for ch := this.WaitingList.Back(); ch != nil; ch = ch.Prev() {
+					ch.Value.(chan bool) <- true
+					this.WaitingList.Remove(ch)
+				}
 
-		case unsub := <-Unsubscribe:
-			for sub := Subscribers.Front(); sub != nil; sub = sub.Next() {
-				if sub.Value.(Subscriber).Name == unsub {
-					Subscribers.Remove(sub)
+				this.BroadcastWebSocket(event)
 
-					ws := sub.Value.(Subscriber).Conn
-					if ws != nil {
-						ws.Close()
-						feedify.Error("WebSocket closed:", unsub)
+			case unsub := <-this.Unsubscribe:
+				for sub := this.Subscribers.Front(); sub != nil; sub = sub.Next() {
+					if sub.Value.(Subscriber).Name == unsub {
+						this.Subscribers.Remove(sub)
+
+						ws := sub.Value.(Subscriber).Conn
+						if ws != nil {
+							ws.Close()
+							feedify.Error("WebSocket closed:", unsub)
+						}
+						this.Publish <- NewChannelEvent(CHANNEL_LEAVE, unsub, "")
+						break
 					}
-					Publish <- NewChannelEvent(CHANNEL_LEAVE, unsub, "")
-					break
 				}
 			}
 		}
-	}
+	}()
 }
 
-func broadcastWebSocket(event model.Event) {
+func (this *FeedRoomManager) BroadcastWebSocket(event model.Event) {
 	data, err := json.Marshal(event)
 	if err != nil {
 		feedify.Error("Fail to marshal event:", err)
 		return
 	}
 
-	for sub := Subscribers.Front(); sub != nil; sub = sub.Next() {
+	for sub := this.Subscribers.Front(); sub != nil; sub = sub.Next() {
 		ws := sub.Value.(Subscriber).Conn
 		if ws != nil {
 			if ws.WriteMessage(websocket.TextMessage, data) != nil {
-				Unsubscribe <- sub.Value.(Subscriber).Name
+				this.Unsubscribe <- sub.Value.(Subscriber).Name
 			}
 		}
 	}
 }
 
-func InitFeedRoom() {
-	GlobalSessions, _ = session.NewManager("memory", `{"cookieName":"elasticfeedsessid","gclifetime":3600}`)
+func NewFeedRoomManager() *FeedRoomManager {
+	subscribe := make(chan Subscriber, 10)
+	unsubscribe := make(chan string, 10)
+	publish := make(chan model.Event, 10)
+	resourceEvent := make(chan model.SocketEvent, 10)
 
+	waitingList := list.New()
+	subscribers := list.New()
+
+	FeedRoom = &FeedRoomManager{subscribe, unsubscribe, publish, resourceEvent, waitingList, subscribers}
+
+	return FeedRoom
+}
+
+func InitSessionManager() {
+	GlobalSessions, _ = session.NewManager("memory", `{"cookieName":"elasticfeedsessid","gclifetime":3600}`)
 	go GlobalSessions.GC()
-	go FeedManager()
 }

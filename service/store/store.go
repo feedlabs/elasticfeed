@@ -12,6 +12,6 @@ func (this *DbService) Init() {
 	controller.InitService()
 }
 
-func NewMetricService() *DbService {
+func NewDbService() *DbService {
 	return &DbService{}
 }
