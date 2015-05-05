@@ -12,5 +12,7 @@ type Elasticfeed interface {
 
 	GetWorkflowManager() WorkflowManager
 
+	GetConfig() map[string]interface{}
+
 	Run()
 }

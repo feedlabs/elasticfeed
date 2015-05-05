@@ -40,6 +40,10 @@ func (this *Elasticfeed) GetWorkflowManager() model.WorkflowManager {
 	return this.W
 }
 
+func (this *Elasticfeed) GetConfig() map[string]interface {} {
+	return make(map[string]interface {})
+}
+
 func (this *Elasticfeed) Run() {
 	this.GetResourceManager().Init()
 	this.GetServiceManager().Init()
@@ -56,7 +60,7 @@ func NewElasticfeed() model.Elasticfeed {
 	engine.R = resource.NewResourceManager(engine)
 	engine.E = event.NewEventManager(engine)
 	engine.P = plugin.NewPluginManager(engine)
-	engine.W = workflow.NewWorkflowManager(engine, nil, engine.P, engine.E)
+	engine.W = workflow.NewWorkflowManager(engine)
 	engine.S = service.NewServiceManager(engine)
 
 	return engine

@@ -19,7 +19,7 @@ import (
 
 var (
 	pluginManagerAnn pmodel.Pipeline
-	entryListCache []*resource.Entry
+	entryListCache map[string][]*resource.Entry
 )
 
 type WorkflowManager struct {
@@ -128,7 +128,11 @@ func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEven
 
 	// COLLECTING ENTRIES
 	if entryListCache == nil {
-		entryListCache, _ = resource.GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+		entryListCache = make(map[string][]*resource.Entry)
+	}
+
+	if entryListCache[socketEvent.FeedId] == nil {
+		entryListCache[socketEvent.FeedId], _ = resource.GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
 	}
 
 	// WORKFLOW TIMEOUT
@@ -171,7 +175,7 @@ func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEven
 		list = newEntryList
 
 		results <- list
-	}(entryListCache, socketEvent)
+	}(entryListCache[socketEvent.FeedId], socketEvent)
 
 	select {
 
@@ -218,13 +222,10 @@ func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEven
 
 }
 
-func NewWorkflowManager(engine emodel.Elasticfeed, tpl interface{}, pm model.PluginManager, em model.EventManager) *WorkflowManager {
-	// load template if not passed
-	if tpl == nil {
-		tpl = make(map[string]interface {})
-	}
+func NewWorkflowManager(engine emodel.Elasticfeed) *WorkflowManager {
+	tpl := engine.GetConfig()
 
-	wm := &WorkflowManager{engine, pm, em, nil, nil}
+	wm := &WorkflowManager{engine, engine.GetPluginManager(), engine.GetEventManager(), nil, nil}
 	wm.InitTemplate(tpl)
 
 	return wm
