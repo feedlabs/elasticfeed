@@ -1,6 +1,8 @@
 package workflow
 
 import (
+	"fmt"
+
 	"encoding/json"
 	"time"
 	"math/rand"
@@ -34,6 +36,9 @@ type WorkflowManager struct {
 
 func (this *WorkflowManager) Init() {
 	this.BindServiceEvents()
+
+	this.InstallSensorsSchedule()
+	this.InstallFeedMaintenanceSchedule()
 }
 
 /**
@@ -69,7 +74,7 @@ func (this *WorkflowManager) GetEngine() emodel.Elasticfeed {
 }
 
 func (this *WorkflowManager) InitTemplate(t interface{}) {
-	// verify event availability into EventsManger
+	// verify event availability into EventsManager
 	// verify hooks workflows
 	this.template = t
 }
@@ -179,7 +184,7 @@ func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEven
 
 	select {
 
-		// IF PIPE TAKES TOO MUCH TIME, DATA DELAYED
+	// IF PIPE TAKES TOO MUCH TIME, DATA DELAYED
 	case <-timeout:
 
 		event := room.NewFeedEvent(room.FEED_ENTRY_NEW, socketEvent.FeedId, "{Content:\"tiemout\"}")
@@ -195,16 +200,16 @@ func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEven
 			socketEvent.Ch <- data
 		}
 
-		// IF DATA ARRIVES WITHOUT DELAY
+	// IF DATA ARRIVES WITHOUT DELAY
 	case list := <-results:
 
-		// *********************************************************************
-		// register socket handler
-		// needs to send notiffication to long pooling + ws
-		// join should generate uniqe ID and client should use it
-		// maybe sessionID could be as uniqeID ?
-		// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
-		// *********************************************************************
+	// *********************************************************************
+	// register socket handler
+	// needs to send notiffication to long pooling + ws
+	// join should generate uniqe ID and client should use it
+	// maybe sessionID could be as uniqeID ?
+	// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
+	// *********************************************************************
 
 		d, _ := json.Marshal(list)
 		event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
@@ -219,7 +224,22 @@ func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEven
 		}
 
 	}
+}
 
+func (this *WorkflowManager) InstallFeedMaintenanceSchedule() {
+	e := this.GetEngine().GetEventManager()
+	_ = e.InstallSchedule("feed", "0 12 * * * *", func() error {
+		fmt.Println("hello feed schedule")
+		return nil
+	})
+}
+
+func (this *WorkflowManager) InstallSensorsSchedule() {
+	e := this.GetEngine().GetEventManager()
+	_ = e.InstallSchedule("sensor", "0 18 * * * *", func() error {
+		fmt.Println("hello sensor schedule")
+		return nil
+	})
 }
 
 func NewWorkflowManager(engine emodel.Elasticfeed) *WorkflowManager {

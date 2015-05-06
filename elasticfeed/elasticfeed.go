@@ -48,6 +48,7 @@ func (this *Elasticfeed) Run() {
 	this.GetResourceManager().Init()
 	this.GetServiceManager().Init()
 	this.GetWorkflowManager().Init()
+	this.GetEventManager().Init()
 
 	feedify.SetStaticPath("/static", "public")
 	feedify.Run()

@@ -1,21 +1,23 @@
 package event
 
 import (
+	"github.com/astaxie/beego/toolbox"
+
 	"github.com/feedlabs/elasticfeed/elasticfeed/model"
 )
 
 const (
-	EVENT_STORING      = "storing"
-	EVENT_PROCESSING   = "processing"
+	EVENT_STORING = "storing"
+	EVENT_PROCESSING = "processing"
 	EVENT_DISTRIBUTING = "distributing"
-	EVENT_LEARNING     = "learning"
+	EVENT_LEARNING = "learning"
 
-	EVENT_STORING_CREATE_ENTRY       = "create-entry"
-	EVENT_STORING_CREATE_VIEWER      = "create-viewer"
+	EVENT_STORING_CREATE_ENTRY = "create-entry"
+	EVENT_STORING_CREATE_VIEWER = "create-viewer"
 	EVENT_PROCESSING_FEED_MAINTAINER = "feed-maintainer"
-	EVENT_PROCESSING_SENSOR_UPDATE   = "sensor-update"
-	EVENT_DISTRIBUTING_PUSH_ENTRY    = "push-entry"
-	EVENT_LEARNING_CREATE_METRIC     = "create-metric"
+	EVENT_PROCESSING_SENSOR_UPDATE = "sensor-update"
+	EVENT_DISTRIBUTING_PUSH_ENTRY = "push-entry"
+	EVENT_LEARNING_CREATE_METRIC = "create-metric"
 )
 
 /**
@@ -37,6 +39,11 @@ const (
 type EventManager struct {
 	engine model.Elasticfeed
 	events map[string]interface{}
+}
+
+func (this *EventManager) Init() {
+	toolbox.StartTask()
+//	defer toolbox.StopTask()
 }
 
 func (this *EventManager) On(name string, callback func(event *Event)) {
@@ -61,6 +68,14 @@ func (this *EventManager) GetEventsMap() map[string]interface{} {
 		EVENT_DISTRIBUTING: []string{EVENT_DISTRIBUTING_PUSH_ENTRY},
 		EVENT_LEARNING: []string{EVENT_LEARNING_CREATE_METRIC},
 	}
+}
+
+func (this *EventManager) InstallSchedule(name string, spec string, cb func() error) error {
+	t := toolbox.NewTask(name, spec, cb)
+
+	toolbox.AddTask(name, t)
+
+	return nil
 }
 
 func NewEventManager(engine model.Elasticfeed) model.EventManager {
