@@ -16,6 +16,9 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream"
+
+	jsonutil "github.com/mitchellh/packer/common/json"
+	"github.com/mitchellh/mapstructure"
 )
 
 
@@ -35,6 +38,66 @@ type WorkflowManager struct {
 }
 
 func (this *WorkflowManager) Init() {
+
+	sss := `
+		{
+			"Description":"aaaa-aaaa-aaaa",
+			"storing" : {
+				"new-entry": {
+					"indexers": [
+						{
+							"type": "ann"
+						}
+					],
+					"crawlers": [
+						{
+							"type": "crawler-google"
+						}
+					]
+				}
+			}
+		}
+	`
+	//	var data []byte
+	//	copy(data[:], sss)
+	data := []byte(sss)
+
+	var rawTplInterface interface{}
+	err := jsonutil.Unmarshal(data, &rawTplInterface)
+	if err != nil {
+		fmt.Println(data)
+		fmt.Println(err)
+		return
+	}
+
+	// Decode the raw template interface into the actual rawTemplate
+	// structure, checking for any extranneous keys along the way.
+	var md mapstructure.Metadata
+	var rawTpl rawTemplate
+	decoderConfig := &mapstructure.DecoderConfig{
+		Metadata: &md,
+		Result:   &rawTpl,
+	}
+
+	decoder, err := mapstructure.NewDecoder(decoderConfig)
+	if err != nil {
+		fmt.Println("err2")
+		fmt.Println(err)
+		return
+	}
+
+	err = decoder.Decode(rawTplInterface)
+	if err != nil {
+		fmt.Println("err3")
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(rawTpl)
+	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
+	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
+
+
 	this.BindServiceEvents()
 
 	this.InstallSensorsSchedule()

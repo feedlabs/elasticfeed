@@ -17,10 +17,10 @@ import (
 
 // !!!! wrong place for debuging only
 type ComponentFinder struct {
-//	Builder       BuilderFunc
-//	Hook          HookFunc
-//	PostProcessor PostProcessorFunc
-//	Provisioner   ProvisionerFunc
+	//	Builder       BuilderFunc
+	//	Hook          HookFunc
+	//	PostProcessor PostProcessorFunc
+	//	Provisioner   ProvisionerFunc
 }
 
 // The rawTemplate struct represents the structure of a template read
@@ -28,14 +28,47 @@ type ComponentFinder struct {
 // "interface{}" pointers since we actually don't know what their contents
 // are until we read the "type" field.
 type rawTemplate struct {
-	MinimumPackerVersion string `mapstructure:"min_packer_version"`
+	MinimumElasticfeedVersion string `mapstructure:"min_elasticfeed_version"`
 
 	Description    string
+
+	Storing    struct {
+		NewEntryEvent struct {
+			Indexers []map[string]interface{} `mapstructure:"indexers"`
+			Crawlers []map[string]interface{} `mapstructure:"crawlers"`
+		} `mapstructure:"new-entry"`
+	} `mapstructure:"storing"`
+
+	Processing	struct {
+
+		FeedMaintainerEvent	struct {
+			Scenarios []map[string]interface{} `mapstructure:"scenarios"`
+		} `mapstructure:"feed-maintainer"`
+
+		SensorUpdateEvent struct {
+			Sensors []map[string]interface{} `mapstructure:"sensors"`
+		} `mapstructure:"sensor-update"`
+
+	} `mapstructure:"processing"`
+
+	Distributing	struct {
+		PushEntryEvent struct {
+			Pipelines []map[string]interface{} `mapstructure:"pipelines"`
+		} `mapstructure:"push-entry"`
+	} `mapstructure:"distributing"`
+
+	Learning	struct {
+		PushEntryEvent struct {
+			Scenarios []map[string]interface{} `mapstructure:"scenarios"`
+		} `mapstructure:"new-metric"`
+	} `mapstructure:"learning"`
+
 	Builders       []map[string]interface{}
 	Hooks          map[string][]string
 	Push           PushConfig
 	PostProcessors []interface{} `mapstructure:"post-processors"`
 	Provisioners   []map[string]interface{}
+
 	Variables      map[string]interface{}
 }
 
@@ -141,14 +174,14 @@ func ParseTemplate(data []byte, vars map[string]string) (t *Template, err error)
 		return
 	}
 
-	if rawTpl.MinimumPackerVersion != "" {
+	if rawTpl.MinimumElasticfeedVersion != "" {
 		// TODO: NOPE! Replace this
 		Version := "1.0"
 		vCur, err := version.NewVersion(Version)
 		if err != nil {
 			panic(err)
 		}
-		vReq, err := version.NewVersion(rawTpl.MinimumPackerVersion)
+		vReq, err := version.NewVersion(rawTpl.MinimumElasticfeedVersion)
 		if err != nil {
 			return nil, fmt.Errorf(
 				"'minimum_packer_version' error: %s", err)
@@ -157,7 +190,7 @@ func ParseTemplate(data []byte, vars map[string]string) (t *Template, err error)
 		if vCur.LessThan(vReq) {
 			return nil, fmt.Errorf(
 				"Template requires Packer version %s. "+
-					"Running version is %s.",
+				"Running version is %s.",
 				vReq, vCur)
 		}
 	}
@@ -420,26 +453,26 @@ func ParseTemplateFile(path string, vars map[string]string) (*Template, error) {
 
 func parsePostProcessor(i int, rawV interface{}) (result []map[string]interface{}, errors []error) {
 	switch v := rawV.(type) {
-	case string:
+		case string:
 		result = []map[string]interface{}{
 			{"type": v},
 		}
-	case map[string]interface{}:
+		case map[string]interface{}:
 		result = []map[string]interface{}{v}
-	case []interface{}:
+		case []interface{}:
 		result = make([]map[string]interface{}, len(v))
 		errors = make([]error, 0)
 		for j, innerRawV := range v {
 			switch innerV := innerRawV.(type) {
-			case string:
+				case string:
 				result[j] = map[string]interface{}{"type": innerV}
-			case map[string]interface{}:
+				case map[string]interface{}:
 				result[j] = innerV
-			case []interface{}:
+				case []interface{}:
 				errors = append(
 					errors,
 					fmt.Errorf("Post-processor %d.%d: sequences not allowed to be nested in sequences", i+1, j+1))
-			default:
+				default:
 				errors = append(errors, fmt.Errorf("Post-processor %d.%d is in a bad format.", i+1, j+1))
 			}
 		}
@@ -447,7 +480,7 @@ func parsePostProcessor(i int, rawV interface{}) (result []map[string]interface{
 		if len(errors) == 0 {
 			errors = nil
 		}
-	default:
+		default:
 		result = nil
 		errors = []error{fmt.Errorf("Post-processor %d is in a bad format.", i+1)}
 	}
@@ -472,155 +505,155 @@ func (t *Template) BuildNames() []string {
 // returned.
 //func (t *Template) Build(name string, components *ComponentFinder) (b Build, err error) {
 func (t *Template) Build(name string, components *ComponentFinder) (b interface {}, err error) {
-//	// Setup the Builder
-//	builderConfig, ok := t.Builders[name]
-//	if !ok {
-//		err = fmt.Errorf("No such build found in template: %s", name)
-//		return
-//	}
-//
-//	// We panic if there is no builder function because this is really
-//	// an internal bug that always needs to be fixed, not an error.
-//	if components.Builder == nil {
-//		panic("no builder function")
-//	}
-//
-//	// Panic if there are provisioners on the template but no provisioner
-//	// component finder. This is always an internal error, so we panic.
-//	if len(t.Provisioners) > 0 && components.Provisioner == nil {
-//		panic("no provisioner function")
-//	}
-//
-//	builder, err := components.Builder(builderConfig.Type)
-//	if err != nil {
-//		return
-//	}
-//
-//	if builder == nil {
-//		err = fmt.Errorf("Builder type not found: %s", builderConfig.Type)
-//		return
-//	}
-//
-//	// Process the name
-//	tpl, variables, err := t.NewConfigTemplate()
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	rawName := name
-//	name, err = tpl.Process(name, nil)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	// Gather the Hooks
-//	hooks := make(map[string][]Hook)
-//	for tplEvent, tplHooks := range t.Hooks {
-//		curHooks := make([]Hook, 0, len(tplHooks))
-//
-//		for _, hookName := range tplHooks {
-//			var hook Hook
-//			hook, err = components.Hook(hookName)
-//			if err != nil {
-//				return
-//			}
-//
-//			if hook == nil {
-//				err = fmt.Errorf("Hook not found: %s", hookName)
-//				return
-//			}
-//
-//			curHooks = append(curHooks, hook)
-//		}
-//
-//		hooks[tplEvent] = curHooks
-//	}
-//
-//	// Prepare the post-processors
-//	postProcessors := make([][]coreBuildPostProcessor, 0, len(t.PostProcessors))
-//	for _, rawPPs := range t.PostProcessors {
-//		current := make([]coreBuildPostProcessor, 0, len(rawPPs))
-//		for _, rawPP := range rawPPs {
-//			if rawPP.TemplateOnlyExcept.Skip(rawName) {
-//				continue
-//			}
-//
-//			pp, err := components.PostProcessor(rawPP.Type)
-//			if err != nil {
-//				return nil, err
-//			}
-//
-//			if pp == nil {
-//				return nil, fmt.Errorf("PostProcessor type not found: %s", rawPP.Type)
-//			}
-//
-//			current = append(current, coreBuildPostProcessor{
-//				processor:         pp,
-//				processorType:     rawPP.Type,
-//				config:            rawPP.RawConfig,
-//				keepInputArtifact: rawPP.KeepInputArtifact,
-//			})
-//		}
-//
-//		// If we have no post-processors in this chain, just continue.
-//		// This can happen if the post-processors skip certain builds.
-//		if len(current) == 0 {
-//			continue
-//		}
-//
-//		postProcessors = append(postProcessors, current)
-//	}
-//
-//	// Prepare the provisioners
-//	provisioners := make([]coreBuildProvisioner, 0, len(t.Provisioners))
-//	for _, rawProvisioner := range t.Provisioners {
-//		if rawProvisioner.TemplateOnlyExcept.Skip(rawName) {
-//			continue
-//		}
-//
-//		var provisioner Provisioner
-//		provisioner, err = components.Provisioner(rawProvisioner.Type)
-//		if err != nil {
-//			return
-//		}
-//
-//		if provisioner == nil {
-//			err = fmt.Errorf("Provisioner type not found: %s", rawProvisioner.Type)
-//			return
-//		}
-//
-//		configs := make([]interface{}, 1, 2)
-//		configs[0] = rawProvisioner.RawConfig
-//
-//		if rawProvisioner.Override != nil {
-//			if override, ok := rawProvisioner.Override[name]; ok {
-//				configs = append(configs, override)
-//			}
-//		}
-//
-//		if rawProvisioner.pauseBefore > 0 {
-//			provisioner = &PausedProvisioner{
-//				PauseBefore: rawProvisioner.pauseBefore,
-//				Provisioner: provisioner,
-//			}
-//		}
-//
-//		coreProv := coreBuildProvisioner{provisioner, configs}
-//		provisioners = append(provisioners, coreProv)
-//	}
-//
-//	b = &coreBuild{
-//		name:           name,
-//		builder:        builder,
-//		builderConfig:  builderConfig.RawConfig,
-//		builderType:    builderConfig.Type,
-//		hooks:          hooks,
-//		postProcessors: postProcessors,
-//		provisioners:   provisioners,
-//		variables:      variables,
-//	}
-//
-//	return
+	//	// Setup the Builder
+	//	builderConfig, ok := t.Builders[name]
+	//	if !ok {
+	//		err = fmt.Errorf("No such build found in template: %s", name)
+	//		return
+	//	}
+	//
+	//	// We panic if there is no builder function because this is really
+	//	// an internal bug that always needs to be fixed, not an error.
+	//	if components.Builder == nil {
+	//		panic("no builder function")
+	//	}
+	//
+	//	// Panic if there are provisioners on the template but no provisioner
+	//	// component finder. This is always an internal error, so we panic.
+	//	if len(t.Provisioners) > 0 && components.Provisioner == nil {
+	//		panic("no provisioner function")
+	//	}
+	//
+	//	builder, err := components.Builder(builderConfig.Type)
+	//	if err != nil {
+	//		return
+	//	}
+	//
+	//	if builder == nil {
+	//		err = fmt.Errorf("Builder type not found: %s", builderConfig.Type)
+	//		return
+	//	}
+	//
+	//	// Process the name
+	//	tpl, variables, err := t.NewConfigTemplate()
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//
+	//	rawName := name
+	//	name, err = tpl.Process(name, nil)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//
+	//	// Gather the Hooks
+	//	hooks := make(map[string][]Hook)
+	//	for tplEvent, tplHooks := range t.Hooks {
+	//		curHooks := make([]Hook, 0, len(tplHooks))
+	//
+	//		for _, hookName := range tplHooks {
+	//			var hook Hook
+	//			hook, err = components.Hook(hookName)
+	//			if err != nil {
+	//				return
+	//			}
+	//
+	//			if hook == nil {
+	//				err = fmt.Errorf("Hook not found: %s", hookName)
+	//				return
+	//			}
+	//
+	//			curHooks = append(curHooks, hook)
+	//		}
+	//
+	//		hooks[tplEvent] = curHooks
+	//	}
+	//
+	//	// Prepare the post-processors
+	//	postProcessors := make([][]coreBuildPostProcessor, 0, len(t.PostProcessors))
+	//	for _, rawPPs := range t.PostProcessors {
+	//		current := make([]coreBuildPostProcessor, 0, len(rawPPs))
+	//		for _, rawPP := range rawPPs {
+	//			if rawPP.TemplateOnlyExcept.Skip(rawName) {
+	//				continue
+	//			}
+	//
+	//			pp, err := components.PostProcessor(rawPP.Type)
+	//			if err != nil {
+	//				return nil, err
+	//			}
+	//
+	//			if pp == nil {
+	//				return nil, fmt.Errorf("PostProcessor type not found: %s", rawPP.Type)
+	//			}
+	//
+	//			current = append(current, coreBuildPostProcessor{
+	//				processor:         pp,
+	//				processorType:     rawPP.Type,
+	//				config:            rawPP.RawConfig,
+	//				keepInputArtifact: rawPP.KeepInputArtifact,
+	//			})
+	//		}
+	//
+	//		// If we have no post-processors in this chain, just continue.
+	//		// This can happen if the post-processors skip certain builds.
+	//		if len(current) == 0 {
+	//			continue
+	//		}
+	//
+	//		postProcessors = append(postProcessors, current)
+	//	}
+	//
+	//	// Prepare the provisioners
+	//	provisioners := make([]coreBuildProvisioner, 0, len(t.Provisioners))
+	//	for _, rawProvisioner := range t.Provisioners {
+	//		if rawProvisioner.TemplateOnlyExcept.Skip(rawName) {
+	//			continue
+	//		}
+	//
+	//		var provisioner Provisioner
+	//		provisioner, err = components.Provisioner(rawProvisioner.Type)
+	//		if err != nil {
+	//			return
+	//		}
+	//
+	//		if provisioner == nil {
+	//			err = fmt.Errorf("Provisioner type not found: %s", rawProvisioner.Type)
+	//			return
+	//		}
+	//
+	//		configs := make([]interface{}, 1, 2)
+	//		configs[0] = rawProvisioner.RawConfig
+	//
+	//		if rawProvisioner.Override != nil {
+	//			if override, ok := rawProvisioner.Override[name]; ok {
+	//				configs = append(configs, override)
+	//			}
+	//		}
+	//
+	//		if rawProvisioner.pauseBefore > 0 {
+	//			provisioner = &PausedProvisioner{
+	//				PauseBefore: rawProvisioner.pauseBefore,
+	//				Provisioner: provisioner,
+	//			}
+	//		}
+	//
+	//		coreProv := coreBuildProvisioner{provisioner, configs}
+	//		provisioners = append(provisioners, coreProv)
+	//	}
+	//
+	//	b = &coreBuild{
+	//		name:           name,
+	//		builder:        builder,
+	//		builderConfig:  builderConfig.RawConfig,
+	//		builderType:    builderConfig.Type,
+	//		hooks:          hooks,
+	//		postProcessors: postProcessors,
+	//		provisioners:   provisioners,
+	//		variables:      variables,
+	//	}
+	//
+	//	return
 	return nil, nil
 }
 
