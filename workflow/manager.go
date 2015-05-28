@@ -41,7 +41,7 @@ func (this *WorkflowManager) Init() {
 
 	sss := `
 		{
-			"Description":"aaaa-aaaa-aaaa",
+			"description":"aaaa-aaaa-aaaa",
 			"storing" : {
 				"new-entry": {
 					"indexers": [
@@ -105,6 +105,7 @@ func (this *WorkflowManager) Init() {
 }
 
 /**
+	TODO:
 	MAYBE COULD BIND TO "SYSTEM EVENT MANAGER"
 	- COULD BIND TO RESOURCE EVENTS: NEW ENTRY, NEW METRIC, NEW VIEWER
 	- COULD BIND TO CRON JOBS: FEED MAINTAINER, SENSORS UPDATE
@@ -113,19 +114,20 @@ func (this *WorkflowManager) Init() {
  */
 
 /**
- - IMPLEMENT EVENTS TRIGGERS
+	TODO:
 
- - IMPLEMENT STREAM SERVICE EVENT/HOOKS BINDING (LISTEN TO EVENTS AND HOOKS ON STREAM SERVICE)
- - IMPLEMENT STORE SERVICE EVENT/HOOKS BINDING (SHOULD BE DONE BY "SYSTEM EVENTS MANAGER")
+	 - IMPLEMENT EVENTS TRIGGERS
 
- - IMPLEMENT LOCAL CRON JOB FOR ("SYSTEM EVENTS MANAGER")
-   - SENSOR REFRESH EVENT
-   - FEED MAINTAINER EVENT
+	 - IMPLEMENT STREAM SERVICE EVENT/HOOKS BINDING (LISTEN TO EVENTS AND HOOKS ON STREAM SERVICE)
+	 - IMPLEMENT STORE SERVICE EVENT/HOOKS BINDING (SHOULD BE DONE BY "SYSTEM EVENTS MANAGER")
 
- - IMPLEMENT RESOURCE API WHICH
-   - CAN BE PASSED TO PLUGINS
-   - CAN PROVIDE/CREATE DATA
+	 - IMPLEMENT LOCAL CRON JOB FOR ("SYSTEM EVENTS MANAGER")
+	   - SENSOR REFRESH EVENT
+	   - FEED MAINTAINER EVENT
 
+	 - IMPLEMENT RESOURCE API WHICH
+	   - CAN BE PASSED TO PLUGINS
+	   - CAN PROVIDE/CREATE DATA
  */
 
 func (this *WorkflowManager) GetStreamService() *stream.StreamService {
@@ -173,6 +175,8 @@ func (this *WorkflowManager) BindStreamServiceEvents() {
 }
 
 func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEvent) {
+
+	// TODO:
 
 	// will run WorkflowManager with Pipeline plugins
 

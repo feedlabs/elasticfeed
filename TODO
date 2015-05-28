@@ -1,0 +1,30 @@
+
+TODO:
+
+- workflow/template
+- metrics/stream
+
+- plugin ANN/pipeline ANN/scenario Location+weather/sensor PHOTO/indexer
+
+- exclude metric from streaming by re-integration
+
+- load Workflowfile by FeedID
+- parse Workflowfile with templating
+- load WorkflowController with Workflowfile
+- add WorkflowController to WorkflowManager
+- implement SystemEvents
+- bind Workflow to SystemEvents
+
+- metrics manager: send from UI, store
+
+- entry logic: metrics
+- viewer logic: metrics-for-entry
+
+- upload and run plugin
+
+- later needs pass as argument
+ - user/viewer context (storage, analytics, brains)
+ - internal api / communicator for accessing API resources
+ - artifacts (for plugins in chain)
+ - cache
+ - plugin manager (for metrics)

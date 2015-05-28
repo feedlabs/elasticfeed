@@ -31,6 +31,7 @@ func (this *WorkflowController) GetProfiler() *model.Profiler {
 }
 
 func (this *WorkflowController) Init() {
+	// TODO:
 	// verify Feed.Workflowfile stricture; does match WorkflowManager Templating
 	// verify plugins availability: this.manager.findPlugin()
 	// run Plugins if require specific Profiler
