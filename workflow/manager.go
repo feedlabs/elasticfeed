@@ -16,9 +16,6 @@ import (
 
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream"
-
-	jsonutil "github.com/mitchellh/packer/common/json"
-	"github.com/mitchellh/mapstructure"
 )
 
 
@@ -39,65 +36,13 @@ type WorkflowManager struct {
 
 func (this *WorkflowManager) Init() {
 
-	sss := `
-		{
-			"description":"aaaa-aaaa-aaaa",
-			"storing" : {
-				"new-entry": {
-					"indexers": [
-						{
-							"type": "ann"
-						}
-					],
-					"crawlers": [
-						{
-							"type": "crawler-google"
-						}
-					]
-				}
-			}
-		}
-	`
-	//	var data []byte
-	//	copy(data[:], sss)
-	data := []byte(sss)
+	// Testing:
+	org := &resource.Org{"0", "org", "org", 0, 0, 0}
+	app := &resource.Application{"1", org, "", 1}
+	feed := resource.NewFeed("15", app, "", 1, 1)
+	this.CreateFeedWorkflow(feed)
 
-	var rawTplInterface interface{}
-	err := jsonutil.Unmarshal(data, &rawTplInterface)
-	if err != nil {
-		fmt.Println(data)
-		fmt.Println(err)
-		return
-	}
-
-	// Decode the raw template interface into the actual rawTemplate
-	// structure, checking for any extranneous keys along the way.
-	var md mapstructure.Metadata
-	var rawTpl rawTemplate
-	decoderConfig := &mapstructure.DecoderConfig{
-		Metadata: &md,
-		Result:   &rawTpl,
-	}
-
-	decoder, err := mapstructure.NewDecoder(decoderConfig)
-	if err != nil {
-		fmt.Println("err2")
-		fmt.Println(err)
-		return
-	}
-
-	err = decoder.Decode(rawTplInterface)
-	if err != nil {
-		fmt.Println("err3")
-		fmt.Println(err)
-		return
-	}
-
-	fmt.Println(rawTpl)
-	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
-	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
-
-
+	// Testing: bind to ANN plugin with RPS communicator
 	this.BindServiceEvents()
 
 	this.InstallSensorsSchedule()
@@ -146,7 +91,6 @@ func (this *WorkflowManager) InitTemplate(t interface{}) {
 
 func (this *WorkflowManager) CreateFeedWorkflow(feed *resource.Feed) *WorkflowController {
 	w := NewWorkflowController(feed, this)
-	w.Init()
 	this.workflows = append(this.workflows, w)
 	return w
 }
@@ -158,6 +102,13 @@ func (this *WorkflowManager) BindServiceEvents() {
 }
 
 func (this *WorkflowManager) BindStreamServiceEvents() {
+
+	/*
+		- HANDLE API EVENTS LIKE NEW-ENTRY... OR..
+		- BIND TO this.GetStreamService().GetFeedRoomManager().ResourceEvent FOR ANY POSSIBLE EVENTS?
+
+		- MAYBE BIND TO SYSTEM EVENTS?
+	 */
 
 	for {
 		select {

@@ -19,9 +19,16 @@ func GetEntry(plugin *resource.Plugin) (entry map[string]interface{}) {
 		entry["status"] = "error"
 		entry["errors"] = "File path is missing"
 	} else {
-		entry["status"] = "running"
+		entry["status"] = "runable"
 		entry["errors"] = "no errors"
 	}
+
+	runtime := make(map[string]interface{})
+	runtime["workflowBinded"] = 0
+	runtime["workflowCurrent"] = 0
+	runtime["workflowCrashed"] = 0
+
+	entry["runtime"] = runtime
 
 	return entry
 }
