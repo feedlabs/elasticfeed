@@ -59,7 +59,15 @@ package by specifying the `TEST` variable. For example below, only
 
 
 #### Run
-`go run api.go`
+Environment variables
+```
+export ELASTICFEED_PLUGIN_MIN_PORT=40000
+export ELASTICFEED_PLUGIN_MAX_PORT=41000
+```
+Compilation and running
+```
+go run api.go
+```
 
 #### Dependencies
 * `go get github.com/feedlabs/feedify` [repo](https://github.com/feedlabs/feedify)
