@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"github.com/feedlabs/feedify"
 )
 
@@ -30,6 +31,26 @@ func GetPluginStoragePath() string {
 	return feedify.GetConfigKey("plugin-manager::storage")
 }
 
+func GetPluginPortMin() uint {
+	port, err := strconv.ParseUint(feedify.GetConfigKey("plugin-manager::port_min"), 10, 0)
+
+	if err == nil {
+		return uint(port)
+	}
+
+	return 40000
+}
+
+func GetPluginPortMax() uint {
+	port, err := strconv.ParseUint(feedify.GetConfigKey("plugin-manager::port_max"), 10, 0)
+
+	if err == nil {
+		return uint(port)
+	}
+
+	return 41000
+}
+
 func GetHomeAbsolutePath() string {
 	pwd, _ := os.Getwd()
 	return pwd
@@ -43,7 +64,7 @@ func init() {
 		os.Exit(1)
 	}
 
-	path := GetHomeAbsolutePath() + "/" + feedify.GetConfigKey("plugin-manager::storage")
+	path := GetHomeAbsolutePath() + "/" + GetPluginStoragePath()
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			err = os.MkdirAll(path, 0777)

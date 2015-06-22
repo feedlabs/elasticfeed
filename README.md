@@ -59,7 +59,7 @@ package by specifying the `TEST` variable. For example below, only
 
 
 #### Run
-Environment variables
+Environment variables for plugins
 ```
 export ELASTICFEED_PLUGIN_MIN_PORT=40000
 export ELASTICFEED_PLUGIN_MAX_PORT=41000

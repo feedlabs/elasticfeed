@@ -211,9 +211,9 @@ func (c *PluginManager) pluginClient(path string) *Client {
 
 func NewPluginManager(engine emodel.Elasticfeed) emodel.PluginManager {
 
-	pm := &PluginManager{engine, nil, nil, nil, nil, nil, nil, 40000, 41000}
+	pm := &PluginManager{engine, nil, nil, nil, nil, nil, nil, config.GetPluginPortMin(), config.GetPluginPortMax()}
 
-	pm.discover(filepath.Join(config.GetHomeAbsolutePath(), "public/userfiles/plugin/imports"))
+	pm.discover(filepath.Join(config.GetPluginStoragePath()))
 
 	return pm
 }

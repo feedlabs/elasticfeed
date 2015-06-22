@@ -1,7 +1,7 @@
 package workflow
 
 import (
-	"fmt"
+//	"fmt"
 
 	"encoding/json"
 	"time"
@@ -74,8 +74,8 @@ func (this *WorkflowController) Init() {
 	var rawTplInterface interface{}
 	err := jsonutil.Unmarshal(data, &rawTplInterface)
 	if err != nil {
-		fmt.Println(data)
-		fmt.Println(err)
+//		fmt.Println(data)
+//		fmt.Println(err)
 		return
 	}
 
@@ -90,15 +90,15 @@ func (this *WorkflowController) Init() {
 
 	decoder, err := mapstructure.NewDecoder(decoderConfig)
 	if err != nil {
-		fmt.Println("err2")
-		fmt.Println(err)
+//		fmt.Println("err2")
+//		fmt.Println(err)
 		return
 	}
 
 	err = decoder.Decode(rawTplInterface)
 	if err != nil {
-		fmt.Println("err3")
-		fmt.Println(err)
+//		fmt.Println("err3")
+//		fmt.Println(err)
 		return
 	}
 
@@ -108,9 +108,9 @@ func (this *WorkflowController) Init() {
 		- PLUGINS SHOULD BE ABLE TO RUN FOR SPECIFIC WORKFLOW
 	 */
 
-	fmt.Println(rawTpl)
-	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
-	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
+//	fmt.Println(rawTpl)
+//	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
+//	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
 
 }
 
