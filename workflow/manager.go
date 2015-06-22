@@ -3,10 +3,6 @@ package workflow
 import (
 	"fmt"
 
-	"encoding/json"
-	"time"
-	"math/rand"
-
 	"github.com/feedlabs/elasticfeed/elasticfeed/model"
 	"github.com/feedlabs/elasticfeed/resource"
 
@@ -17,7 +13,6 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 	"github.com/feedlabs/elasticfeed/service/stream"
 )
-
 
 var (
 	pluginManagerAnn pmodel.Pipeline
@@ -30,19 +25,14 @@ type WorkflowManager struct {
 	pManager model.PluginManager
 	eManager model.EventManager
 
-	workflows []*WorkflowController
+	workflows map[string]*WorkflowController
 	template  interface{}
 }
 
 func (this *WorkflowManager) Init() {
 
-	// Testing:
-	org := &resource.Org{"0", "org", "org", 0, 0, 0}
-	app := &resource.Application{"1", org, "", 1}
-	feed := resource.NewFeed("15", app, "", 1, 1)
-	this.CreateFeedWorkflow(feed)
+	this.workflows = make(map[string]*WorkflowController)
 
-	// Testing: bind to ANN plugin with RPS communicator
 	this.BindServiceEvents()
 
 	this.InstallSensorsSchedule()
@@ -89,10 +79,9 @@ func (this *WorkflowManager) InitTemplate(t interface{}) {
 	this.template = t
 }
 
-func (this *WorkflowManager) CreateFeedWorkflow(feed *resource.Feed) *WorkflowController {
-	w := NewWorkflowController(feed, this)
-	this.workflows = append(this.workflows, w)
-	return w
+func (this *WorkflowManager) CreateWorkflowFeed(feed *resource.Feed) *WorkflowController {
+	this.workflows[feed.Id] = NewWorkflowController(feed, this)
+	return this.workflows[feed.Id]
 }
 
 func (this *WorkflowManager) BindServiceEvents() {
@@ -125,123 +114,41 @@ func (this *WorkflowManager) BindStreamServiceEvents() {
 	}
 }
 
+func (this *WorkflowManager) ResourceIndexerRound(socketEvent smodel.SocketEvent) {
+}
+
+func (this *WorkflowManager) ResourceCrawlerRound(socketEvent smodel.SocketEvent) {
+}
+
+func (this *WorkflowManager) ResourceSensorRound(socketEvent smodel.SocketEvent) {
+}
+
+func (this *WorkflowManager) ResourceScenarioRound(socketEvent smodel.SocketEvent) {
+}
+
 func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEvent) {
 
-	// TODO:
-
-	// will run WorkflowManager with Pipeline plugins
-
-	// *******************************************************************
-	// REAL CONTENT IMPROVEMENT
-	// based on connected user (viewer) or users (audience)!: habits, behaviours, stats etc.
-	// WORKFLOW PIPE: filtering, customization
-	// WORKFLOW SCENARIO-ENGINE: scenarios SHOULD BE IMPLEMENTED ON METRIC SERVICE
-	// *******************************************************************
-
-	// *******************************************************************
-	// SCENARIO AND RULES/METRICS
-	// should use go routine with time limit to query filter rules
-	// if in specific time there is no rules the results should be sent
-	// client feed. After this the next package should be sent with
-	// rules which entries should be remove/hidden from the view!
-	// *******************************************************************
-
-	timeout := make(chan bool, 1)
-	results := make(chan []*resource.Entry, 1)
-
-	// COLLECTING ENTRIES
-	if entryListCache == nil {
-		entryListCache = make(map[string][]*resource.Entry)
+	workflow, err := this.FindWorkflowByFeedId(socketEvent.FeedId)
+	// create workflow for feed if not existing yet
+	if err != nil {
+		feed, _ := resource.GetFeed(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+		this.CreateWorkflowFeed(feed)
 	}
 
-	if entryListCache[socketEvent.FeedId] == nil {
-		entryListCache[socketEvent.FeedId], _ = resource.GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+	workflow, err = this.FindWorkflowByFeedId(socketEvent.FeedId)
+	if err != nil {
+		fmt.Println("Cannot find Workflow for Feed ID: " + socketEvent.FeedId)
+		return
 	}
 
-	// WORKFLOW TIMEOUT
-	// !! SHOULD BE CONFIGURABLE OVER RUNTIME SETTING
-	// !! DEFAULT VALUE SHOULD BE IN CONFIG FILE
-	go func() {
-		amt := time.Duration(100)
-		time.Sleep(amt * time.Millisecond)
-		timeout <- true
-	}()
+	workflow.ExecutePipelineChain(socketEvent)
+}
 
-	// WORKFLOW PIPELINE
-	go func(list []*resource.Entry, socketEvent smodel.SocketEvent) {
-
-		if pluginManagerAnn == nil {
-			pluginManagerAnn, _ = this.engine.GetPluginManager().LoadPipeline("ann")
-			pluginManagerAnn.Prepare()
-		}
-
-		newList, _ := pluginManagerAnn.Run(list)
-
-		var newEntryList []*resource.Entry
-
-		for _, v := range newList.([]interface{}) {
-			Id := ""
-			Data := ""
-			for k, vv := range v.(map[interface{}]interface{}) {
-				if k == "Id" {
-					Id = vv.(string)
-				}
-				if k == "Data" {
-					Data = vv.(string)
-				}
-			}
-			if Id != "" && Data != "" {
-				newEntryList = append(newEntryList, &resource.Entry{Id, nil, Data})
-			}
-		}
-
-		list = newEntryList
-
-		results <- list
-	}(entryListCache[socketEvent.FeedId], socketEvent)
-
-	select {
-
-	// IF PIPE TAKES TOO MUCH TIME, DATA DELAYED
-	case <-timeout:
-
-		event := room.NewFeedEvent(room.FEED_ENTRY_NEW, socketEvent.FeedId, "{Content:\"tiemout\"}")
-		data, _ := json.Marshal(event)
-
-		if socketEvent.Ws != nil {
-			amt := time.Duration(rand.Intn(500)) * 1000
-			time.Sleep(amt * time.Microsecond)
-			socketEvent.Ws.WriteMessage(1, data)
-		}
-
-		if socketEvent.Ch != nil {
-			socketEvent.Ch <- data
-		}
-
-	// IF DATA ARRIVES WITHOUT DELAY
-	case list := <-results:
-
-	// *********************************************************************
-	// register socket handler
-	// needs to send notiffication to long pooling + ws
-	// join should generate uniqe ID and client should use it
-	// maybe sessionID could be as uniqeID ?
-	// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
-	// *********************************************************************
-
-		d, _ := json.Marshal(list)
-		event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
-		data, _ := json.Marshal(event)
-
-		if socketEvent.Ws != nil {
-			socketEvent.Ws.WriteMessage(1, data)
-		}
-
-		if socketEvent.Ch != nil {
-			socketEvent.Ch <- data
-		}
-
+func (this *WorkflowManager) FindWorkflowByFeedId(id string) (workflow *WorkflowController, err error) {
+	if this.workflows[id] == nil {
+		return nil, fmt.Errorf("Workflow for feedID %s does not exist!", id)
 	}
+	return this.workflows[id], nil
 }
 
 func (this *WorkflowManager) InstallFeedMaintenanceSchedule() {
