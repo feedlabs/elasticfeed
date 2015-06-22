@@ -1,9 +1,7 @@
 package workflow
 
 import (
-	"encoding/json"
-	"time"
-	"math/rand"
+	"fmt"
 
 	"github.com/feedlabs/elasticfeed/elasticfeed/model"
 	"github.com/feedlabs/elasticfeed/resource"
@@ -16,7 +14,6 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream"
 )
 
-
 var (
 	pluginManagerAnn pmodel.Pipeline
 	entryListCache map[string][]*resource.Entry
@@ -28,15 +25,22 @@ type WorkflowManager struct {
 	pManager model.PluginManager
 	eManager model.EventManager
 
-	workflows []*WorkflowController
+	workflows map[string]*WorkflowController
 	template  interface{}
 }
 
 func (this *WorkflowManager) Init() {
+
+	this.workflows = make(map[string]*WorkflowController)
+
 	this.BindServiceEvents()
+
+	this.InstallSensorsSchedule()
+	this.InstallFeedMaintenanceSchedule()
 }
 
 /**
+	TODO:
 	MAYBE COULD BIND TO "SYSTEM EVENT MANAGER"
 	- COULD BIND TO RESOURCE EVENTS: NEW ENTRY, NEW METRIC, NEW VIEWER
 	- COULD BIND TO CRON JOBS: FEED MAINTAINER, SENSORS UPDATE
@@ -45,19 +49,20 @@ func (this *WorkflowManager) Init() {
  */
 
 /**
- - IMPLEMENT EVENTS TRIGGERS
+	TODO:
 
- - IMPLEMENT STREAM SERVICE EVENT/HOOKS BINDING (LISTEN TO EVENTS AND HOOKS ON STREAM SERVICE)
- - IMPLEMENT STORE SERVICE EVENT/HOOKS BINDING (SHOULD BE DONE BY "SYSTEM EVENTS MANAGER")
+	 - IMPLEMENT EVENTS TRIGGERS
 
- - IMPLEMENT LOCAL CRON JOB FOR ("SYSTEM EVENTS MANAGER")
-   - SENSOR REFRESH EVENT
-   - FEED MAINTAINER EVENT
+	 - IMPLEMENT STREAM SERVICE EVENT/HOOKS BINDING (LISTEN TO EVENTS AND HOOKS ON STREAM SERVICE)
+	 - IMPLEMENT STORE SERVICE EVENT/HOOKS BINDING (SHOULD BE DONE BY "SYSTEM EVENTS MANAGER")
 
- - IMPLEMENT RESOURCE API WHICH
-   - CAN BE PASSED TO PLUGINS
-   - CAN PROVIDE/CREATE DATA
+	 - IMPLEMENT LOCAL CRON JOB FOR ("SYSTEM EVENTS MANAGER")
+	   - SENSOR REFRESH EVENT
+	   - FEED MAINTAINER EVENT
 
+	 - IMPLEMENT RESOURCE API WHICH
+	   - CAN BE PASSED TO PLUGINS
+	   - CAN PROVIDE/CREATE DATA
  */
 
 func (this *WorkflowManager) GetStreamService() *stream.StreamService {
@@ -69,16 +74,14 @@ func (this *WorkflowManager) GetEngine() emodel.Elasticfeed {
 }
 
 func (this *WorkflowManager) InitTemplate(t interface{}) {
-	// verify event availability into EventsManger
+	// verify event availability into EventsManager
 	// verify hooks workflows
 	this.template = t
 }
 
-func (this *WorkflowManager) CreateFeedWorkflow(feed *resource.Feed) *WorkflowController {
-	w := NewWorkflowController(feed, this)
-	w.Init()
-	this.workflows = append(this.workflows, w)
-	return w
+func (this *WorkflowManager) CreateWorkflowFeed(feed *resource.Feed) *WorkflowController {
+	this.workflows[feed.Id] = NewWorkflowController(feed, this)
+	return this.workflows[feed.Id]
 }
 
 func (this *WorkflowManager) BindServiceEvents() {
@@ -88,6 +91,13 @@ func (this *WorkflowManager) BindServiceEvents() {
 }
 
 func (this *WorkflowManager) BindStreamServiceEvents() {
+
+	/*
+		- HANDLE API EVENTS LIKE NEW-ENTRY... OR..
+		- BIND TO this.GetStreamService().GetFeedRoomManager().ResourceEvent FOR ANY POSSIBLE EVENTS?
+
+		- MAYBE BIND TO SYSTEM EVENTS?
+	 */
 
 	for {
 		select {
@@ -104,122 +114,57 @@ func (this *WorkflowManager) BindStreamServiceEvents() {
 	}
 }
 
+func (this *WorkflowManager) ResourceIndexerRound(socketEvent smodel.SocketEvent) {
+}
+
+func (this *WorkflowManager) ResourceCrawlerRound(socketEvent smodel.SocketEvent) {
+}
+
+func (this *WorkflowManager) ResourceSensorRound(socketEvent smodel.SocketEvent) {
+}
+
+func (this *WorkflowManager) ResourceScenarioRound(socketEvent smodel.SocketEvent) {
+}
+
 func (this *WorkflowManager) ResourcePipelineRound(socketEvent smodel.SocketEvent) {
 
-	// will run WorkflowManager with Pipeline plugins
-
-	// *******************************************************************
-	// REAL CONTENT IMPROVEMENT
-	// based on connected user (viewer) or users (audience)!: habits, behaviours, stats etc.
-	// WORKFLOW PIPE: filtering, customization
-	// WORKFLOW SCENARIO-ENGINE: scenarios SHOULD BE IMPLEMENTED ON METRIC SERVICE
-	// *******************************************************************
-
-	// *******************************************************************
-	// SCENARIO AND RULES/METRICS
-	// should use go routine with time limit to query filter rules
-	// if in specific time there is no rules the results should be sent
-	// client feed. After this the next package should be sent with
-	// rules which entries should be remove/hidden from the view!
-	// *******************************************************************
-
-	timeout := make(chan bool, 1)
-	results := make(chan []*resource.Entry, 1)
-
-	// COLLECTING ENTRIES
-	if entryListCache == nil {
-		entryListCache = make(map[string][]*resource.Entry)
+	workflow, err := this.FindWorkflowByFeedId(socketEvent.FeedId)
+	// create workflow for feed if not existing yet
+	if err != nil {
+		feed, _ := resource.GetFeed(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+		this.CreateWorkflowFeed(feed)
 	}
 
-	if entryListCache[socketEvent.FeedId] == nil {
-		entryListCache[socketEvent.FeedId], _ = resource.GetEntryList(socketEvent.FeedId, socketEvent.AppId, socketEvent.OrgId)
+	workflow, err = this.FindWorkflowByFeedId(socketEvent.FeedId)
+	if err != nil {
+		fmt.Println("Cannot find Workflow for Feed ID: " + socketEvent.FeedId)
+		return
 	}
 
-	// WORKFLOW TIMEOUT
-	// !! SHOULD BE CONFIGURABLE OVER RUNTIME SETTING
-	// !! DEFAULT VALUE SHOULD BE IN CONFIG FILE
-	go func() {
-		amt := time.Duration(100)
-		time.Sleep(amt * time.Millisecond)
-		timeout <- true
-	}()
+	workflow.ExecutePipelineChain(socketEvent)
+}
 
-	// WORKFLOW PIPELINE
-	go func(list []*resource.Entry, socketEvent smodel.SocketEvent) {
-
-		if pluginManagerAnn == nil {
-			pluginManagerAnn, _ = this.engine.GetPluginManager().LoadPipeline("ann")
-			pluginManagerAnn.Prepare()
-		}
-
-		newList, _ := pluginManagerAnn.Run(list)
-
-		var newEntryList []*resource.Entry
-
-		for _, v := range newList.([]interface{}) {
-			Id := ""
-			Data := ""
-			for k, vv := range v.(map[interface{}]interface{}) {
-				if k == "Id" {
-					Id = vv.(string)
-				}
-				if k == "Data" {
-					Data = vv.(string)
-				}
-			}
-			if Id != "" && Data != "" {
-				newEntryList = append(newEntryList, &resource.Entry{Id, nil, Data})
-			}
-		}
-
-		list = newEntryList
-
-		results <- list
-	}(entryListCache[socketEvent.FeedId], socketEvent)
-
-	select {
-
-		// IF PIPE TAKES TOO MUCH TIME, DATA DELAYED
-	case <-timeout:
-
-		event := room.NewFeedEvent(room.FEED_ENTRY_NEW, socketEvent.FeedId, "{Content:\"tiemout\"}")
-		data, _ := json.Marshal(event)
-
-		if socketEvent.Ws != nil {
-			amt := time.Duration(rand.Intn(500)) * 1000
-			time.Sleep(amt * time.Microsecond)
-			socketEvent.Ws.WriteMessage(1, data)
-		}
-
-		if socketEvent.Ch != nil {
-			socketEvent.Ch <- data
-		}
-
-		// IF DATA ARRIVES WITHOUT DELAY
-	case list := <-results:
-
-		// *********************************************************************
-		// register socket handler
-		// needs to send notiffication to long pooling + ws
-		// join should generate uniqe ID and client should use it
-		// maybe sessionID could be as uniqeID ?
-		// room.FeedSubscribers[socketEvent.FeedId][channelID] = socketEvent
-		// *********************************************************************
-
-		d, _ := json.Marshal(list)
-		event := room.NewFeedEvent(room.FEED_ENTRY_INIT, socketEvent.FeedId, string(d))
-		data, _ := json.Marshal(event)
-
-		if socketEvent.Ws != nil {
-			socketEvent.Ws.WriteMessage(1, data)
-		}
-
-		if socketEvent.Ch != nil {
-			socketEvent.Ch <- data
-		}
-
+func (this *WorkflowManager) FindWorkflowByFeedId(id string) (workflow *WorkflowController, err error) {
+	if this.workflows[id] == nil {
+		return nil, fmt.Errorf("Workflow for feedID %s does not exist!", id)
 	}
+	return this.workflows[id], nil
+}
 
+func (this *WorkflowManager) InstallFeedMaintenanceSchedule() {
+	e := this.GetEngine().GetEventManager()
+	_ = e.InstallSchedule("feed", "0 12 * * * *", func() error {
+		fmt.Println("hello feed schedule")
+		return nil
+	})
+}
+
+func (this *WorkflowManager) InstallSensorsSchedule() {
+	e := this.GetEngine().GetEventManager()
+	_ = e.InstallSchedule("sensor", "0 18 * * * *", func() error {
+		fmt.Println("hello sensor schedule")
+		return nil
+	})
 }
 
 func NewWorkflowManager(engine emodel.Elasticfeed) *WorkflowManager {

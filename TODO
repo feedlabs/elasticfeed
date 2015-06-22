@@ -1,0 +1,56 @@
+
+TODO:
+http://app.ganttpro.com/#!/app/home
+
+Services
+--------
+- workflow/template
+- metrics/stream
+
+Plugins
+-------
+ANN/pipeline ANN/scenario Location+weather/sensor PHOTO/indexer
+- weather: https://github.com/schachmat/wego
+- imagga goclient
+- NOX73/go-neural or fxsjy/gonn
+
+Workflow
+--------
+- load Workflowfile by FeedID
+- parse Workflowfile with templating
+- load WorkflowController with Workflowfile
+- add WorkflowController to WorkflowManager
+- implement SystemEvents
+- bind Workflow to SystemEvents
+
+
+
+More than 70 experts will present examples, standards, methods, strategies,
+and tools needed to deliver the right content, to the right people,
+at the right place and time, on any device.
+
+WHAT IS INTELLIGENT CONTENT?
+
+Simply put, ‘intelligent content’ is content which is not limited to one purpose,
+technology or output. It’s content that is structurally rich and semantically aware,
+and is therefore discoverable, reusable, reconfigurable and adaptable. It’s
+content that helps you and your customers get the job done. It’s content that
+works for you and it’s limited only by your imagination. Learn more about intelligent
+content and how it can benefit your organization.
+
+TOPICS TO BE COVERED
+
+Content Strategy
+Content Engineering
+Content Marketing
+Digital Publishing
+eBooks, Apps, and Mobile
+Structured Authoring
+Adaptive Content
+Language and Culture
+Personalized Content
+Dynamic Publishing
+Content Reuse
+Translation Automation
+Information Visualization
+Big Data and Analytics

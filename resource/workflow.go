@@ -12,6 +12,15 @@ func (this *Workflow) GetRawData() map[string]interface{} {
 }
 
 func (this *Workflow) GetProfilerRawData() map[string]string {
+
+	// workaround - first GetRawData() needs to return real data
+	data :=  make(map[string]string)
+	data["default-profiler"] = "true"
+	data["mem"] = "256"
+	data["cpus"] = "4"
+	data["bandwidth"] = "1000"
+	return data
+
 	return this.GetRawData()["profiler"].(map[string]string)
 }
 

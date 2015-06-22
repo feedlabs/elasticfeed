@@ -5,8 +5,11 @@ type Event struct {
 
 	eventGroup    string
 	eventName     string
+
+	parent        string
+	target        string
 }
 
 func NewEvent(data interface{}) *Event {
-	return &Event{data, "", ""}
+	return &Event{data, "", "", "", ""}
 }
