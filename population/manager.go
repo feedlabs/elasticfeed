@@ -13,8 +13,9 @@ type PopulationManager struct {
 
 func (this *PopulationManager) Init() {
 	this.people = make(map[string]*HumanController)
+	this.societies = make(map[string]*SocietyController)
 }
 
 func NewPopulationManager(engine emodel.Elasticfeed) *PopulationManager {
-	return &PopulationManager{engine, nil}
+	return &PopulationManager{engine, nil, nil}
 }
