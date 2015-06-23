@@ -4,7 +4,7 @@
 ![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/7103145/c5f8d754-e099-11e4-8201-60c7c714c436.png)
 
 #### Internal workflow
-![elasticfeed-overview - mission](https://cloud.githubusercontent.com/assets/1843523/7103001/212978e0-e095-11e4-8b23-091adefe3cb7.png)
+![elasticfeed-overview - mission](https://cloud.githubusercontent.com/assets/1843523/8312097/1666151a-19db-11e5-8d1a-3142980eb05c.png)
 
 #### Development environment
 Create symbolic link from you directory to `GOPATH`
