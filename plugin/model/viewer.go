@@ -3,6 +3,12 @@ package model
 /*
 	TODO:
 
+	**********************************************************
+
+	SHOULD BE BASICALLY A BRIDGE TO PUPULATION/PERSON CLASS
+
+	**********************************************************
+
 	- VIEWER IS USED IN DISTRIBUTION/PIPELINE WORKFLOW
 	- VIEWER IS USED IN LEARNING/EVOLUTION/SCENARIO WORKFLOW
 	- VIEWER IS UPDATED/USED IN SENSOR UPDATE WORKFLOW
@@ -12,7 +18,10 @@ package model
 	*****************************************************************************************
  */
 
-type Viewer interface {
+type IViewer interface {
+}
+
+type Viewer struct {
 }
 
 func (this *Viewer) GetMetrics() {
