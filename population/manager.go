@@ -7,11 +7,11 @@ import (
 type PopulationManager struct {
 	engine emodel.Elasticfeed
 
-	people map[string]*PersonController
+	people map[string]*HumanController
 }
 
 func (this *PopulationManager) Init() {
-	this.people = make(map[string]*PersonController)
+	this.people = make(map[string]*HumanController)
 }
 
 func NewPopulationManager(engine emodel.Elasticfeed) *PopulationManager {

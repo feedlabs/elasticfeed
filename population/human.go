@@ -12,6 +12,6 @@ package population
 	- ...
  */
 
-type PersonController struct {
+type HumanController struct {
 
 }
