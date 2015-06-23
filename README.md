@@ -1,7 +1,7 @@
 ![logo - new page 6](https://cloud.githubusercontent.com/assets/1843523/7351311/b4db8698-ed04-11e4-8a01-a5b72ba55163.png)
 ===========
 #### Overview
-![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/8312097/1666151a-19db-11e5-8d1a-3142980eb05c.png)
+![elasticfeed-overview - server-engine 3](https://cloud.githubusercontent.com/assets/1843523/8316372/d38e7464-19f6-11e5-8170-a1111ce0f31c.png)
 
 #### Internal workflow
 ![elasticfeed-overview - mission](https://cloud.githubusercontent.com/assets/1843523/7103001/212978e0-e095-11e4-8b23-091adefe3cb7.png)
