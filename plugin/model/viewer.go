@@ -32,7 +32,7 @@ func (this *Viewer) GetMetricsStats() {}
 func (this *Viewer) GetMetricsForEntry() {
 
 	/*
-		- ENTRY METRICS FOR SPECIFIC VIEWER
+		- ENTRY METRICS/INDICES FOR SPECIFIC VIEWER
 	 */
 
 }
@@ -40,10 +40,21 @@ func (this *Viewer) GetMetricsForEntry() {
 func (this *Viewer) GetMetricsForFeed() {
 
 	/*
-		- FEED METRICS FOR SPECIFIC VIEWER
+		- FEED METRICS/INDICES FOR SPECIFIC VIEWER
 	 */
 
 }
+
+func (this *Viewer) GetGlobalIndicesForEntry() {
+
+	/*
+		- IT SHOULD BE A PROXY TO RESOURCE-API
+		- IT SHOUD GET ALL MINDICES FOR ENTRY
+	 */
+
+}
+
+func (this *Viewer) GetGlobalIndicesForFeed() {}
 
 func (this *Viewer) GetStorages() {
 
