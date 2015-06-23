@@ -8,6 +8,7 @@ type PopulationManager struct {
 	engine emodel.Elasticfeed
 
 	people map[string]*HumanController
+	societies map[string]*SocietyController
 }
 
 func (this *PopulationManager) Init() {
