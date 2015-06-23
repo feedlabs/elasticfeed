@@ -7,6 +7,7 @@ type ResourceApi struct {
 func (this *ResourceApi) CreateEntryMetric() {}
 func (this *ResourceApi) DeleteEntryMetric() {}
 func (this *ResourceApi) UpdateEntryMetric() {}
+func (this *ResourceApi) GetEntryMetric() {}
 
 func (this *ResourceApi) ClearFeed() {}
 func (this *ResourceApi) ReorderFeed() {}
