@@ -81,3 +81,14 @@ func (this *Viewer) GetCurrentContext() {
 	 */
 
 }
+
+func (this *Viewer) GetEnvironment() {
+
+	/*
+		- SHOULD COMBINE
+		 - CURRENT CONTEXT WITH...
+		 - SENSORS WITH...
+		 - METRICS...
+	 */
+
+}
