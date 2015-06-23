@@ -9,6 +9,7 @@ import (
 
 	"github.com/feedlabs/elasticfeed/plugin/model"
 	"github.com/feedlabs/elasticfeed/resource"
+	"github.com/feedlabs/elasticfeed/population"
 
 	jsonutil "github.com/mitchellh/packer/common/json"
 	"github.com/mitchellh/mapstructure"
@@ -21,6 +22,8 @@ import (
 type WorkflowController struct {
 	feed    *resource.Feed
 	manager *WorkflowManager
+
+	subscribers map[string]*population.HumanController
 
 	profiler *model.Profiler
 
@@ -74,8 +77,8 @@ func (this *WorkflowController) Init() {
 	var rawTplInterface interface{}
 	err := jsonutil.Unmarshal(data, &rawTplInterface)
 	if err != nil {
-//		fmt.Println(data)
-//		fmt.Println(err)
+		//		fmt.Println(data)
+		//		fmt.Println(err)
 		return
 	}
 
@@ -90,15 +93,15 @@ func (this *WorkflowController) Init() {
 
 	decoder, err := mapstructure.NewDecoder(decoderConfig)
 	if err != nil {
-//		fmt.Println("err2")
-//		fmt.Println(err)
+		//		fmt.Println("err2")
+		//		fmt.Println(err)
 		return
 	}
 
 	err = decoder.Decode(rawTplInterface)
 	if err != nil {
-//		fmt.Println("err3")
-//		fmt.Println(err)
+		//		fmt.Println("err3")
+		//		fmt.Println(err)
 		return
 	}
 
@@ -108,9 +111,9 @@ func (this *WorkflowController) Init() {
 		- PLUGINS SHOULD BE ABLE TO RUN FOR SPECIFIC WORKFLOW
 	 */
 
-//	fmt.Println(rawTpl)
-//	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
-//	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
+	//	fmt.Println(rawTpl)
+	//	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
+	//	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
 
 }
 
@@ -230,9 +233,11 @@ func (this *WorkflowController) ExecutePipelineChain(socketEvent smodel.SocketEv
 }
 
 func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {
+	subscribers := make(map[string]*population.HumanController)
+
 	data := feed.GetWorkflow().GetProfilerRawData()
 	p := model.NewProfiler(data)
-	w := &WorkflowController{feed, wm, p, 100, 100, 100, 50, 100}
+	w := &WorkflowController{feed, wm, subscribers, p, 100, 100, 100, 50, 100}
 
 	w.Init()
 
