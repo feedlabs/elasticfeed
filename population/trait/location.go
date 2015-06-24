@@ -1,3 +1,3 @@
-package models
+package trait
 
 type LocationController struct {}

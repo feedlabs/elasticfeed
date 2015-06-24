@@ -17,10 +17,15 @@ package population
 type PVPControler struct {
 
 	/*
+		Basic:
 		- SHOULD LEARNs FROM HUMAN
 		- SHOULD SERVEs HUMAN
 		- SHOULD ADVISEs HUMAN
 		- SHOULD TEACHes HUMAN
+
+		Advnaced:
+		- SHOULD TALK TO OTHER PVPs
+		- SHOULD ANSWER QUESTIONS
 	 */
 
 }
