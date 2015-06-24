@@ -32,7 +32,7 @@ type WorkflowController struct {
 	feed    *resource.Feed
 	manager *WorkflowManager
 
-	subscribers map[string]*population.HumanController
+	population map[string]*population.HumanController
 
 	profiler *model.Profiler
 
@@ -242,23 +242,23 @@ func (this *WorkflowController) ExecutePipelineChain(socketEvent smodel.SocketEv
 }
 
 func (this * WorkflowController) GetHumanByUID(uid string) *population.HumanController {
-	return this.subscribers[uid]
+	return this.population[uid]
 }
 
 func (this * WorkflowController) RegisterHuman(human *population.HumanController) {
-	this.subscribers[human.UID] = human
+	this.population[human.UID] = human
 }
 
 func (this * WorkflowController) UnregisterHuman(human *population.HumanController) {
-	delete(this.subscribers, human.UID)
+	delete(this.population, human.UID)
 }
 
 func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {
-	subscribers := make(map[string]*population.HumanController)
+	population := make(map[string]*population.HumanController)
 
 	data := feed.GetWorkflow().GetProfilerRawData()
 	p := model.NewProfiler(data)
-	w := &WorkflowController{feed, wm, subscribers, p, 100, 100, 100, 50, 100}
+	w := &WorkflowController{feed, wm, population, p, 100, 100, 100, 50, 100}
 
 	w.Init()
 
