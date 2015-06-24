@@ -19,6 +19,15 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
+/*
+	WORKFLOW CONTROLLER SHOULD
+	- REGISTER FEED WORKFLOW
+	- SHOULD STORE SUBSCRIBED HUMANS/VIEWERS
+	 - SHOULD BE ABLE TO READ/WRTIE METRICS/INDICES/STORAGES
+	 - SHOULD BE ABLE TO ACCESS SENSORS STATUS FOR SPECIFIC WORKFLOW
+
+ */
+
 type WorkflowController struct {
 	feed    *resource.Feed
 	manager *WorkflowManager
@@ -230,6 +239,18 @@ func (this *WorkflowController) ExecutePipelineChain(socketEvent smodel.SocketEv
 		}
 
 	}
+}
+
+func (this * WorkflowController) GetHumanByUID(uid string) *population.HumanController {
+	return this.subscribers[uid]
+}
+
+func (this * WorkflowController) RegisterHuman(human *population.HumanController) {
+	this.subscribers[human.UID] = human
+}
+
+func (this * WorkflowController) UnregisterHuman(human *population.HumanController) {
+	delete(this.subscribers, human.UID)
 }
 
 func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {

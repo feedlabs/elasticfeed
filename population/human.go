@@ -18,6 +18,8 @@ const (
 )
 
 type HumanController struct {
+	UID	string
+
 	sex int
 }
 
@@ -30,5 +32,5 @@ func (this *HumanController) SetSex(sex int) {
 }
 
 func NewHumanController() *HumanController {
-	return &HumanController{0}
+	return &HumanController{"0", 0}
 }
