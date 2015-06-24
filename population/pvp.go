@@ -15,6 +15,33 @@ package population
 
 type PVPControler struct {}
 
+// SUPER GOAL: Artificial Intelligence
+func (this *PVPControler) GetAI() {
+	/*
+		SHOULD IMPLEMENT BRIDGE TO AI FRAMEWORK
+		- SHOULD ALLOW TO REGISTER BRAINS
+		- SHOULD ALLOW TO TRAIN/FORWARD OVER BRAINS
+		- SHOULD ALLOW FOR EVOLVING
+		- SHOULD ALLOW FOR GENETIC ALGORITHMS
+		- SHOULD ALLOW FOR SIMPLE SVM
+		- SHOULD ALLOW FOR ANY KIND OF AI
+
+		********************************************
+		LOOKS LIKE IMPORTANT PART
+		IT WILL BE THE GOAL OF ELASTICFEED
+		TO MAKE IT WORKING.
+
+		THE COMBINATION OF:
+		- TRAINING USING CURRENT SENSORS
+		- CURRENT BRAIN STATE
+		- CURRENT INDICES
+		- CURRENT METRICS OF ACTIONS, BEHAVIOURS
+		- CURRENT HABITS
+		- ...
+		********************************************
+	 */
+}
+
 func NewPrivateVirtualPersonality() *PVPControler {
 	return &PVPControler{}
 }
