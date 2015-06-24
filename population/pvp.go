@@ -1,8 +1,9 @@
 package population
 
 /*
-
-	Private Virtual Personality
+	***********************************
+	*   Private Virtual Personality   *
+	***********************************
 
 	https://en.wikipedia.org/wiki/Talk%3APrivate_virtual_personality
 
@@ -13,7 +14,16 @@ package population
 
  */
 
-type PVPControler struct {}
+type PVPControler struct {
+
+	/*
+		- SHOULD LEARNs FROM HUMAN
+		- SHOULD SERVEs HUMAN
+		- SHOULD ADVISEs HUMAN
+		- SHOULD TEACHes HUMAN
+	 */
+
+}
 
 // SUPER GOAL: Artificial Intelligence
 func (this *PVPControler) GetAI() {

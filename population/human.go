@@ -39,13 +39,6 @@ func (this *HumanController) GetLActivityHours() {}
 
 // SUPER SUPER GOAL: Private Virtual Personality
 func (this *HumanController) GetNewPVP() *PVPControler {
-
-	/*
-		- SHOULD LEARN FROM HUMAN
-		- SHOULD ADVISE HUMAN
-		- SHOULD TEACH HUMAN
-	 */
-
 	return NewPrivateVirtualPersonality()
 }
 
