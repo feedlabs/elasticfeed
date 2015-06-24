@@ -20,7 +20,7 @@ const (
 type HumanController struct {
 	UID	string
 
-	pvps map[string]*PVPControler
+	pvps map[string]*PVPController
 
 	sex int
 }
@@ -38,7 +38,7 @@ func (this *HumanController) GetMoods() {}
 func (this *HumanController) GetLActivityHours() {}
 
 // SUPER SUPER GOAL: Private Virtual Personality
-func (this *HumanController) GetNewPVP() *PVPControler {
+func (this *HumanController) GetNewPVP() *PVPController {
 	return NewPrivateVirtualPersonality()
 }
 

@@ -14,7 +14,7 @@ package population
 
  */
 
-type PVPControler struct {
+type PVPController struct {
 
 	/*
 		Basic:
@@ -26,12 +26,39 @@ type PVPControler struct {
 		Advnaced:
 		- SHOULD TALK TO OTHER PVPs
 		- SHOULD ANSWER QUESTIONS
+
+		Intelligence:
+		- Intelligence Quotient (IQ)
+		- Emotional Intelligence (EI)
 	 */
 
 }
 
+func (this *PVPController) Train() {
+	/*
+		PVP LEARNS VIA HUMAN TEACHING
+		- CARROT/STICK METHOD
+		- MOOD DETECTION
+		- ...
+	 */
+}
+
+func (this *PVPController) Query() {
+	/*
+		QUESTION WITH LOGIC ANSWER: YES/NO
+
+		QUESTION WITH PROBABILITY ANSWER: MAYBE YES, MAYBE NOT
+
+		QUESTION ABOUT LIKENESS OF SUBJECT: LIKE/DISLIKE
+
+		QUESTION ABOUT LIKENESS OF PRICE: LIKE/DISLIKE
+
+		QUESTION ABOUT MOOD: GOOD, BAD, SAD
+	 */
+}
+
 // SUPER GOAL: Artificial Intelligence
-func (this *PVPControler) GetAI() {
+func (this *PVPController) GetAI() {
 	/*
 		SHOULD IMPLEMENT BRIDGE TO AI FRAMEWORK
 		- SHOULD ALLOW TO REGISTER BRAINS
@@ -57,6 +84,6 @@ func (this *PVPControler) GetAI() {
 	 */
 }
 
-func NewPrivateVirtualPersonality() *PVPControler {
-	return &PVPControler{}
+func NewPrivateVirtualPersonality() *PVPController {
+	return &PVPController{}
 }
