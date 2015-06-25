@@ -1,3 +1,9 @@
 package trait
 
-type HabitController struct {}
+type HabitController struct {
+	/*
+		- CLICKING ORDER
+		- TIME TO VISIT
+		- ...
+	 */
+}

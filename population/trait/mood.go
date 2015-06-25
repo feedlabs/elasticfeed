@@ -1,3 +1,12 @@
 package trait
 
-type MoodController struct {}
+type MoodController struct {
+	/*
+		- EROTIC
+		- NATURE
+		- CAR
+		- FASHION
+		- MOTO
+		- ...
+	 */
+}

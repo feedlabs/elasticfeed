@@ -1,3 +1,11 @@
 package trait
 
-type FactController struct {}
+type FactController struct {
+	/*
+		- AGE
+		- SEX
+		- HEIGHT
+		- WEIGHT
+		- ...
+	 */
+}
