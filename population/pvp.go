@@ -52,7 +52,7 @@ func (this *PVPController) Train() {
 	 */
 }
 
-func (this *PVPController) Query() {
+func (this *PVPController) Query() interface{} {
 	/*
 		QUESTION WITH LOGIC ANSWER: YES/NO
 
@@ -68,6 +68,22 @@ func (this *PVPController) Query() {
 
 		QUESTION ABOUT ABILITY TO LEARN: LOW/MEDIUM/HIGH
 	 */
+
+	return map[string]interface{}{
+		"query": "response",
+	}
+}
+
+func (this *PVPController) AskMood(time int) interface{} {
+	return this.Query()
+}
+
+func (this *PVPController) AskLike(subject interface{}) interface{} {
+	return this.Query()
+}
+
+func (this *PVPController) AskPriceAcceptance(subject interface{}, price int) interface{} {
+	return this.Query()
 }
 
 // SUPER GOAL: Artificial Intelligence
