@@ -1,7 +1,7 @@
 package workflow
 
 import (
-//	"fmt"
+	"fmt"
 
 	"encoding/json"
 	"time"
@@ -9,7 +9,6 @@ import (
 
 	"github.com/feedlabs/elasticfeed/plugin/model"
 	"github.com/feedlabs/elasticfeed/resource"
-	"github.com/feedlabs/elasticfeed/population"
 
 	jsonutil "github.com/mitchellh/packer/common/json"
 	"github.com/mitchellh/mapstructure"
@@ -19,20 +18,9 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream/controller/room"
 )
 
-/*
-	WORKFLOW CONTROLLER SHOULD
-	- REGISTER FEED WORKFLOW
-	- SHOULD STORE SUBSCRIBED HUMANS/VIEWERS
-	 - SHOULD BE ABLE TO READ/WRTIE METRICS/INDICES/STORAGES
-	 - SHOULD BE ABLE TO ACCESS SENSORS STATUS FOR SPECIFIC WORKFLOW
-
- */
-
 type WorkflowController struct {
 	feed    *resource.Feed
 	manager *WorkflowManager
-
-	population map[string]*population.HumanController
 
 	profiler *model.Profiler
 
@@ -86,8 +74,8 @@ func (this *WorkflowController) Init() {
 	var rawTplInterface interface{}
 	err := jsonutil.Unmarshal(data, &rawTplInterface)
 	if err != nil {
-		//		fmt.Println(data)
-		//		fmt.Println(err)
+		fmt.Println(data)
+		fmt.Println(err)
 		return
 	}
 
@@ -102,15 +90,15 @@ func (this *WorkflowController) Init() {
 
 	decoder, err := mapstructure.NewDecoder(decoderConfig)
 	if err != nil {
-		//		fmt.Println("err2")
-		//		fmt.Println(err)
+		fmt.Println("err2")
+		fmt.Println(err)
 		return
 	}
 
 	err = decoder.Decode(rawTplInterface)
 	if err != nil {
-		//		fmt.Println("err3")
-		//		fmt.Println(err)
+		fmt.Println("err3")
+		fmt.Println(err)
 		return
 	}
 
@@ -120,9 +108,9 @@ func (this *WorkflowController) Init() {
 		- PLUGINS SHOULD BE ABLE TO RUN FOR SPECIFIC WORKFLOW
 	 */
 
-	//	fmt.Println(rawTpl)
-	//	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
-	//	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
+	fmt.Println(rawTpl)
+	fmt.Println(rawTpl.Storing.NewEntryEvent.Indexers[0]["type"])
+	fmt.Println(rawTpl.Storing.NewEntryEvent.Crawlers[0]["type"])
 
 }
 
@@ -241,24 +229,10 @@ func (this *WorkflowController) ExecutePipelineChain(socketEvent smodel.SocketEv
 	}
 }
 
-func (this * WorkflowController) GetHumanByUID(uid string) *population.HumanController {
-	return this.population[uid]
-}
-
-func (this * WorkflowController) RegisterHuman(human *population.HumanController) {
-	this.population[human.UID] = human
-}
-
-func (this * WorkflowController) UnregisterHuman(human *population.HumanController) {
-	delete(this.population, human.UID)
-}
-
 func NewWorkflowController(feed *resource.Feed, wm *WorkflowManager) *WorkflowController {
-	population := make(map[string]*population.HumanController)
-
 	data := feed.GetWorkflow().GetProfilerRawData()
 	p := model.NewProfiler(data)
-	w := &WorkflowController{feed, wm, population, p, 100, 100, 100, 50, 100}
+	w := &WorkflowController{feed, wm, p, 100, 100, 100, 50, 100}
 
 	w.Init()
 
