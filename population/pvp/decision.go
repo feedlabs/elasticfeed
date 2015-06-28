@@ -1,4 +1,4 @@
-package trait
+package pvp
 
 type DecisionController struct {
 

@@ -1,6 +1,6 @@
-package trait
+package pvp
 
-type LocationController struct {
+type EnvironmentController struct {
 	/*
 		- NETWORK: 3G, Wifi
 		- PLACE: HOME, OFFICE

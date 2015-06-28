@@ -1,5 +1,9 @@
 package population
 
+import (
+	"github.com/feedlabs/elasticfeed/population/vhs"
+)
+
 /*
 
 	*******************************
@@ -17,12 +21,26 @@ package population
 
 type VHSController struct {
 	pvp *PVPController
+
+	communicator vhs.Communicator
+}
+
+func (this *VHSController) Query(query interface {}) interface {} {
+	return this.communicator.Query(this.pvp, query)
+}
+
+func (this *VHSController) Train(train interface {}) interface {} {
+	return this.communicator.Query(this.pvp, train)
 }
 
 func (this *VHSController) GetPVP() *PVPController {
 	return this.pvp
 }
 
-func NewVirtualHumanSurrogate() *VHSController {
-	return &VHSController{nil}
+func (this *VHSController) GetCommunicator() vhs.Communicator {
+	return this.communicator
+}
+
+func NewVirtualHumanSurrogate(communicator vhs.Communicator) *VHSController {
+	return &VHSController{nil, communicator}
 }

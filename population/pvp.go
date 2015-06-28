@@ -28,7 +28,7 @@ type PVPController struct {
 
 }
 
-func (this *PVPController) Train() {
+func (this *PVPController) Train(train interface{}) interface{} {
 	/*
 		PVP LEARNS VIA HUMAN TEACHING
 		- CARROT/STICK METHOD
@@ -40,9 +40,13 @@ func (this *PVPController) Train() {
 		- HUMAN DECISION
 		- LIFETIME ACTIVITY&KNOWLEDGE
 	 */
+
+	return map[string]interface{}{
+		"train": "success",
+	}
 }
 
-func (this *PVPController) Query() interface{} {
+func (this *PVPController) Query(query interface{}) interface{} {
 	/*
 		QUESTION WITH LOGIC ANSWER: YES/NO
 
@@ -64,16 +68,16 @@ func (this *PVPController) Query() interface{} {
 	}
 }
 
-func (this *PVPController) AskMood(time int) interface{} {
-	return this.Query()
+func (this *PVPController) AskMood(query interface{}) interface{} {
+	return this.Query(query)
 }
 
-func (this *PVPController) AskLike(subject interface{}) interface{} {
-	return this.Query()
+func (this *PVPController) AskLike(query interface{}) interface{} {
+	return this.Query(query)
 }
 
-func (this *PVPController) AskPriceAcceptance(subject interface{}, price int) interface{} {
-	return this.Query()
+func (this *PVPController) AskPriceAcceptance(query interface{}) interface{} {
+	return this.Query(query)
 }
 
 // SUPER GOAL: Artificial Intelligence
