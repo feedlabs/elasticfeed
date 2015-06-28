@@ -5,6 +5,7 @@ import (
 	"github.com/feedlabs/elasticfeed/service/stream"
 	"github.com/feedlabs/elasticfeed/service/system"
 	"github.com/feedlabs/elasticfeed/service/predict"
+	"github.com/feedlabs/elasticfeed/service/surrogate"
 
 	"github.com/feedlabs/elasticfeed/elasticfeed/model"
 )
@@ -18,6 +19,7 @@ type ServiceManager struct {
 	stream        *stream.StreamService
 	system        *system.SystemService
 	predict       *predict.PredictService
+	surrogate     *surrogate.SurrogateService
 }
 
 func (this *ServiceManager) Init() {
@@ -25,6 +27,7 @@ func (this *ServiceManager) Init() {
 	this.stream.Init()
 	this.store.Init()
 	this.predict.Init()
+	this.surrogate.Init()
 }
 
 func (this *ServiceManager) GetDbService() *store.DbService {
@@ -43,12 +46,17 @@ func (this *ServiceManager) GetPredictService() *predict.PredictService {
 	return this.predict
 }
 
+func (this *ServiceManager) GetSurrogateService() *surrogate.SurrogateService {
+	return this.surrogate
+}
+
 func NewServiceManager(engine model.Elasticfeed) *ServiceManager {
 
 	store := store.NewDbService()
 	stream := stream.NewStreamService()
 	system := system.NewSystemService()
 	predict := predict.NewPredictService()
+	surrogate := surrogate.NewSurrogateService()
 
-	return &ServiceManager{engine, store, stream, system, predict}
+	return &ServiceManager{engine, store, stream, system, predict, surrogate}
 }

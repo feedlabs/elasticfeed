@@ -1,16 +1,10 @@
 package population
 
 /*
+
 	***********************************
 	*   Private Virtual Personality   *
 	***********************************
-
-	https://en.wikipedia.org/wiki/Talk%3APrivate_virtual_personality
-
-	VI vs AI
-
-	A VI is restricted to certain responses and actions, and can't become self-aware,
-	while an AI is free to think how it likes and is self-aware.
 
  */
 
@@ -34,27 +28,56 @@ type PVPController struct {
 
 }
 
-func (this *PVPController) Train() {
+func (this *PVPController) Train(train interface{}) interface{} {
 	/*
 		PVP LEARNS VIA HUMAN TEACHING
 		- CARROT/STICK METHOD
-		- MOOD DETECTION
 		- ...
+
+		TRAIN PACKAGE:
+		- HUMAN ENVIRONMENT SENSORS STATUS
+		- SUBJECT KNOWLEDGE
+		- HUMAN DECISION
+		- LIFETIME ACTIVITY&KNOWLEDGE
 	 */
+
+	return map[string]interface{}{
+		"train": "success",
+	}
 }
 
-func (this *PVPController) Query() {
+func (this *PVPController) Query(query interface{}) interface{} {
 	/*
 		QUESTION WITH LOGIC ANSWER: YES/NO
 
-		QUESTION WITH PROBABILITY ANSWER: MAYBE YES, MAYBE NOT
+		QUESTION WITH PROBABILITY ANSWER: MOST LIKELY, MAYBE, PROBABLY YES/NO
 
 		QUESTION ABOUT LIKENESS OF SUBJECT: LIKE/DISLIKE
 
-		QUESTION ABOUT LIKENESS OF PRICE: LIKE/DISLIKE
+		QUESTION ABOUT LIKENESS OF PRICE: CHEAP/LUXURY
 
 		QUESTION ABOUT MOOD: GOOD, BAD, SAD
+
+		QUESTION ABOUT BEHAVIOUR TODAY/TOMORROW: IDLE, SHOPPING, READING...
+
+		QUESTION ABOUT ABILITY TO LEARN: LOW/MEDIUM/HIGH
 	 */
+
+	return map[string]interface{}{
+		"query": "response",
+	}
+}
+
+func (this *PVPController) AskMood(query interface{}) interface{} {
+	return this.Query(query)
+}
+
+func (this *PVPController) AskLike(query interface{}) interface{} {
+	return this.Query(query)
+}
+
+func (this *PVPController) AskPriceAcceptance(query interface{}) interface{} {
+	return this.Query(query)
 }
 
 // SUPER GOAL: Artificial Intelligence
@@ -75,10 +98,10 @@ func (this *PVPController) GetAI() {
 
 		THE COMBINATION OF:
 		- TRAINING USING CURRENT SENSORS
+		- TRAINING USING CURRENT DECISIONS
 		- CURRENT BRAIN STATE
-		- CURRENT INDICES
-		- CURRENT METRICS OF ACTIONS, BEHAVIOURS
-		- CURRENT HABITS
+		- CURRENT KNOWLEDGE/INDICES
+		- CURRENT METRICS OF BEHAVIOURS, HABITS, ABILITIES, MOODS
 		- ...
 		********************************************
 	 */
